@@ -9,496 +9,302 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      education_levels: {
-        Row: {
-          created_at: string | null
-          group_category: string
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string | null
-          group_category: string
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string | null
-          group_category?: string
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      experiences: {
-        Row: {
-          company: string
-          created_at: string | null
-          description: string | null
-          end_date: string | null
-          id: string
-          is_current: boolean | null
-          position: string
-          start_date: string
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          company: string
-          created_at?: string | null
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          is_current?: boolean | null
-          position: string
-          start_date: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          company?: string
-          created_at?: string | null
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          is_current?: boolean | null
-          position?: string
-          start_date?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      fields_of_focus: {
+      categories: {
         Row: {
           created_at: string | null
           description: string | null
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      fields_of_interest: {
-        Row: {
-          created_at: string | null
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
-      job_applications: {
-        Row: {
-          applicant_id: string | null
-          created_at: string | null
-          employer_id: string | null
-          id: string
-          job_id: string | null
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          applicant_id?: string | null
-          created_at?: string | null
-          employer_id?: string | null
-          id?: string
-          job_id?: string | null
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          applicant_id?: string | null
-          created_at?: string | null
-          employer_id?: string | null
-          id?: string
-          job_id?: string | null
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_applications_applicant_id_fkey"
-            columns: ["applicant_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "job_applications_employer_id_fkey"
-            columns: ["employer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "job_applications_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "jobs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      jobs: {
-        Row: {
-          company: string
-          created_at: string | null
-          description: string
           id: string
           image_url: string | null
-          job_type: string | null
-          location: string | null
-          requirements: string[] | null
-          salary_range: string | null
-          title: string
+          is_active: boolean | null
+          name: string
+          slug: string
           updated_at: string | null
-          user_id: string | null
         }
         Insert: {
-          company: string
           created_at?: string | null
-          description: string
+          description?: string | null
           id?: string
           image_url?: string | null
-          job_type?: string | null
-          location?: string | null
-          requirements?: string[] | null
-          salary_range?: string | null
-          title: string
+          is_active?: boolean | null
+          name: string
+          slug: string
           updated_at?: string | null
-          user_id?: string | null
         }
         Update: {
-          company?: string
           created_at?: string | null
-          description?: string
+          description?: string | null
           id?: string
           image_url?: string | null
-          job_type?: string | null
-          location?: string | null
-          requirements?: string[] | null
-          salary_range?: string | null
-          title?: string
+          is_active?: boolean | null
+          name?: string
+          slug?: string
           updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "jobs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      likes: {
-        Row: {
-          created_at: string | null
-          id: string
-          post_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          post_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          post_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "likes_post_id_fkey"
-            columns: ["post_id"]
-            isOneToOne: false
-            referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "likes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      messages: {
-        Row: {
-          content: string
-          created_at: string | null
-          id: string
-          read: boolean | null
-          receiver_id: string | null
-          sender_id: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          id?: string
-          read?: boolean | null
-          receiver_id?: string | null
-          sender_id?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          id?: string
-          read?: boolean | null
-          receiver_id?: string | null
-          sender_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_receiver_id_fkey"
-            columns: ["receiver_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      notifications: {
-        Row: {
-          created_at: string | null
-          id: string
-          message: string
-          read: boolean | null
-          reference_id: string | null
-          reference_type: string | null
-          title: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          message: string
-          read?: boolean | null
-          reference_id?: string | null
-          reference_type?: string | null
-          title: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          message?: string
-          read?: boolean | null
-          reference_id?: string | null
-          reference_type?: string | null
-          title?: string
-          user_id?: string | null
         }
         Relationships: []
       }
-      posts: {
+      customers: {
         Row: {
-          caption: string | null
-          category: string | null
-          content: string
+          address: string | null
+          city: string | null
           created_at: string | null
-          id: string
-          image_url: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          caption?: string | null
-          category?: string | null
-          content: string
-          created_at?: string | null
-          id?: string
-          image_url?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          caption?: string | null
-          category?: string | null
-          content?: string
-          created_at?: string | null
-          id?: string
-          image_url?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "posts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          achievements: string[] | null
-          areas_of_interest: string[] | null
-          bio: string | null
-          career_goals: string | null
-          company_name: string | null
-          contact_number: string | null
-          contacts: string[] | null
-          course_program: string | null
-          cover_photo_url: string | null
-          created_at: string | null
-          degree_program: string | null
-          description: string | null
-          education_level: string | null
           email: string | null
-          field_of_focus: string | null
-          field_of_interest: string | null
-          full_name: string | null
-          gpa: number | null
           id: string
-          industry: string | null
-          location: string | null
-          profession: string | null
-          profile_photo_url: string | null
-          receive_job_notifications: boolean | null
-          skills: string[] | null
-          university: string | null
+          name: string
+          phone: string
           updated_at: string | null
-          user_type: string | null
-          verification_status: string | null
-          verification_type: string[] | null
-          website: string | null
-          year_of_study: string | null
+          whatsapp_number: string | null
         }
         Insert: {
-          achievements?: string[] | null
-          areas_of_interest?: string[] | null
-          bio?: string | null
-          career_goals?: string | null
-          company_name?: string | null
-          contact_number?: string | null
-          contacts?: string[] | null
-          course_program?: string | null
-          cover_photo_url?: string | null
+          address?: string | null
+          city?: string | null
           created_at?: string | null
-          degree_program?: string | null
-          description?: string | null
-          education_level?: string | null
           email?: string | null
-          field_of_focus?: string | null
-          field_of_interest?: string | null
-          full_name?: string | null
-          gpa?: number | null
-          id: string
-          industry?: string | null
-          location?: string | null
-          profession?: string | null
-          profile_photo_url?: string | null
-          receive_job_notifications?: boolean | null
-          skills?: string[] | null
-          university?: string | null
+          id?: string
+          name: string
+          phone: string
           updated_at?: string | null
-          user_type?: string | null
-          verification_status?: string | null
-          verification_type?: string[] | null
-          website?: string | null
-          year_of_study?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
-          achievements?: string[] | null
-          areas_of_interest?: string[] | null
-          bio?: string | null
-          career_goals?: string | null
-          company_name?: string | null
-          contact_number?: string | null
-          contacts?: string[] | null
-          course_program?: string | null
-          cover_photo_url?: string | null
+          address?: string | null
+          city?: string | null
           created_at?: string | null
-          degree_program?: string | null
-          description?: string | null
-          education_level?: string | null
           email?: string | null
-          field_of_focus?: string | null
-          field_of_interest?: string | null
-          full_name?: string | null
-          gpa?: number | null
           id?: string
-          industry?: string | null
-          location?: string | null
-          profession?: string | null
-          profile_photo_url?: string | null
-          receive_job_notifications?: boolean | null
-          skills?: string[] | null
-          university?: string | null
+          name?: string
+          phone?: string
           updated_at?: string | null
-          user_type?: string | null
-          verification_status?: string | null
-          verification_type?: string[] | null
-          website?: string | null
-          year_of_study?: string | null
+          whatsapp_number?: string | null
         }
         Relationships: []
       }
-      projects: {
+      order_items: {
         Row: {
           created_at: string | null
-          description: string
           id: string
-          image_url: string | null
-          title: string
-          updated_at: string | null
-          user_id: string | null
+          order_id: string | null
+          product_id: string | null
+          product_name: string
+          product_price: number
+          quantity: number
+          total_price: number
         }
         Insert: {
           created_at?: string | null
-          description: string
           id?: string
-          image_url?: string | null
-          title: string
-          updated_at?: string | null
-          user_id?: string | null
+          order_id?: string | null
+          product_id?: string | null
+          product_name: string
+          product_price: number
+          quantity?: number
+          total_price: number
         }
         Update: {
           created_at?: string | null
-          description?: string
           id?: string
-          image_url?: string | null
-          title?: string
-          updated_at?: string | null
-          user_id?: string | null
+          order_id?: string | null
+          product_id?: string | null
+          product_name?: string
+          product_price?: number
+          quantity?: number
+          total_price?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_address: string | null
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string
+          customer_whatsapp: string | null
+          id: string
+          notes: string | null
+          order_number: string
+          payment_method: string | null
+          payment_status: string | null
+          status: string | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_address?: string | null
+          customer_id?: string | null
+          customer_name: string
+          customer_phone: string
+          customer_whatsapp?: string | null
+          id?: string
+          notes?: string | null
+          order_number: string
+          payment_method?: string | null
+          payment_status?: string | null
+          status?: string | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_address?: string | null
+          customer_id?: string | null
+          customer_name?: string
+          customer_phone?: string
+          customer_whatsapp?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          payment_method?: string | null
+          payment_status?: string | null
+          status?: string | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          brand: string
+          category_id: string | null
+          color: string | null
+          condition: string | null
+          created_at: string | null
+          description: string | null
+          features: string[] | null
+          id: string
+          images: string[] | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          model: string
+          name: string
+          original_price: number | null
+          price: number
+          slug: string
+          specifications: Json | null
+          stock_quantity: number | null
+          storage_capacity: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          brand: string
+          category_id?: string | null
+          color?: string | null
+          condition?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          model: string
+          name: string
+          original_price?: number | null
+          price: number
+          slug: string
+          specifications?: Json | null
+          stock_quantity?: number | null
+          storage_capacity?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          brand?: string
+          category_id?: string | null
+          color?: string | null
+          condition?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          model?: string
+          name?: string
+          original_price?: number | null
+          price?: number
+          slug?: string
+          specifications?: Json | null
+          stock_quantity?: number | null
+          storage_capacity?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          product_id: string | null
+          rating: number | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          product_id?: string | null
+          rating?: number | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          product_id?: string | null
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
