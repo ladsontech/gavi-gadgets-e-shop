@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -12,6 +11,7 @@ import { MobileMainNav } from "@/components/MobileMainNav";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState(""); // for search
 
   const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
@@ -26,7 +26,6 @@ const Index = () => {
     },
   });
 
-  // Products query depends on selected category
   const { data: products, isLoading: productsLoading } = useQuery({
     queryKey: ['products', selectedCategory],
     queryFn: async () => {
@@ -63,6 +62,16 @@ const Index = () => {
     return products.filter((p: any) => p.is_featured);
   }, [products, selectedCategory]);
 
+  // Apply search filter (case-insensitive) to products
+  const filteredProducts = useMemo(() => {
+    if (!products) return [];
+    if (!searchValue.trim()) return products;
+    const search = searchValue.toLowerCase();
+    return products.filter((prod: any) =>
+      [prod.name, prod.model, prod.brand].join(" ").toLowerCase().includes(search)
+    );
+  }, [products, searchValue]);
+
   if (productsLoading || categoriesLoading) {
     return <LoadingSpinner />;
   }
@@ -76,11 +85,22 @@ const Index = () => {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
+        {/* Search feature above featured & product list */}
+        <div className="mb-6 flex items-center">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            className="w-full border rounded-md px-4 py-2 text-base outline-none focus:ring-2 focus:ring-pink-400 bg-white text-black"
+            placeholder="Search for a phone by name, model, or brand..."
+            aria-label="Search products"
+          />
+        </div>
         {/* Featured section above products, only on main view */}
         {!selectedCategory && featuredProducts.length > 0 && (
           <FeaturedProducts products={featuredProducts} />
         )}
-        <ProductGrid products={products || []} />
+        <ProductGrid products={filteredProducts} />
       </main>
       <Footer />
       <MobileMainNav
