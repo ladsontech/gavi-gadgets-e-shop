@@ -29,3 +29,4 @@ export const Footer = () => (
       &copy; {new Date().getFullYear()} Gavi Gadgets. All rights reserved.
     </div>
   </footer>
+);
