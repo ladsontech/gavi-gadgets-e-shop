@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -100,9 +99,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               <p>Color: {product.color}</p>
             )}
           </div>
-          
           <div className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-green-600">
+            <span className="text-2xl font-bold text-foreground">
               {formatPrice(product.price)}
             </span>
             {product.original_price && (

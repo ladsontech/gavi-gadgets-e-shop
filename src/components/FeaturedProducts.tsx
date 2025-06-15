@@ -1,4 +1,3 @@
-
 import { ProductCard } from "@/components/ProductCard";
 
 interface Product {
@@ -34,7 +33,7 @@ export const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
       <h2 className="text-2xl font-bold text-pink-700 mb-4 px-1">
         <span className="bg-pink-100 rounded px-2 py-1">Featured This Week</span>
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
