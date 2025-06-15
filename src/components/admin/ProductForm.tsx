@@ -11,7 +11,7 @@ type Product = {
   name: string;
   description?: string;
   price: number;
-  original_price?: number;
+  original_price?: number | null;
   brand: string;
   model: string;
   storage_capacity?: string;
@@ -22,6 +22,7 @@ type Product = {
   is_featured: boolean;
   category_id?: string;
   features?: string[];
+  slug: string;
 };
 
 type Category = {
@@ -37,6 +38,15 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
+function slugify(input: string) {
+  return input
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9\-]/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export const ProductForm: React.FC<ProductFormProps> = ({
   product,
   categories,
@@ -47,7 +57,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     product || {
       name: "",
       price: 0,
-      original_price: 0,
+      original_price: null,
       brand: "",
       model: "",
       storage_capacity: "",
@@ -59,13 +69,30 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       images: [],
       category_id: "",
       is_featured: false,
+      slug: "",
     }
   );
   const [saving, setSaving] = useState(false);
 
+  // Always update slug if product name changes (for new products only)
+  useEffect(() => {
+    if (!product) {
+      setForm((f) => ({
+        ...f,
+        slug: slugify(f.name),
+      }));
+    }
+  }, [form.name, product]);
+
   // Input change handler
   const update = (key: keyof Product, value: any) => {
-    setForm((f) => ({ ...f, [key]: value }));
+    setForm((f) => ({
+      ...f,
+      [key]: value,
+      ...(key === "name" && !product
+        ? { slug: slugify(value as string) }
+        : {}),
+    }));
   };
 
   // Save handler (insert or update)
@@ -73,32 +100,53 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     e.preventDefault();
     setSaving(true);
 
-    // Insert or update product
+    // Compose full product object with required fields
+    const fullProduct: Product = {
+      ...form,
+      slug: form.slug || slugify(form.name),
+      price: Number(form.price),
+      original_price:
+        form.original_price === undefined || form.original_price === null
+          ? null
+          : Number(form.original_price),
+      features:
+        form.features && Array.isArray(form.features)
+          ? form.features.filter((line) => line && line.trim())
+          : [],
+      stock_quantity: Number(form.stock_quantity) || 0,
+    };
+
+    let error: any = null, saved: any = null;
+
     if (form.id) {
       // Update
-      const { error } = await supabase
+      const { error: updateError } = await supabase
         .from("products")
         .update({
-          ...form,
+          ...fullProduct,
         })
         .eq("id", form.id);
-      if (error) {
-        alert("Error: " + error.message);
-      } else {
-        onSave(form);
-      }
+      error = updateError;
+      saved = { ...fullProduct, id: form.id };
     } else {
       // Insert
-      const { data, error } = await supabase
+      const { data, error: insertError } = await supabase
         .from("products")
-        .insert([{ ...form }])
+        .insert([
+          {
+            ...fullProduct,
+          },
+        ])
         .select()
-        .single();
-      if (error) {
-        alert("Error: " + error.message);
-      } else {
-        onSave(data);
-      }
+        .maybeSingle();
+      error = insertError;
+      saved = data;
+    }
+
+    if (error) {
+      alert("Error: " + error.message);
+    } else {
+      onSave(saved);
     }
     setSaving(false);
   };
@@ -130,9 +178,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             type="number"
             placeholder="Original Price"
             min={0}
-            value={form.original_price || ""}
+            value={form.original_price === null ? "" : form.original_price || ""}
             onChange={(e) =>
-              update("original_price", e.target.value ? Number(e.target.value) : undefined)
+              update("original_price", e.target.value ? Number(e.target.value) : null)
             }
           />
         </div>
@@ -215,8 +263,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         />
         <Textarea
           placeholder="Product Features (one per line)"
-          value={(form.features || []).join("\n")}
-          onChange={(e) => update("features", e.target.value.split("\n"))}
+          value={
+            Array.isArray(form.features)
+              ? form.features.join("\n")
+              : ""
+          }
+          onChange={(e) =>
+            update("features", e.target.value.split("\n"))
+          }
         />
       </div>
       <div className="flex justify-end gap-2 mt-4">
@@ -230,3 +284,4 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     </form>
   );
 };
+
