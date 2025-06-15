@@ -24,6 +24,7 @@ type Product = {
   is_featured: boolean;
   category_id?: string;
   features?: string[];
+  slug: string; // <-- Added missing "slug" field to match backend/data
 };
 
 type Category = {
