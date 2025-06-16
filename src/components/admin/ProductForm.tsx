@@ -14,15 +14,12 @@ type Product = {
   original_price?: number | null;
   brand: string;
   model: string;
-  storage_capacity?: string;
-  color?: string;
   condition: string;
-  stock_quantity: number;
   images: string[];
-  is_featured: boolean;
   category_id?: string;
-  features?: string[];
   slug: string;
+  stock_quantity: number;
+  is_featured: boolean;
 };
 
 type Category = {
@@ -60,21 +57,29 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       original_price: null,
       brand: "",
       model: "",
-      storage_capacity: "",
-      color: "",
-      features: [],
       description: "",
       condition: "new",
-      stock_quantity: 0,
       images: [],
       category_id: "",
-      is_featured: false,
       slug: "",
+      stock_quantity: 1,
+      is_featured: false,
     }
   );
   const [saving, setSaving] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState<number>(0);
 
-  // Always update slug if product name changes (for new products only)
+  // Calculate discount percentage when prices change
+  useEffect(() => {
+    if (form.original_price && form.price && form.original_price > form.price) {
+      const discount = ((form.original_price - form.price) / form.original_price) * 100;
+      setDiscountPercentage(Math.round(discount));
+    } else {
+      setDiscountPercentage(0);
+    }
+  }, [form.price, form.original_price]);
+
+  // Update slug when name changes (for new products only)
   useEffect(() => {
     if (!product) {
       setForm((f) => ({
@@ -84,7 +89,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     }
   }, [form.name, product]);
 
-  // Input change handler
+  // Handle discount percentage input
+  const handleDiscountChange = (discount: number) => {
+    setDiscountPercentage(discount);
+    if (form.price && discount > 0) {
+      const originalPrice = form.price / (1 - discount / 100);
+      setForm(f => ({ ...f, original_price: Math.round(originalPrice) }));
+    } else {
+      setForm(f => ({ ...f, original_price: null }));
+    }
+  };
+
   const update = (key: keyof Product, value: any) => {
     setForm((f) => ({
       ...f,
@@ -95,48 +110,38 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     }));
   };
 
-  // Save handler (insert or update)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    // Compose full product object with required fields
+    // Extract brand and model from category and name
+    const selectedCategory = categories.find(c => c.id === form.category_id);
+    const brand = selectedCategory?.name || "Unknown";
+    
     const fullProduct: Product = {
       ...form,
+      brand,
+      model: form.name, // Use product name as model
       slug: form.slug || slugify(form.name),
       price: Number(form.price),
-      original_price:
-        form.original_price === undefined || form.original_price === null
-          ? null
-          : Number(form.original_price),
-      features:
-        form.features && Array.isArray(form.features)
-          ? form.features.filter((line) => line && line.trim())
-          : [],
-      stock_quantity: Number(form.stock_quantity) || 0,
+      original_price: form.original_price ? Number(form.original_price) : null,
+      stock_quantity: 1, // Default to 1 for smartphones
+      is_featured: false, // Can be set later
     };
 
     let error: any = null, saved: any = null;
 
     if (form.id) {
-      // Update
       const { error: updateError } = await supabase
         .from("products")
-        .update({
-          ...fullProduct,
-        })
+        .update(fullProduct)
         .eq("id", form.id);
       error = updateError;
       saved = { ...fullProduct, id: form.id };
     } else {
-      // Insert
       const { data, error: insertError } = await supabase
         .from("products")
-        .insert([
-          {
-            ...fullProduct,
-          },
-        ])
+        .insert([fullProduct])
         .select()
         .maybeSingle();
       error = insertError;
@@ -152,136 +157,133 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded-lg shadow max-w-xl mx-auto mt-4">
-      <div className="grid gap-4">
-        <Input
-          placeholder="Product Name"
-          value={form.name}
-          onChange={(e) => update("name", e.target.value)}
-          required
-        />
-        <Textarea
-          placeholder="Product Description"
-          value={form.description || ""}
-          onChange={(e) => update("description", e.target.value)}
-        />
-        <div className="flex gap-3">
-          <Input
-            type="number"
-            placeholder="Price (UGX)"
-            min={0}
-            value={form.price}
-            onChange={(e) => update("price", Number(e.target.value))}
-            required
-          />
-          <Input
-            type="number"
-            placeholder="Original Price"
-            min={0}
-            value={form.original_price === null ? "" : form.original_price || ""}
-            onChange={(e) =>
-              update("original_price", e.target.value ? Number(e.target.value) : null)
-            }
-          />
-        </div>
-        <div className="flex gap-3">
-          <Input
-            placeholder="Brand"
-            value={form.brand}
-            onChange={(e) => update("brand", e.target.value)}
-            required
-          />
-          <Input
-            placeholder="Model"
-            value={form.model}
-            onChange={(e) => update("model", e.target.value)}
-            required
-          />
-        </div>
-        <div className="flex gap-3">
-          <Input
-            placeholder="Storage (e.g. 128GB)"
-            value={form.storage_capacity || ""}
-            onChange={(e) => update("storage_capacity", e.target.value)}
-          />
-          <Input
-            placeholder="Color"
-            value={form.color || ""}
-            onChange={(e) => update("color", e.target.value)}
-          />
-        </div>
-        <div className="flex gap-3">
-          <label className="flex items-center gap-1">
-            Condition:
-            <select
-              value={form.condition}
-              onChange={(e) => update("condition", e.target.value)}
-              className="border rounded px-2 py-1"
-            >
-              <option value="new">Brand New</option>
-              <option value="refurbished">Refurbished</option>
-            </select>
+    <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Product Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Product Name *
           </label>
           <Input
-            type="number"
-            min={0}
-            placeholder="Quantity"
-            value={form.stock_quantity}
-            onChange={(e) => update("stock_quantity", Number(e.target.value))}
+            placeholder="e.g. iPhone 15 Pro Max 256GB"
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            required
+            className="w-full"
           />
         </div>
-        <div className="flex gap-3">
-          <label>
-            Category:
-            <select
-              value={form.category_id || ""}
-              onChange={(e) => update("category_id", e.target.value)}
-              className="border rounded px-2 py-1 ml-1"
+
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Brand/Category *
+          </label>
+          <select
+            value={form.category_id || ""}
+            onChange={(e) => update("category_id", e.target.value)}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            required
+          >
+            <option value="">Select Brand</option>
+            {categories.map((cat) => (
+              <option value={cat.id} key={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Price and Discount */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Selling Price (UGX) *
+            </label>
+            <Input
+              type="number"
+              placeholder="750000"
+              min={0}
+              value={form.price}
+              onChange={(e) => update("price", Number(e.target.value))}
               required
-            >
-              <option value="">Select one</option>
-              {categories.map((cat) => (
-                <option value={cat.id} key={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={form.is_featured}
-              onChange={(e) => update("is_featured", e.target.checked)}
             />
-            Featured
-          </label>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Discount % (optional)
+            </label>
+            <Input
+              type="number"
+              placeholder="10"
+              min={0}
+              max={90}
+              value={discountPercentage}
+              onChange={(e) => handleDiscountChange(Number(e.target.value))}
+            />
+            {form.original_price && (
+              <p className="text-xs text-gray-500 mt-1">
+                Original: UGX {form.original_price.toLocaleString()}
+              </p>
+            )}
+          </div>
         </div>
+
+        {/* Condition */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Condition *
+          </label>
+          <select
+            value={form.condition}
+            onChange={(e) => update("condition", e.target.value)}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+          >
+            <option value="new">Brand New</option>
+            <option value="refurbished">Refurbished</option>
+            <option value="used">Used</option>
+          </select>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Description
+          </label>
+          <Textarea
+            placeholder="Describe the phone features, specifications, etc."
+            value={form.description || ""}
+            onChange={(e) => update("description", e.target.value)}
+            rows={3}
+            className="w-full"
+          />
+        </div>
+
+        {/* Images */}
         <ProductImageUploader
           productId={form.id ?? "new"}
           images={form.images || []}
           onImagesChange={(imgs) => update("images", imgs)}
         />
-        <Textarea
-          placeholder="Product Features (one per line)"
-          value={
-            Array.isArray(form.features)
-              ? form.features.join("\n")
-              : ""
-          }
-          onChange={(e) =>
-            update("features", e.target.value.split("\n"))
-          }
-        />
-      </div>
-      <div className="flex justify-end gap-2 mt-4">
-        <Button type="button" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save Product"}
-        </Button>
-      </div>
-    </form>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onCancel}
+            className="w-full sm:w-auto"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            disabled={saving}
+            className="w-full sm:w-auto bg-pink-600 hover:bg-pink-700"
+          >
+            {saving ? "Saving..." : form.id ? "Update Product" : "Add Product"}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
-

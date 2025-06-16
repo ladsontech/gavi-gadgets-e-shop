@@ -6,8 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
-import { Loader2, Plus, Package } from "lucide-react";
-import { AppBar } from "@/components/AppBar";
+import { Loader2, Plus, Package, ArrowLeft } from "lucide-react";
 
 type Product = {
   id: string;
@@ -16,15 +15,10 @@ type Product = {
   original_price?: number;
   brand: string;
   model: string;
-  storage_capacity?: string;
-  color?: string;
   condition: string;
-  stock_quantity: number;
   images: string[];
   description?: string;
-  is_featured: boolean;
   category_id?: string;
-  features?: string[];
   slug: string;
 };
 
@@ -104,66 +98,80 @@ const Admin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AppBar />
-      <main className="py-8 px-4 max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex items-center justify-between mb-8">
+      {/* Mobile-friendly header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Package className="w-8 h-8 text-pink-600" />
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
-                <p className="text-gray-600">Manage your store inventory</p>
+              {showForm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleFormCancel}
+                  className="p-1 sm:hidden"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+              )}
+              <div className="flex items-center gap-2">
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-pink-600" />
+                <div>
+                  <h1 className="text-lg sm:text-2xl font-bold text-gray-900">
+                    {showForm ? (editProduct ? "Edit Product" : "Add Product") : "Products"}
+                  </h1>
+                  {!showForm && (
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      {products.length} smartphone{products.length !== 1 ? 's' : ''} in store
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">
-                {products.length} product{products.length !== 1 ? 's' : ''} total
-              </div>
+            <div className="flex items-center gap-2">
+              {!showForm && (
+                <Button 
+                  onClick={handleAdd} 
+                  size="sm"
+                  className="bg-pink-600 hover:bg-pink-700"
+                >
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Add</span>
+                </Button>
+              )}
               <Button variant="outline" size="sm" onClick={logoutAdmin}>
-                Logout
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Exit</span>
               </Button>
             </div>
           </div>
-
-          {showForm ? (
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">
-                  {editProduct ? "Edit Product" : "Add New Product"}
-                </h2>
-              </div>
-              <ProductForm
-                product={editProduct}
-                categories={categories}
-                onSave={handleFormSave}
-                onCancel={handleFormCancel}
-              />
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Products</h2>
-                <Button onClick={handleAdd} className="bg-pink-600 hover:bg-pink-700">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Product
-                </Button>
-              </div>
-
-              {isLoading ? (
-                <div className="flex justify-center py-12">
-                  <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
-                </div>
-              ) : (
-                <ProductList
-                  products={products}
-                  categories={categories}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              )}
-            </>
-          )}
         </div>
+      </div>
+
+      {/* Main content */}
+      <main className="px-4 py-4 sm:px-6 sm:py-6 max-w-4xl mx-auto">
+        {showForm ? (
+          <ProductForm
+            product={editProduct}
+            categories={categories}
+            onSave={handleFormSave}
+            onCancel={handleFormCancel}
+          />
+        ) : (
+          <>
+            {isLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
+              </div>
+            ) : (
+              <ProductList
+                products={products}
+                categories={categories}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            )}
+          </>
+        )}
       </main>
     </div>
   );
