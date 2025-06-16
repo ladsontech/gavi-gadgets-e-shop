@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { MoreVertical } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { AdminLoginModal } from "./AdminLoginModal";
+import { CartIcon } from "./CartIcon";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -14,13 +15,14 @@ export const AppBar = () => {
   return (
     <header className="w-full bg-gradient-to-r from-pink-500 to-purple-500 shadow sticky top-0 z-20">
       <nav className="flex items-center justify-between px-4 py-3 md:py-4 max-w-4xl mx-auto">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           <img src="/images/gavi_gadgets_logo.png" alt="Gavi Gadgets Logo" className="w-12 h-12 rounded-full bg-white shadow border-2 border-pink-200 object-contain" draggable={false} />
           <span className="font-bold text-white md:text-2xl tracking-wide drop-shadow text-3xl">
             Gavi Gadgets
           </span>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          <CartIcon />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button

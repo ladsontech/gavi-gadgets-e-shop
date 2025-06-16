@@ -1,16 +1,19 @@
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
   id: string;
   name: string;
+  slug: string;
   price: number;
   original_price?: number;
   brand: string;
+  model: string;
   storage_capacity?: string;
   color?: string;
   condition: string;
@@ -19,7 +22,9 @@ interface Product {
   description?: string;
   is_featured: boolean;
   categories?: {
+    id: string;
     name: string;
+    slug: string;
   };
 }
 
@@ -28,102 +33,101 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleAddToCart = () => {
+  const addToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItemIndex = existingCart.findIndex((item: any) => item.id === product.id);
+
+    if (existingItemIndex >= 0) {
+      existingCart[existingItemIndex].quantity += 1;
+    } else {
+      existingCart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0] || "/placeholder.svg",
+        quantity: 1,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(existingCart));
     toast({
-      title: "Added to Cart",
+      title: "Added to cart",
       description: `${product.name} has been added to your cart.`,
     });
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-UG', {
-      style: 'currency',
-      currency: 'UGX',
-      minimumFractionDigits: 0,
-    }).format(price);
+  const handleClick = () => {
+    navigate(`/product/${product.slug}`);
   };
 
-  const discount = product.original_price 
-    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
-    : 0;
-
   return (
-    <Card className="group hover:shadow-lg transition-shadow duration-300 rounded-xl sm:rounded-2xl">
-      <CardContent className="p-2 sm:p-4">
-        <div className="relative mb-3 sm:mb-4">
-          <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-            <img
-              src="/placeholder.svg"
-              alt={product.name}
-              className="w-4/5 h-4/5 object-contain rounded-lg mx-auto"
-            />
-          </div>
-          {product.is_featured && (
-            <Badge className="absolute top-1.5 left-1.5 bg-yellow-500 text-black text-xs sm:text-sm px-2">
-              <Star className="w-3 h-3 mr-1" />
-              Featured
-            </Badge>
-          )}
-          {discount > 0 && (
-            <Badge className="absolute top-1.5 right-1.5 bg-red-500 text-xs sm:text-sm px-2">
-              -{discount}%
-            </Badge>
-          )}
-          {product.stock_quantity === 0 && (
-            <Badge className="absolute bottom-1.5 left-1.5 bg-gray-500 text-xs sm:text-sm px-2">
-              Out of Stock
-            </Badge>
-          )}
-        </div>
-        
-        <div className="space-y-1 sm:space-y-2">
-          <div className="flex items-center justify-between">
-            <Badge variant="outline" className="text-[10px] sm:text-xs px-2 py-0.5">
-              {product.categories?.name || product.brand}
-            </Badge>
-            <Badge variant={product.condition === 'new' ? 'default' : 'secondary'} className="text-[10px] sm:text-xs px-2 py-0.5">
-              {product.condition}
-            </Badge>
-          </div>
-          
-          <h3 className="font-semibold text-sm sm:text-lg line-clamp-2 group-hover:text-blue-600 transition-colors">
+    <div 
+      onClick={handleClick}
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+    >
+      <div className="aspect-square relative">
+        <img
+          src={product.images[0] || "/placeholder.svg"}
+          alt={product.name}
+          className="w-full h-full object-contain p-2"
+        />
+        {product.is_featured && (
+          <Badge className="absolute top-2 left-2 bg-orange-500">Featured</Badge>
+        )}
+        {product.condition === "refurbished" && (
+          <Badge variant="secondary" className="absolute top-2 right-2">
+            Refurbished
+          </Badge>
+        )}
+      </div>
+      
+      <div className="p-3 sm:p-4">
+        <div className="mb-2">
+          <h3 className="font-semibold text-sm sm:text-base text-gray-900 line-clamp-2 mb-1">
             {product.name}
           </h3>
-          
-          <div className="text-xs sm:text-sm text-gray-600 space-y-0.5 sm:space-y-1">
-            {product.storage_capacity && (
-              <p>Storage: {product.storage_capacity}</p>
-            )}
-            {product.color && (
-              <p>Color: {product.color}</p>
-            )}
-          </div>
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            <span className="text-lg sm:text-2xl font-bold text-foreground">
-              {formatPrice(product.price)}
+          <p className="text-xs sm:text-sm text-gray-600">
+            {product.brand} {product.model}
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-lg sm:text-xl font-bold text-green-600">
+              UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && (
-              <span className="text-xs sm:text-lg text-gray-500 line-through">
-                {formatPrice(product.original_price)}
+              <span className="text-sm text-gray-400 line-through">
+                UGX {Number(product.original_price).toLocaleString()}
               </span>
             )}
           </div>
+          <div className="flex flex-wrap gap-1 text-xs text-gray-500">
+            {product.color && <span>• {product.color}</span>}
+            {product.storage_capacity && <span>• {product.storage_capacity}</span>}
+          </div>
         </div>
-      </CardContent>
-      
-      <CardFooter className="p-2 pt-0 sm:p-4 sm:pt-0">
-        <Button 
-          onClick={handleAddToCart}
-          disabled={product.stock_quantity === 0}
-          className="w-full text-xs sm:text-base py-2 sm:py-3"
-        >
-          <ShoppingCart className="w-4 h-4 mr-1 sm:mr-2" />
-          {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
-        </Button>
-      </CardFooter>
-    </Card>
+
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-gray-500">
+            {product.stock_quantity > 0 ? `${product.stock_quantity} in stock` : "Out of stock"}
+          </span>
+          <Button
+            size="sm"
+            onClick={addToCart}
+            disabled={product.stock_quantity === 0}
+            className="text-xs px-2 py-1 h-8"
+          >
+            <ShoppingCart className="w-3 h-3 mr-1" />
+            Add to Cart
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
-
