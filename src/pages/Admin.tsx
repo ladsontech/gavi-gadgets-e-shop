@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/components/admin/ProductForm";
-import { Loader2, Edit, Plus, Trash2 } from "lucide-react";
+import { ProductList } from "@/components/admin/ProductList";
+import { Loader2, Plus, Package } from "lucide-react";
+import { AppBar } from "@/components/AppBar";
 
-// Simple Product, Category types
 type Product = {
   id: string;
   name: string;
@@ -24,7 +25,7 @@ type Product = {
   is_featured: boolean;
   category_id?: string;
   features?: string[];
-  slug: string; // <-- Added missing "slug" field to match backend/data
+  slug: string;
 };
 
 type Category = {
@@ -47,157 +48,124 @@ const Admin: React.FC = () => {
     if (!isAdmin) navigate("/");
   }, [isAdmin, navigate]);
 
-  // Fetch categories + products
   useEffect(() => {
-    const load = async () => {
+    const loadData = async () => {
       setIsLoading(true);
+      
+      // Load categories
       const { data: catData } = await supabase
         .from("categories")
         .select("*")
         .order("name");
       setCategories(catData || []);
-      const { data: prodData } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false });
-      setProducts(prodData || []);
+      
+      // Load products
+      await refreshProducts();
       setIsLoading(false);
     };
-    load();
+    loadData();
   }, []);
 
-  // Triggered after add/edit
   const refreshProducts = async () => {
-    setIsLoading(true);
     const { data: prodData } = await supabase
       .from("products")
       .select("*")
       .order("created_at", { ascending: false });
     setProducts(prodData || []);
-    setIsLoading(false);
   };
 
   const handleAdd = () => {
     setEditProduct(undefined);
     setShowForm(true);
   };
-  const handleEdit = (p: Product) => {
-    setEditProduct(p);
+
+  const handleEdit = (product: Product) => {
+    setEditProduct(product);
     setShowForm(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure to delete this product?")) {
+    if (window.confirm("Are you sure you want to delete this product?")) {
       await supabase.from("products").delete().eq("id", id);
       refreshProducts();
     }
   };
 
+  const handleFormSave = () => {
+    setShowForm(false);
+    refreshProducts();
+  };
+
+  const handleFormCancel = () => {
+    setShowForm(false);
+  };
+
   if (!isAdmin) return null;
 
   return (
-    <main className="py-8 px-4 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <Button variant="secondary" size="sm" onClick={logoutAdmin}>
-          Logout
-        </Button>
-      </div>
-
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Products</h2>
-        <Button size="sm" onClick={handleAdd}>
-          <Plus className="inline mr-1" /> Add Product
-        </Button>
-      </div>
-
-      {showForm ? (
-        <ProductForm
-          product={editProduct}
-          categories={categories}
-          onSave={(prod) => {
-            setShowForm(false);
-            refreshProducts();
-          }}
-          onCancel={() => setShowForm(false)}
-        />
-      ) : (
-        isLoading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
+    <div className="min-h-screen bg-gray-50">
+      <AppBar />
+      <main className="py-8 px-4 max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <Package className="w-8 h-8 text-pink-600" />
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+                <p className="text-gray-600">Manage your store inventory</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-500">
+                {products.length} product{products.length !== 1 ? 's' : ''} total
+              </div>
+              <Button variant="outline" size="sm" onClick={logoutAdmin}>
+                Logout
+              </Button>
+            </div>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border text-xs sm:text-base bg-white shadow rounded-lg">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="p-2">Name</th>
-                  <th>Brand</th>
-                  <th>Model</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Qty</th>
-                  <th>Condition</th>
-                  <th>Featured</th>
-                  <th>Images</th>
-                  <th className="w-[110px]">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map(p => (
-                  <tr key={p.id} className="border-b last:border-0">
-                    <td>{p.name}</td>
-                    <td>{p.brand}</td>
-                    <td>{p.model}</td>
-                    <td>{categories.find(c => c.id === p.category_id)?.name || "-"}</td>
-                    <td>
-                      UGX {Number(p.price).toLocaleString()}
-                      {p.original_price && (
-                        <span className="line-through text-gray-400 ml-2">
-                          UGX {Number(p.original_price).toLocaleString()}
-                        </span>
-                      )}
-                    </td>
-                    <td>{p.stock_quantity}</td>
-                    <td>{p.condition}</td>
-                    <td>
-                      {p.is_featured ? (
-                        <span className="text-green-600 font-semibold">Yes</span>
-                      ) : (
-                        <span className="text-gray-400">No</span>
-                      )}
-                    </td>
-                    <td>
-                      <div className="flex flex-wrap gap-1">
-                        {(p.images || []).slice(0, 2).map((img, i) => (
-                          <img key={img} src={img} alt="" className="w-8 h-8 rounded object-cover" />
-                        ))}
-                        {p.images && p.images.length > 2 && <span className="text-xs ml-2">+{p.images.length - 2}</span>}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex gap-1">
-                        <Button size="icon" variant="ghost" onClick={() => handleEdit(p)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="icon" variant="ghost" onClick={() => handleDelete(p.id)}>
-                          <Trash2 className="w-4 h-4 text-red-400" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {!products.length && (
-                  <tr>
-                    <td colSpan={10} className="text-center py-8">No products. Click 'Add Product' to create the first one.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )
-      )}
-    </main>
+
+          {showForm ? (
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">
+                  {editProduct ? "Edit Product" : "Add New Product"}
+                </h2>
+              </div>
+              <ProductForm
+                product={editProduct}
+                categories={categories}
+                onSave={handleFormSave}
+                onCancel={handleFormCancel}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">Products</h2>
+                <Button onClick={handleAdd} className="bg-pink-600 hover:bg-pink-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Product
+                </Button>
+              </div>
+
+              {isLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
+                </div>
+              ) : (
+                <ProductList
+                  products={products}
+                  categories={categories}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </main>
+    </div>
   );
 };
 
