@@ -18,9 +18,7 @@ export const AppBar = () => {
         cursor: "pointer"
       }}>
           <img src="/images/gavi_gadgets_logo.png" alt="Gavi Gadgets Logo" className="w-12 h-12 rounded-full bg-white shadow border-2 border-pink-200 object-contain" draggable={false} />
-          <span className="font-bold text-white md:text-2xl tracking-wide drop-shadow text-2xl">
-            Gavi Gadgets
-          </span>
+          <span className="font-bold text-white md:text-2xl tracking-wide drop-shadow text-2xl">Gavi Gadgets UG</span>
         </div>
         <div className="flex items-center gap-2">
           <CartIcon />
