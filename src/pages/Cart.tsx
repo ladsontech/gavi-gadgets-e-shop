@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -123,7 +122,7 @@ Please confirm this order and provide payment instructions. Thank you for choosi
       <div className="container mx-auto px-4 py-8">
         <div className="text-center py-12">
           <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
           <p className="text-gray-600 mb-6">Add some products to get started!</p>
           <Button onClick={() => navigate("/")}>
             Continue Shopping
@@ -134,112 +133,175 @@ Please confirm this order and provide payment instructions. Thank you for choosi
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+    <div className="container mx-auto px-4 py-4 sm:py-8">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Shopping Cart</h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
         {/* Cart Items */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 order-2 lg:order-1">
           <div className="bg-white rounded-lg shadow-md">
             {cartItems.map((item) => (
-              <div key={item.id} className="flex items-center gap-4 p-6 border-b last:border-b-0">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 object-contain rounded border"
-                />
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                  <p className="text-green-600 font-bold">
-                    UGX {Number(item.price).toLocaleString()}
-                  </p>
+              <div key={item.id} className="p-4 sm:p-6 border-b last:border-b-0">
+                {/* Mobile Layout */}
+                <div className="block sm:hidden">
+                  <div className="flex gap-3 mb-3">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-16 h-16 object-contain rounded border flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-1 truncate">
+                        {item.name}
+                      </h3>
+                      <p className="text-green-600 font-bold text-sm">
+                        UGX {Number(item.price).toLocaleString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeItem(item.id)}
+                      className="text-red-500 hover:text-red-700 flex-shrink-0 h-8 w-8"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="h-8 w-8"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </Button>
+                      <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="h-8 w-8"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-sm">
+                        UGX {(item.price * item.quantity).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
+
+                {/* Desktop Layout */}
+                <div className="hidden sm:flex items-center gap-4">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 object-contain rounded border"
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">{item.name}</h3>
+                    <p className="text-green-600 font-bold">
+                      UGX {Number(item.price).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <span className="w-8 text-center">{item.quantity}</span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">
+                      UGX {(item.price * item.quantity).toLocaleString()}
+                    </p>
+                  </div>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    onClick={() => removeItem(item.id)}
+                    className="text-red-500 hover:text-red-700"
                   >
-                    <Minus className="w-4 h-4" />
-                  </Button>
-                  <span className="w-8 text-center">{item.quantity}</span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                  >
-                    <Plus className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold">
-                    UGX {(item.price * item.quantity).toLocaleString()}
-                  </p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeItem(item.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
               </div>
             ))}
           </div>
         </div>
 
         {/* Order Summary */}
-        <div className="bg-white rounded-lg shadow-md p-6 h-fit">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 h-fit order-1 lg:order-2">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Order Summary</h2>
           
-          <div className="space-y-4 mb-6">
+          <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
             <Input
               placeholder="Full Name *"
               value={customerInfo.name}
               onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
               required
+              className="text-sm sm:text-base"
             />
             <Input
               placeholder="Phone Number *"
               value={customerInfo.phone}
               onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
               required
+              className="text-sm sm:text-base"
             />
             <Input
               placeholder="WhatsApp Number (optional)"
               value={customerInfo.whatsapp}
               onChange={(e) => setCustomerInfo(prev => ({ ...prev, whatsapp: e.target.value }))}
+              className="text-sm sm:text-base"
             />
             <Input
               placeholder="Delivery Address (optional)"
               value={customerInfo.address}
               onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
+              className="text-sm sm:text-base"
             />
           </div>
 
-          <div className="border-t pt-4 mb-6">
+          <div className="border-t pt-4 mb-4 sm:mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Subtotal:</span>
-              <span className="font-semibold">UGX {getTotalPrice().toLocaleString()}</span>
+              <span className="text-gray-600 text-sm sm:text-base">Subtotal:</span>
+              <span className="font-semibold text-sm sm:text-base">UGX {getTotalPrice().toLocaleString()}</span>
             </div>
-            <div className="flex justify-between items-center text-lg font-bold">
+            <div className="flex justify-between items-center text-base sm:text-lg font-bold">
               <span>Total:</span>
               <span className="text-green-600">UGX {getTotalPrice().toLocaleString()}</span>
             </div>
           </div>
 
-          <Button onClick={handleCheckout} className="w-full" size="lg">
-            Checkout via WhatsApp
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={() => navigate("/")}
-            className="w-full mt-2"
-          >
-            Continue Shopping
-          </Button>
+          <div className="space-y-2">
+            <Button onClick={handleCheckout} className="w-full text-sm sm:text-base" size="lg">
+              Checkout via WhatsApp
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={() => navigate("/")}
+              className="w-full text-sm sm:text-base"
+            >
+              Continue Shopping
+            </Button>
+          </div>
         </div>
       </div>
     </div>
