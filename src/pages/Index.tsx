@@ -64,12 +64,17 @@ const Index = () => {
   // Apply search filter (case-insensitive) to products
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (!searchValue.trim()) return products;
+    let items = products;
+    // Exclude featured products when no category filter is applied
+    if (!selectedCategory) {
+      items = items.filter((p: any) => !p.is_featured);
+    }
+    if (!searchValue.trim()) return items;
     const search = searchValue.toLowerCase();
-    return products.filter((prod: any) =>
+    return items.filter((prod: any) =>
       [prod.name, prod.model, prod.brand].join(" ").toLowerCase().includes(search)
     );
-  }, [products, searchValue]);
+  }, [products, searchValue, selectedCategory]);
 
   if (productsLoading || categoriesLoading) {
     return <LoadingSpinner />;
