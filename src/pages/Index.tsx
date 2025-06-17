@@ -1,10 +1,9 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { AppBar } from "@/components/AppBar";
-import { Footer } from "@/components/Footer";
 import { useState, useMemo } from "react";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { MobileMainNav } from "@/components/MobileMainNav";
@@ -77,32 +76,28 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <AppBar />
-      <main className="flex-1 w-full max-w-5xl mx-auto px-2 sm:px-4 py-4 md:py-8">
-        <CategoryFilter
-          categories={categories || []}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+    <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-4 md:py-8">
+      <CategoryFilter
+        categories={categories || []}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
+      {/* Search feature above featured & product list */}
+      <div className="mb-6 flex items-center">
+        <input
+          type="text"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className="w-full border rounded-md px-4 py-2 text-base outline-none focus:ring-2 focus:ring-pink-400 bg-white text-black"
+          placeholder="Search for a phone by name, model, or brand..."
+          aria-label="Search products"
         />
-        {/* Search feature above featured & product list */}
-        <div className="mb-6 flex items-center">
-          <input
-            type="text"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className="w-full border rounded-md px-4 py-2 text-base outline-none focus:ring-2 focus:ring-pink-400 bg-white text-black"
-            placeholder="Search for a phone by name, model, or brand..."
-            aria-label="Search products"
-          />
-        </div>
-        {/* Featured section above products, only on main view */}
-        {!selectedCategory && featuredProducts.length > 0 && (
-          <FeaturedProducts products={featuredProducts} />
-        )}
-        <ProductGrid products={filteredProducts} />
-      </main>
-      <Footer />
+      </div>
+      {/* Featured section above products, only on main view */}
+      {!selectedCategory && featuredProducts.length > 0 && (
+        <FeaturedProducts products={featuredProducts} />
+      )}
+      <ProductGrid products={filteredProducts} />
       <MobileMainNav
         selectedCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
