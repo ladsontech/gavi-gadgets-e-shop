@@ -55,6 +55,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     }
 
     localStorage.setItem("cart", JSON.stringify(existingCart));
+    
+    // Dispatch cart update event
+    window.dispatchEvent(new Event("cartUpdated"));
+    
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`,
@@ -77,54 +81,47 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           className="w-full h-full object-contain p-2"
         />
         {product.is_featured && (
-          <Badge className="absolute top-2 left-2 bg-orange-500">Featured</Badge>
+          <Badge className="absolute top-2 left-2 bg-orange-500 text-xs">Featured</Badge>
         )}
         {product.condition === "refurbished" && (
-          <Badge variant="secondary" className="absolute top-2 right-2">
+          <Badge variant="secondary" className="absolute top-2 right-2 text-xs">
             Refurbished
           </Badge>
         )}
       </div>
       
-      <div className="p-3 sm:p-4">
+      <div className="p-2 sm:p-3">
         <div className="mb-2">
-          <h3 className="font-semibold text-sm sm:text-base text-gray-900 line-clamp-2 mb-1">
+          <h3 className="font-semibold text-xs sm:text-sm text-gray-900 line-clamp-2 mb-1 leading-tight">
             {product.name}
           </h3>
-          <p className="text-xs sm:text-sm text-gray-600">
-            {product.brand} {product.model}
+          <p className="text-xs text-gray-600 truncate">
+            {product.description}
           </p>
         </div>
 
-        <div className="flex flex-col gap-1 mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-lg sm:text-xl font-bold text-green-600">
+        <div className="flex flex-col gap-2 mb-3">
+          <div className="flex items-center gap-1 flex-wrap">
+            <span className="text-sm sm:text-lg font-bold text-green-600">
               UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && (
-              <span className="text-sm text-gray-400 line-through">
+              <span className="text-xs text-gray-400 line-through">
                 UGX {Number(product.original_price).toLocaleString()}
               </span>
             )}
           </div>
-          <div className="flex flex-wrap gap-1 text-xs text-gray-500">
-            {product.color && <span>• {product.color}</span>}
-            {product.storage_capacity && <span>• {product.storage_capacity}</span>}
-          </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">
-            {product.stock_quantity > 0 ? `${product.stock_quantity} in stock` : "Out of stock"}
-          </span>
+        <div className="flex justify-end">
           <Button
             size="sm"
             onClick={addToCart}
             disabled={product.stock_quantity === 0}
-            className="text-xs px-2 py-1 h-8"
+            className="text-xs px-2 py-1 h-7 bg-pink-600 hover:bg-pink-700"
           >
             <ShoppingCart className="w-3 h-3 mr-1" />
-            Add to Cart
+            Add
           </Button>
         </div>
       </div>

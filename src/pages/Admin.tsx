@@ -20,6 +20,8 @@ type Product = {
   description?: string;
   category_id?: string;
   slug: string;
+  stock_quantity: number;
+  is_featured: boolean;
 };
 
 type Category = {

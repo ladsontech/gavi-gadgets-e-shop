@@ -37,16 +37,10 @@ export const ProductGrid = ({ products }: ProductGridProps) => {
   }
 
   return (
-    <div>
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-        {products.length} Product{products.length !== 1 ? 's' : ''} Available
-      </h2>
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
     </div>
   );
 };
-
