@@ -8,7 +8,7 @@ import { AppBar } from "@/components/AppBar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SplashScreen } from "@/components/SplashScreen";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
@@ -18,10 +18,18 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    // Check if splash has been shown in this session
+    return !sessionStorage.getItem('splashShown');
+  });
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+    sessionStorage.setItem('splashShown', 'true');
+  };
 
   if (showSplash) {
-    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+    return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
   return (

@@ -33,7 +33,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             GAVI GADGETS
           </h1>
           <p className="text-lg sm:text-xl text-pink-100 font-medium tracking-wide">
-            Premium Smartphones in Uganda
+            Your Mobile Source
           </p>
           <div className="mt-8 flex justify-center">
             <div className="flex space-x-2">
@@ -63,7 +63,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           GAVI GADGETS
         </h1>
         <p className="text-lg sm:text-xl text-pink-100 font-medium tracking-wide animate-fade-in" style={{ animationDelay: '0.5s' }}>
-          Premium Smartphones in Uganda
+          Your Mobile Source
         </p>
         <div className="mt-8 flex justify-center animate-fade-in" style={{ animationDelay: '1s' }}>
           <div className="flex space-x-2">

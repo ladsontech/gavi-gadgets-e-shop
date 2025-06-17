@@ -16,6 +16,7 @@ type Product = {
   description?: string;
   category_id?: string;
   slug: string;
+  is_featured: boolean;
 };
 
 type Category = {
@@ -50,6 +51,14 @@ export const ProductList: React.FC<ProductListProps> = ({
   const getDiscountPercentage = (price: number, originalPrice?: number) => {
     if (!originalPrice || originalPrice <= price) return 0;
     return Math.round(((originalPrice - price) / originalPrice) * 100);
+  };
+
+  const getConditionDisplay = (condition: string) => {
+    switch(condition) {
+      case 'new': return 'Brand New';
+      case 'used': return 'UK Used';
+      default: return condition;
+    }
   };
 
   return (
@@ -91,8 +100,13 @@ export const ProductList: React.FC<ProductListProps> = ({
                         {category?.name || "No brand"}
                       </Badge>
                       <Badge variant="secondary" className="text-xs">
-                        {product.condition}
+                        {getConditionDisplay(product.condition)}
                       </Badge>
+                      {product.is_featured && (
+                        <Badge className="text-xs bg-orange-100 text-orange-800">
+                          Featured
+                        </Badge>
+                      )}
                       {discount > 0 && (
                         <Badge className="text-xs bg-red-100 text-red-800">
                           -{discount}%

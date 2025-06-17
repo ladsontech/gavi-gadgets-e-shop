@@ -126,7 +126,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       price: Number(form.price),
       original_price: form.original_price ? Number(form.original_price) : null,
       stock_quantity: 1, // Default to 1 for smartphones
-      is_featured: false, // Can be set later
     };
 
     let error: any = null, saved: any = null;
@@ -228,20 +227,38 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           </div>
         </div>
 
-        {/* Condition */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Condition *
-          </label>
-          <select
-            value={form.condition}
-            onChange={(e) => update("condition", e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-          >
-            <option value="new">Brand New</option>
-            <option value="refurbished">Refurbished</option>
-            <option value="used">Used</option>
-          </select>
+        {/* Condition and Featured */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Condition *
+            </label>
+            <select
+              value={form.condition}
+              onChange={(e) => update("condition", e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            >
+              <option value="new">Brand New</option>
+              <option value="used">UK Used</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Featured Product
+            </label>
+            <div className="flex items-center mt-2">
+              <input
+                type="checkbox"
+                id="featured"
+                checked={form.is_featured}
+                onChange={(e) => update("is_featured", e.target.checked)}
+                className="w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 focus:ring-2"
+              />
+              <label htmlFor="featured" className="ml-2 text-sm text-gray-700">
+                Mark as featured product
+              </label>
+            </div>
+          </div>
         </div>
 
         {/* Description */}

@@ -55,7 +55,7 @@ export const MobileMainNav = ({
   ).filter(Boolean);
 
   return (
-    <nav className="fixed bottom-0 w-full bg-white shadow-lg border-t flex z-20 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 w-full bg-white shadow-lg border-t flex z-20 md:hidden">
       {visibleNavs.map((item: any) => {
         const active =
           (item.value === null && !selectedCategory) ||

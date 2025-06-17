@@ -70,6 +70,14 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     navigate(`/product/${product.slug}`);
   };
 
+  const getConditionDisplay = (condition: string) => {
+    switch(condition) {
+      case 'new': return 'Brand New';
+      case 'used': return 'UK Used';
+      default: return condition;
+    }
+  };
+
   return (
     <div 
       onClick={handleClick}
@@ -88,7 +96,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           variant={product.condition === "new" ? "default" : "secondary"} 
           className="absolute top-2 right-2 text-xs"
         >
-          {product.condition === "new" ? "New" : "Refurbished"}
+          {getConditionDisplay(product.condition)}
         </Badge>
       </div>
       
@@ -112,6 +120,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 UGX {Number(product.original_price).toLocaleString()}
               </span>
             )}
+          </div>
+          <div className="text-xs text-gray-500">
+            Condition: {getConditionDisplay(product.condition)}
           </div>
         </div>
 
