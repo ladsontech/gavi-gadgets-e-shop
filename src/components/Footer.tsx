@@ -1,9 +1,6 @@
-
 import React from "react";
 import { ShoppingBag, Phone, MapPin } from "lucide-react";
-
-export const Footer = () => (
-  <footer className="bg-gradient-to-r from-pink-500 to-purple-600 text-white pt-10 pb-5 px-4 mt-8">
+export const Footer = () => <footer className="bg-gradient-to-r from-pink-500 to-purple-600 text-white pt-10 pb-5 px-4 mt-8">
     <div className="max-w-4xl mx-auto flex flex-col gap-4 md:flex-row justify-between items-center">
       <div className="flex flex-col items-center md:items-start text-center md:text-left">
         <div className="flex items-center gap-2 mb-2">
@@ -16,7 +13,7 @@ export const Footer = () => (
         </div>
         <div className="flex items-center gap-2">
           <Phone className="w-5 h-5 text-pink-100" />
-          <span className="text-white text-base">+256 700 000 000</span>
+          <span className="text-white text-base">+256 740799577</span>
         </div>
       </div>
       <div className="text-purple-100 text-sm mt-6 md:mt-0 max-w-xs">
@@ -28,5 +25,4 @@ export const Footer = () => (
     <div className="text-xs text-purple-200 text-center mt-8">
       &copy; {new Date().getFullYear()} Gavi Gadgets. All rights reserved.
     </div>
-  </footer>
-);
+  </footer>;
