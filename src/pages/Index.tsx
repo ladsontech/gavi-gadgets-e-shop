@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -53,23 +52,31 @@ const Index = () => {
   // Memoize featured products (only when not filtering by category)
   const featuredProducts = useMemo(() => {
     if (!products) return [];
-    // Show featured only if not filtering category or when filtering shows them
+    // Show featured only if not filtering category
     if (!selectedCategory) {
       return products.filter((p: any) => p.is_featured);
     }
-    // Only show featured within selected category? For now, featured filtered by current
-    return products.filter((p: any) => p.is_featured);
+    return [];
   }, [products, selectedCategory]);
 
-  // Apply search filter (case-insensitive) to products
+  // Apply search filter and remove featured products from main grid when showing featured section
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (!searchValue.trim()) return products;
+    
+    let productsToShow = products;
+    
+    // If we're showing featured section (no category selected), exclude featured products from main grid
+    if (!selectedCategory) {
+      productsToShow = products.filter((p: any) => !p.is_featured);
+    }
+    
+    // Apply search filter
+    if (!searchValue.trim()) return productsToShow;
     const search = searchValue.toLowerCase();
-    return products.filter((prod: any) =>
+    return productsToShow.filter((prod: any) =>
       [prod.name, prod.model, prod.brand].join(" ").toLowerCase().includes(search)
     );
-  }, [products, searchValue]);
+  }, [products, searchValue, selectedCategory]);
 
   if (productsLoading || categoriesLoading) {
     return <LoadingSpinner />;
