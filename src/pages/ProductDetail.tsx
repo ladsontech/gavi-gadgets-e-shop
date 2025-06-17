@@ -1,13 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AppBar } from "@/components/AppBar";
-import { Footer } from "@/components/Footer";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
@@ -105,6 +102,10 @@ const ProductDetail: React.FC = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(existingCart));
+    
+    // Dispatch cart update event
+    window.dispatchEvent(new Event("cartUpdated"));
+    
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`,
@@ -114,9 +115,7 @@ const ProductDetail: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <AppBar />
         <LoadingSpinner />
-        <Footer />
       </div>
     );
   }
@@ -124,23 +123,33 @@ const ProductDetail: React.FC = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <AppBar />
         <div className="container mx-auto px-4 py-8">
           <p>Product not found</p>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AppBar />
-      <main className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Mobile Back Button */}
+      <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 md:hidden">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Button>
+      </div>
+
+      <main className="container mx-auto px-2 sm:px-4 py-4 md:py-8">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             {/* Product Images */}
-            <div>
+            <div className="p-4 md:p-6">
               <div className="aspect-square mb-4">
                 <img
                   src={product.images[selectedImage] || "/placeholder.svg"}
@@ -149,13 +158,13 @@ const ProductDetail: React.FC = () => {
                 />
               </div>
               {product.images.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto">
+                <div className="flex gap-2 overflow-x-auto pb-2">
                   {product.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`flex-shrink-0 w-16 h-16 rounded border-2 ${
-                        selectedImage === index ? "border-blue-500" : "border-gray-200"
+                      className={`flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded border-2 ${
+                        selectedImage === index ? "border-pink-500" : "border-gray-200"
                       }`}
                     >
                       <img
@@ -170,63 +179,73 @@ const ProductDetail: React.FC = () => {
             </div>
 
             {/* Product Info */}
-            <div>
+            <div className="p-4 md:p-6">
               <div className="mb-4">
                 {product.categories && (
-                  <Badge variant="secondary" className="mb-2">
+                  <Badge variant="secondary" className="mb-2 text-xs">
                     {product.categories.name}
                   </Badge>
                 )}
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
-                <p className="text-lg text-gray-600">{product.brand} {product.model}</p>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
+                  {product.name}
+                </h1>
+                <p className="text-sm sm:text-base md:text-lg text-gray-600">
+                  {product.brand} {product.model}
+                </p>
               </div>
 
               <div className="mb-6">
-                <div className="flex items-center gap-4 mb-2">
-                  <span className="text-3xl font-bold text-green-600">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
+                  <span className="text-2xl sm:text-3xl font-bold text-green-600">
                     UGX {Number(product.price).toLocaleString()}
                   </span>
                   {product.original_price && (
-                    <span className="text-xl text-gray-400 line-through">
+                    <span className="text-lg sm:text-xl text-gray-400 line-through">
                       UGX {Number(product.original_price).toLocaleString()}
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
                   <span>Condition: <strong>{product.condition}</strong></span>
                   {product.color && <span>Color: <strong>{product.color}</strong></span>}
-                  {product.storage_capacity && <span>Storage: <strong>{product.storage_capacity}</strong></span>}
+                  {product.storage_capacity && (
+                    <span>Storage: <strong>{product.storage_capacity}</strong></span>
+                  )}
                 </div>
               </div>
 
               {product.description && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-2">Description</h3>
-                  <p className="text-gray-700">{product.description}</p>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">Description</h3>
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                    {product.description}
+                  </p>
                 </div>
               )}
 
               {product.features && product.features.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-2">Features</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-2">Features</h3>
                   <ul className="list-disc list-inside space-y-1">
                     {product.features.map((feature, index) => (
-                      <li key={index} className="text-gray-700">{feature}</li>
+                      <li key={index} className="text-sm sm:text-base text-gray-700">
+                        {feature}
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-6">
                 <div className="flex items-center gap-2">
-                  <label htmlFor="quantity" className="text-sm font-medium">
+                  <label htmlFor="quantity" className="text-sm font-medium whitespace-nowrap">
                     Quantity:
                   </label>
                   <select
                     id="quantity"
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 text-sm"
                   >
                     {[...Array(Math.min(10, product.stock_quantity))].map((_, i) => (
                       <option key={i + 1} value={i + 1}>
@@ -235,16 +254,16 @@ const ProductDetail: React.FC = () => {
                     ))}
                   </select>
                 </div>
-                <span className="text-sm text-gray-600">
+                <span className="text-xs sm:text-sm text-gray-600">
                   {product.stock_quantity} in stock
                 </span>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button
                   onClick={addToCart}
                   disabled={product.stock_quantity === 0}
-                  className="flex-1"
+                  className="flex-1 bg-pink-600 hover:bg-pink-700 text-sm sm:text-base"
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
                   Add to Cart
@@ -252,6 +271,7 @@ const ProductDetail: React.FC = () => {
                 <Button
                   variant="outline"
                   onClick={() => navigate("/cart")}
+                  className="sm:flex-shrink-0 text-sm sm:text-base"
                 >
                   View Cart
                 </Button>
@@ -260,7 +280,6 @@ const ProductDetail: React.FC = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
