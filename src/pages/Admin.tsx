@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
-import { Loader2, Plus, Package, ArrowLeft } from "lucide-react";
+import { Loader2, Plus, Package, ArrowLeft, LogOut } from "lucide-react";
 
 type Product = {
   id: string;
@@ -100,79 +99,117 @@ const Admin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile-friendly header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="px-4 py-3 sm:px-6 sm:py-4">
+      {/* Mobile-optimized sticky header */}
+      <div className="sticky top-0 z-20 bg-white shadow-sm border-b">
+        <div className="px-3 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
               {showForm && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleFormCancel}
-                  className="p-1 sm:hidden"
+                  className="p-1.5 sm:p-2 flex-shrink-0"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               )}
-              <div className="flex items-center gap-2">
-                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-pink-600" />
-                <div>
-                  <h1 className="text-lg sm:text-2xl font-bold text-gray-900">
-                    {showForm ? (editProduct ? "Edit Product" : "Add Product") : "Products"}
+              <div className="flex items-center gap-2 min-w-0">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-pink-600 flex-shrink-0" />
+                <div className="min-w-0">
+                  <h1 className="text-base sm:text-lg md:text-2xl font-bold text-gray-900 truncate">
+                    {showForm ? (editProduct ? "Edit Product" : "Add Product") : "Admin Panel"}
                   </h1>
                   {!showForm && (
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {products.length} smartphone{products.length !== 1 ? 's' : ''} in store
+                    <p className="text-xs sm:text-sm text-gray-600 truncate">
+                      {products.length} product{products.length !== 1 ? 's' : ''} total
                     </p>
                   )}
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {!showForm && (
                 <Button 
                   onClick={handleAdd} 
                   size="sm"
-                  className="bg-pink-600 hover:bg-pink-700"
+                  className="bg-pink-600 hover:bg-pink-700 px-2 sm:px-4"
                 >
-                  <Plus className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Add</span>
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline ml-1">Add</span>
                 </Button>
               )}
-              <Button variant="outline" size="sm" onClick={logoutAdmin}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={logoutAdmin}
+                className="px-2 sm:px-4"
+              >
+                <LogOut className="w-4 h-4 sm:mr-1" />
                 <span className="hidden sm:inline">Logout</span>
-                <span className="sm:hidden">Exit</span>
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main content */}
-      <main className="px-4 py-4 sm:px-6 sm:py-6 max-w-4xl mx-auto">
+      {/* Main content with mobile-optimized spacing */}
+      <main className="px-3 py-4 sm:px-6 sm:py-6 max-w-7xl mx-auto">
         {showForm ? (
-          <ProductForm
-            product={editProduct}
-            categories={categories}
-            onSave={handleFormSave}
-            onCancel={handleFormCancel}
-          />
+          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <ProductForm
+              product={editProduct}
+              categories={categories}
+              onSave={handleFormSave}
+              onCancel={handleFormCancel}
+            />
+          </div>
         ) : (
-          <>
+          <div className="space-y-4 sm:space-y-6">
+            {/* Mobile stats cards */}
+            <div className="grid grid-cols-2 gap-3 sm:hidden">
+              <div className="bg-white p-3 rounded-lg shadow-sm border">
+                <div className="text-xs text-gray-600">Total Products</div>
+                <div className="text-lg font-bold text-gray-900">{products.length}</div>
+              </div>
+              <div className="bg-white p-3 rounded-lg shadow-sm border">
+                <div className="text-xs text-gray-600">Categories</div>
+                <div className="text-lg font-bold text-gray-900">{categories.length}</div>
+              </div>
+            </div>
+
             {isLoading ? (
-              <div className="flex justify-center py-12">
-                <Loader2 className="animate-spin w-8 h-8 text-gray-400" />
+              <div className="flex justify-center py-12 bg-white rounded-lg shadow-sm border">
+                <div className="text-center">
+                  <Loader2 className="animate-spin w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm text-gray-600">Loading products...</p>
+                </div>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
+                <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No products yet</h3>
+                <p className="text-sm text-gray-600 mb-4">Get started by adding your first product</p>
+                <Button 
+                  onClick={handleAdd}
+                  className="bg-pink-600 hover:bg-pink-700"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add First Product
+                </Button>
               </div>
             ) : (
-              <ProductList
-                products={products}
-                categories={categories}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
+              <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                <ProductList
+                  products={products}
+                  categories={categories}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              </div>
             )}
-          </>
+          </div>
         )}
       </main>
     </div>
