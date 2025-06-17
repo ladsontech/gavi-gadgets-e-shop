@@ -1,9 +1,8 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
@@ -90,7 +89,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           className="w-full h-full object-contain p-2"
         />
         {product.is_featured && (
-          <Badge className="absolute top-2 left-2 bg-orange-500 text-xs">Featured</Badge>
+          <div className="absolute top-2 left-2 bg-orange-500 rounded-full p-1.5 shadow-md">
+            <Star className="w-3 h-3 text-white fill-white" />
+          </div>
         )}
         <Badge 
           variant={product.condition === "new" ? "default" : "secondary"} 
