@@ -51,6 +51,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         price: product.price,
         image: product.images[0] || "/placeholder.svg",
         quantity: 1,
+        slug: product.slug,
       });
     }
 
@@ -83,11 +84,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         {product.is_featured && (
           <Badge className="absolute top-2 left-2 bg-orange-500 text-xs">Featured</Badge>
         )}
-        {product.condition === "refurbished" && (
-          <Badge variant="secondary" className="absolute top-2 right-2 text-xs">
-            Refurbished
-          </Badge>
-        )}
+        <Badge 
+          variant={product.condition === "new" ? "default" : "secondary"} 
+          className="absolute top-2 right-2 text-xs"
+        >
+          {product.condition === "new" ? "New" : "Refurbished"}
+        </Badge>
       </div>
       
       <div className="p-2 sm:p-3">
@@ -95,7 +97,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <h3 className="font-semibold text-xs sm:text-sm text-gray-900 line-clamp-2 mb-1 leading-tight">
             {product.name}
           </h3>
-          <p className="text-xs text-gray-600 truncate">
+          <p className="text-xs text-gray-600 line-clamp-2 leading-tight">
             {product.description}
           </p>
         </div>

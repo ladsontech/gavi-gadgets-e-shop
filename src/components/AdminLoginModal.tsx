@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ open, onOpenCh
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { loginAdmin } = useAdminAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +23,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ open, onOpenCh
       setPassword("");
       setError(null);
       onOpenChange(false);
+      navigate("/admin"); // Redirect to admin dashboard
     } else {
       setError("Incorrect password. Please try again.");
     }
