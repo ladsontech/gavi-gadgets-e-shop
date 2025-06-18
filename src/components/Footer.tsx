@@ -1,6 +1,10 @@
+
 import React from "react";
 import { ShoppingBag, Phone, MapPin } from "lucide-react";
-export const Footer = () => <footer className="bg-gradient-to-r from-pink-500 to-purple-600 text-white pt-10 pb-5 px-4 mt-8">
+import { WarrantyPolicy } from "./WarrantyPolicy";
+
+export const Footer = () => (
+  <footer className="bg-gradient-to-r from-pink-500 to-purple-600 text-white pt-10 pb-5 px-4 mt-8">
     <div className="max-w-4xl mx-auto flex flex-col gap-4 md:flex-row justify-between items-center">
       <div className="flex flex-col items-center md:items-start text-center md:text-left">
         <div className="flex items-center gap-2 mb-2">
@@ -22,7 +26,13 @@ export const Footer = () => <footer className="bg-gradient-to-r from-pink-500 to
         Visit us at New Pioneer Mall or contact us for the latest offers!
       </div>
     </div>
-    <div className="text-xs text-purple-200 text-center mt-8">
+    
+    <div className="text-center mt-6 pt-4 border-t border-purple-400">
+      <WarrantyPolicy />
+    </div>
+    
+    <div className="text-xs text-purple-200 text-center mt-4">
       &copy; {new Date().getFullYear()} Gavi Gadgets. All rights reserved.
     </div>
-  </footer>;
+  </footer>
+);

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -121,9 +122,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 UGX {Number(product.original_price).toLocaleString()}
               </span>
             )}
-          </div>
-          <div className="text-xs text-gray-500">
-            Condition: {getConditionDisplay(product.condition)}
           </div>
         </div>
 
