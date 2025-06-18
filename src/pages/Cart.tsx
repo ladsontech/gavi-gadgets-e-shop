@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -80,7 +81,7 @@ const Cart: React.FC = () => {
       return;
     }
 
-    // Create detailed WhatsApp message with product links
+    // Create detailed WhatsApp message with product links and payment info
     const baseUrl = window.location.origin;
     const orderDetails = cartItems.map(item => {
       const productLink = item.slug ? `${baseUrl}/product/${item.slug}` : "Link not available";
@@ -90,6 +91,7 @@ const Cart: React.FC = () => {
     const totalAmount = getTotalPrice();
     
     const message = `🛍️ *GAVI GADGETS UG ORDER*
+Your Mobile Source
 
 👤 *Customer Details:*
 Name: ${customerInfo.name}
@@ -102,7 +104,15 @@ ${orderDetails}
 
 💰 *Total Amount: UGX ${totalAmount.toLocaleString()}*
 
-Please confirm this order and provide payment instructions. Thank you for choosing Gavi Gadgets UG! 🙏`;
+💳 *Payment Options:*
+📱 Mobile Money (MTN): 0740799577
+📱 Mobile Money (Airtel): 0740799577
+🏦 Bank Transfer: Centenary Bank
+   Account: 1234567890
+   Name: Gavi Gadgets UG
+💵 Cash on Delivery (Available)
+
+Please confirm this order and your preferred payment method. Thank you for choosing Gavi Gadgets UG! 🙏`;
 
     const whatsappUrl = `https://wa.me/256740799577?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -276,6 +286,16 @@ Please confirm this order and provide payment instructions. Thank you for choosi
               onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
               className="text-sm sm:text-base"
             />
+          </div>
+
+          {/* Payment Methods */}
+          <div className="mb-4 sm:mb-6 p-3 bg-gray-50 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-2 text-sm">Payment Options:</h3>
+            <div className="text-xs text-gray-600 space-y-1">
+              <div>📱 Mobile Money: 0740799577</div>
+              <div>🏦 Bank Transfer: Available</div>
+              <div>💵 Cash on Delivery</div>
+            </div>
           </div>
 
           <div className="border-t pt-4 mb-4 sm:mb-6">

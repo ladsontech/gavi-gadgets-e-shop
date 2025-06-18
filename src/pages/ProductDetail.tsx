@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { ShoppingCart, ArrowLeft } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Product {
@@ -112,6 +112,25 @@ const ProductDetail: React.FC = () => {
     });
   };
 
+  const shareProduct = () => {
+    if (!product) return;
+
+    const currentUrl = window.location.href;
+    const shareText = `Check out this ${product.name} from Gavi Gadgets UG!\n\nPrice: UGX ${Number(product.price).toLocaleString()}\nCondition: ${product.condition}\n\nYour Mobile Source - Quality Phones, Competitive Prices\n\n${currentUrl}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: shareText,
+        url: currentUrl,
+      });
+    } else {
+      // Fallback to WhatsApp share
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -134,15 +153,26 @@ const ProductDetail: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Back Button */}
       <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 md:hidden">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={shareProduct}
+            className="flex items-center gap-2"
+          >
+            <Share2 className="w-4 h-4" />
+            Share
+          </Button>
+        </div>
       </div>
 
       <main className="container mx-auto px-2 sm:px-4 py-4 md:py-8">
@@ -180,18 +210,30 @@ const ProductDetail: React.FC = () => {
 
             {/* Product Info */}
             <div className="p-4 md:p-6">
-              <div className="mb-4">
-                {product.categories && (
-                  <Badge variant="secondary" className="mb-2 text-xs">
-                    {product.categories.name}
-                  </Badge>
-                )}
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
-                  {product.name}
-                </h1>
-                <p className="text-sm sm:text-base md:text-lg text-gray-600">
-                  {product.brand} {product.model}
-                </p>
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  {product.categories && (
+                    <Badge variant="secondary" className="mb-2 text-xs">
+                      {product.categories.name}
+                    </Badge>
+                  )}
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
+                    {product.name}
+                  </h1>
+                  <p className="text-sm sm:text-base md:text-lg text-gray-600">
+                    {product.brand} {product.model}
+                  </p>
+                </div>
+                {/* Desktop Share Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={shareProduct}
+                  className="hidden md:flex items-center gap-2 ml-4"
+                >
+                  <Share2 className="w-4 h-4" />
+                  Share
+                </Button>
               </div>
 
               <div className="mb-6">
@@ -259,7 +301,7 @@ const ProductDetail: React.FC = () => {
                 </span>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
                 <Button
                   onClick={addToCart}
                   disabled={product.stock_quantity === 0}
@@ -275,6 +317,16 @@ const ProductDetail: React.FC = () => {
                 >
                   View Cart
                 </Button>
+              </div>
+
+              {/* Payment Methods Info */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-semibold text-gray-900 mb-2">Payment Options:</h4>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <div>📱 Mobile Money (MTN/Airtel)</div>
+                  <div>🏦 Bank Transfer</div>
+                  <div>💵 Cash on Delivery</div>
+                </div>
               </div>
             </div>
           </div>

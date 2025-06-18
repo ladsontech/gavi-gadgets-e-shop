@@ -5,7 +5,16 @@ import { Button } from "@/components/ui/button";
 export const WhatsAppButton = () => {
   const handleWhatsAppClick = () => {
     const phoneNumber = "+256740799577";
-    const message = "Hello! I'm interested in your smartphones from Gavi Gadgets UG.";
+    const message = `Hello! I'm interested in your smartphones from Gavi Gadgets UG.
+
+Your Mobile Source - Quality Phones, Competitive Prices
+
+💳 Payment Options Available:
+📱 Mobile Money (MTN/Airtel): 0740799577
+🏦 Bank Transfer: Centenary Bank
+💵 Cash on Delivery
+
+Please share your latest offers and available phones. Thank you!`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
