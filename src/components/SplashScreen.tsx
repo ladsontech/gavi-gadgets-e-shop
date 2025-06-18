@@ -15,7 +15,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         setIsVisible(false);
         onComplete();
       }, 800);
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
