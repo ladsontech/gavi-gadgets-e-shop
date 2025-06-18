@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trash2, Plus, GripVertical } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { UpdateImageUploader } from "./UpdateImageUploader";
 
 interface Update {
   id: string;
@@ -22,6 +22,7 @@ export const UpdatesManager = () => {
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -116,17 +117,27 @@ export const UpdatesManager = () => {
     },
   });
 
+  const handleImageUploaded = (url: string) => {
+    setImageUrl(url);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!imageUrl.trim()) {
       toast({
         title: "Error",
-        description: "Please provide an image URL",
+        description: "Please upload an image",
         variant: "destructive",
       });
       return;
     }
     addUpdateMutation.mutate();
+  };
+
+  const resetForm = () => {
+    setTitle("");
+    setImageUrl("");
+    setIsAdding(false);
   };
 
   if (isLoading) {
@@ -152,7 +163,7 @@ export const UpdatesManager = () => {
             <CardTitle>Add New Update</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <Label htmlFor="title">Title (Optional)</Label>
                 <Input
@@ -162,20 +173,32 @@ export const UpdatesManager = () => {
                   placeholder="Update title..."
                 />
               </div>
+              
               <div>
-                <Label htmlFor="imageUrl">Image URL *</Label>
-                <Input
-                  id="imageUrl"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  required
+                <UpdateImageUploader 
+                  onImageUploaded={handleImageUploaded}
+                  uploading={uploading}
+                  setUploading={setUploading}
                 />
               </div>
+
+              {imageUrl && (
+                <div className="mt-4">
+                  <Label>Preview</Label>
+                  <div className="mt-2 aspect-video max-w-md bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src={imageUrl}
+                      alt="Update preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+              
               <div className="flex gap-2">
                 <Button 
                   type="submit" 
-                  disabled={addUpdateMutation.isPending}
+                  disabled={addUpdateMutation.isPending || uploading || !imageUrl}
                   className="bg-pink-600 hover:bg-pink-700"
                 >
                   {addUpdateMutation.isPending ? "Adding..." : "Add Update"}
@@ -183,7 +206,7 @@ export const UpdatesManager = () => {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => setIsAdding(false)}
+                  onClick={resetForm}
                 >
                   Cancel
                 </Button>

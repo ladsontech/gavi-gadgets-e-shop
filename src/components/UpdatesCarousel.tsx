@@ -81,7 +81,7 @@ export const UpdatesCarousel = () => {
               >
                 <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                   <CardContent className="p-0">
-                    <div className="aspect-[16/9] relative overflow-hidden bg-gray-100">
+                    <div className="aspect-video relative overflow-hidden bg-gray-100">
                       <img
                         src={update.image_url}
                         alt={update.title}
