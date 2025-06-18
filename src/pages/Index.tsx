@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -7,10 +6,11 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useState, useMemo } from "react";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { MobileMainNav } from "@/components/MobileMainNav";
+import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState(""); // for search
+  const [searchValue, setSearchValue] = useState("");
 
   const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
@@ -84,33 +84,39 @@ const Index = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 py-4 md:py-8">
-      <CategoryFilter
-        categories={categories || []}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-      />
-      {/* Search feature above featured & product list */}
-      <div className="mb-6 flex items-center max-w-2xl mx-auto lg:mx-0">
-        <input
-          type="text"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className="w-full border rounded-md px-4 py-3 text-base outline-none focus:ring-2 focus:ring-pink-400 bg-white text-black"
-          placeholder="Search for a phone by name, model, or brand..."
-          aria-label="Search products"
+    <div className="w-full">
+      <UpdatesCarousel />
+      
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 py-4 md:py-8">
+        <CategoryFilter
+          categories={categories || []}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+        />
+        
+        <div className="mb-6 flex items-center max-w-2xl mx-auto lg:mx-0">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            className="w-full border rounded-md px-4 py-3 text-base outline-none focus:ring-2 focus:ring-pink-400 bg-white text-black"
+            placeholder="Search for a phone by name, model, or brand..."
+            aria-label="Search products"
+          />
+        </div>
+        
+        {!selectedCategory && featuredProducts.length > 0 && (
+          <FeaturedProducts products={featuredProducts} />
+        )}
+        
+        <ProductGrid products={filteredProducts} />
+        
+        <MobileMainNav
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          categories={categories || []}
         />
       </div>
-      {/* Featured section above products, only on main view */}
-      {!selectedCategory && featuredProducts.length > 0 && (
-        <FeaturedProducts products={featuredProducts} />
-      )}
-      <ProductGrid products={filteredProducts} />
-      <MobileMainNav
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        categories={categories || []}
-      />
     </div>
   );
 };

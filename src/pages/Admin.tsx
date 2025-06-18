@@ -5,7 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
-import { Loader2, Plus, Package, ArrowLeft, LogOut } from "lucide-react";
+import { UpdatesManager } from "@/components/admin/UpdatesManager";
+import { Loader2, Plus, Package, ArrowLeft, LogOut, Image } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Product = {
   id: string;
@@ -38,6 +40,7 @@ const Admin: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | undefined>();
+  const [activeTab, setActiveTab] = useState("products");
 
   useEffect(() => {
     if (!isAdmin) navigate("/");
@@ -130,7 +133,7 @@ const Admin: React.FC = () => {
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-              {!showForm && (
+              {!showForm && activeTab === "products" && (
                 <Button 
                   onClick={handleAdd} 
                   size="sm"
@@ -166,50 +169,69 @@ const Admin: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Mobile stats cards */}
-            <div className="grid grid-cols-2 gap-3 sm:hidden">
-              <div className="bg-white p-3 rounded-lg shadow-sm border">
-                <div className="text-xs text-gray-600">Total Products</div>
-                <div className="text-lg font-bold text-gray-900">{products.length}</div>
-              </div>
-              <div className="bg-white p-3 rounded-lg shadow-sm border">
-                <div className="text-xs text-gray-600">Categories</div>
-                <div className="text-lg font-bold text-gray-900">{categories.length}</div>
-              </div>
-            </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="products" className="flex items-center gap-2">
+                <Package className="w-4 h-4" />
+                Products
+              </TabsTrigger>
+              <TabsTrigger value="updates" className="flex items-center gap-2">
+                <Image className="w-4 h-4" />
+                Updates
+              </TabsTrigger>
+            </TabsList>
 
-            {isLoading ? (
-              <div className="flex justify-center py-12 bg-white rounded-lg shadow-sm border">
-                <div className="text-center">
-                  <Loader2 className="animate-spin w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">Loading products...</p>
+            <TabsContent value="products" className="space-y-4 sm:space-y-6">
+              {/* Mobile stats cards */}
+              <div className="grid grid-cols-2 gap-3 sm:hidden">
+                <div className="bg-white p-3 rounded-lg shadow-sm border">
+                  <div className="text-xs text-gray-600">Total Products</div>
+                  <div className="text-lg font-bold text-gray-900">{products.length}</div>
+                </div>
+                <div className="bg-white p-3 rounded-lg shadow-sm border">
+                  <div className="text-xs text-gray-600">Categories</div>
+                  <div className="text-lg font-bold text-gray-900">{categories.length}</div>
                 </div>
               </div>
-            ) : products.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
-                <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No products yet</h3>
-                <p className="text-sm text-gray-600 mb-4">Get started by adding your first product</p>
-                <Button 
-                  onClick={handleAdd}
-                  className="bg-pink-600 hover:bg-pink-700"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add First Product
-                </Button>
+
+              {isLoading ? (
+                <div className="flex justify-center py-12 bg-white rounded-lg shadow-sm border">
+                  <div className="text-center">
+                    <Loader2 className="animate-spin w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600">Loading products...</p>
+                  </div>
+                </div>
+              ) : products.length === 0 ? (
+                <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
+                  <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No products yet</h3>
+                  <p className="text-sm text-gray-600 mb-4">Get started by adding your first product</p>
+                  <Button 
+                    onClick={handleAdd}
+                    className="bg-pink-600 hover:bg-pink-700"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add First Product
+                  </Button>
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                  <ProductList
+                    products={products}
+                    categories={categories}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="updates">
+              <div className="bg-white rounded-lg shadow-sm border overflow-hidden p-6">
+                <UpdatesManager />
               </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-                <ProductList
-                  products={products}
-                  categories={categories}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </div>
-            )}
-          </div>
+            </TabsContent>
+          </Tabs>
         )}
       </main>
     </div>
