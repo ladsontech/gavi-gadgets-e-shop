@@ -172,13 +172,14 @@ export const UpdatesManager = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Manage Updates</h2>
         <Button 
           onClick={() => setIsAdding(!isAdding)}
           className="bg-pink-600 hover:bg-pink-700 w-full sm:w-auto"
+          size="sm"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Update
@@ -342,9 +343,10 @@ export const UpdatesManager = () => {
                       <h3 className="font-medium text-gray-900 truncate">
                         {update.title}
                       </h3>
-                      <p className="text-sm text-gray-500 truncate">
+                      {/* Removed image_url text display as per user request */}
+                      {/* <p className="text-sm text-gray-500 truncate">
                         {update.image_url}
-                      </p>
+                      </p> */}
                       <p className="text-xs text-gray-400">
                         Order: {update.display_order} • Created: {new Date(update.created_at).toLocaleDateString()}
                       </p>
