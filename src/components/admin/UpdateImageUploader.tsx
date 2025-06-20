@@ -36,7 +36,7 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
         .from("updates")
         .upload(fileName, file, {
           cacheControl: "3600",
-          upsert: false,
+          upsert: true,
         });
 
       if (!error) {
@@ -48,13 +48,13 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
           onImageUploaded(data.publicUrl);
         }
       } else {
-        alert("Image upload failed. Please try again.");
-        console.error(error);
+        alert("Image upload failed: " + (error.message || JSON.stringify(error)));
+        console.error("Upload error:", error);
         setPreviewUrl(null);
       }
     } catch (error) {
-      alert("Image upload failed. Please try again.");
-      console.error(error);
+      alert("Image upload failed: " + (error instanceof Error ? error.message : JSON.stringify(error)));
+      console.error("Upload exception:", error);
       setPreviewUrl(null);
     }
     
@@ -99,7 +99,7 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
       <input
         ref={fileInput}
         type="file"
-        accept="*/*"
+        accept="image/*"
         className="hidden"
         onChange={handleUpload}
         disabled={uploading}

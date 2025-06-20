@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Plus, GripVertical } from "lucide-react";
+import { Trash2, Plus, GripVertical, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { UpdateImageUploader } from "./UpdateImageUploader";
 
@@ -117,8 +117,35 @@ export const UpdatesManager = () => {
     },
   });
 
-  const handleImageUploaded = (url: string) => {
-    setImageUrl(url);
+  const handleImageUploaded = async (url: string) => {
+    setUploading(true);
+    try {
+      const maxOrder = updates?.length ? Math.max(...updates.map(u => u.display_order)) : 0;
+      const { error } = await supabase
+        .from('updates')
+        .insert({
+          title: 'Update',
+          image_url: url,
+          display_order: maxOrder + 1,
+          is_active: true,
+        });
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ['admin-updates'] });
+      queryClient.invalidateQueries({ queryKey: ['updates'] });
+      toast({
+        title: "Success",
+        description: "Update added successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add update",
+        variant: "destructive",
+      });
+      console.error('Error adding update:', error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -141,36 +168,39 @@ export const UpdatesManager = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading updates...</div>;
+    return <div className="text-center py-8">Loading updates...</div>;
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Manage Updates</h2>
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Manage Updates</h2>
         <Button 
           onClick={() => setIsAdding(!isAdding)}
-          className="bg-pink-600 hover:bg-pink-700"
+          className="bg-pink-600 hover:bg-pink-700 w-full sm:w-auto"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Update
         </Button>
       </div>
 
+      {/* Add Update Form */}
       {isAdding && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New Update</CardTitle>
+            <CardTitle className="text-lg sm:text-xl">Add New Update</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
-                <Label htmlFor="title">Title (Optional)</Label>
+                <Label htmlFor="title" className="text-sm font-medium">Title (Optional)</Label>
                 <Input
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Update title..."
+                  className="mt-1"
                 />
               </div>
               
@@ -183,9 +213,9 @@ export const UpdatesManager = () => {
               </div>
 
               {imageUrl && (
-                <div className="mt-4">
-                  <Label>Preview</Label>
-                  <div className="mt-2 aspect-video max-w-md bg-gray-100 rounded-lg overflow-hidden">
+                <div>
+                  <Label className="text-sm font-medium">Preview</Label>
+                  <div className="mt-2 aspect-video w-full max-w-md bg-gray-100 rounded-lg overflow-hidden">
                     <img
                       src={imageUrl}
                       alt="Update preview"
@@ -195,11 +225,11 @@ export const UpdatesManager = () => {
                 </div>
               )}
               
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button 
                   type="submit" 
                   disabled={addUpdateMutation.isPending || uploading || !imageUrl}
-                  className="bg-pink-600 hover:bg-pink-700"
+                  className="bg-pink-600 hover:bg-pink-700 w-full sm:w-auto"
                 >
                   {addUpdateMutation.isPending ? "Adding..." : "Add Update"}
                 </Button>
@@ -207,6 +237,7 @@ export const UpdatesManager = () => {
                   type="button" 
                   variant="outline" 
                   onClick={resetForm}
+                  className="w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
@@ -216,11 +247,83 @@ export const UpdatesManager = () => {
         </Card>
       )}
 
-      <div className="grid gap-4">
+      {/* Updates List */}
+      <div className="space-y-3 sm:space-y-4">
         {updates?.map((update) => (
           <Card key={update.id} className={!update.is_active ? "opacity-50" : ""}>
-            <CardContent className="p-4">
-              <div className="flex items-start gap-4">
+            <CardContent className="p-3 sm:p-4">
+              {/* Mobile Layout */}
+              <div className="block sm:hidden space-y-3">
+                {/* Image and drag handle */}
+                <div className="flex items-start gap-3">
+                  <GripVertical className="w-5 h-5 text-gray-400 mt-1 flex-shrink-0" />
+                  <div className="w-20 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                    <img
+                      src={update.image_url}
+                      alt={update.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-gray-900 text-sm leading-tight">
+                      {update.title}
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Order: {update.display_order}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(update.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* URL (truncated on mobile) */}
+                <div className="px-8">
+                  <p className="text-xs text-gray-500 truncate bg-gray-50 px-2 py-1 rounded">
+                    {update.image_url}
+                  </p>
+                </div>
+                
+                {/* Action buttons */}
+                <div className="flex gap-2 px-8">
+                  <Button
+                    variant={update.is_active ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => toggleActiveMutation.mutate({ id: update.id, isActive: update.is_active })}
+                    disabled={toggleActiveMutation.isPending}
+                    className="flex-1 text-xs"
+                  >
+                    {update.is_active ? (
+                      <>
+                        <Eye className="w-3 h-3 mr-1" />
+                        Active
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3 h-3 mr-1" />
+                        Inactive
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      if (window.confirm("Are you sure you want to delete this update?")) {
+                        deleteUpdateMutation.mutate(update.id);
+                      }
+                    }}
+                    disabled={deleteUpdateMutation.isPending}
+                    className="px-3"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Desktop Layout */}
+              <div className="hidden sm:flex items-start gap-4">
                 <div className="flex-shrink-0">
                   <GripVertical className="w-5 h-5 text-gray-400" />
                 </div>
@@ -278,8 +381,10 @@ export const UpdatesManager = () => {
         ))}
         
         {(!updates || updates.length === 0) && (
-          <div className="text-center py-8 text-gray-500">
-            No updates yet. Add your first update above.
+          <div className="text-center py-12 text-gray-500">
+            <div className="text-sm sm:text-base">
+              No updates yet. Add your first update above.
+            </div>
           </div>
         )}
       </div>
