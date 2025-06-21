@@ -1,10 +1,7 @@
-
 import React from "react";
 import { ShoppingBag, Phone, MapPin, CreditCard } from "lucide-react";
 import { WarrantyPolicy } from "./WarrantyPolicy";
-
-export const Footer = () => (
-  <footer className="bg-pink-500 text-white pt-10 pb-5 px-4 mt-8">
+export const Footer = () => <footer className="text-white pt-10 pb-5 px-4 mt-8 bg-pink-700">
     <div className="max-w-4xl mx-auto flex flex-col gap-4 md:flex-row justify-between items-center">
       <div className="flex flex-col items-center md:items-start text-center md:text-left">
         <div className="flex items-center gap-2 mb-2">
@@ -44,5 +41,4 @@ export const Footer = () => (
     <div className="text-xs text-pink-200 text-center mt-4">
       &copy; {new Date().getFullYear()} Gavi Gadgets. All rights reserved.
     </div>
-  </footer>
-);
+  </footer>;
