@@ -3,7 +3,7 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ProductForm } from "@/components/admin/ProductForm";
+import { BatchProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { Loader2, Plus, Package, ArrowLeft, LogOut, Image } from "lucide-react";
@@ -161,8 +161,7 @@ const Admin: React.FC = () => {
       <main className="px-3 py-4 sm:px-6 sm:py-6 max-w-7xl mx-auto">
         {showForm ? (
           <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            <ProductForm
-              product={editProduct}
+            <BatchProductForm
               categories={categories}
               onSave={handleFormSave}
               onCancel={handleFormCancel}
