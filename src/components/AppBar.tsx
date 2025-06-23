@@ -38,9 +38,7 @@ export const AppBar = () => {
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-300 opacity-90 animate-pulse hidden sm:block" />
             </div>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs sm:text-sm text-pink-100/95 hidden sm:block font-medium tracking-wide">
-                Your Premium Mobile Source
-              </span>
+              <span className="text-xs sm:text-sm text-pink-100/95 hidden sm:block font-medium tracking-wide text-left">Your Mobile Source</span>
               <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse hidden sm:block shadow-lg"></div>
             </div>
           </div>
