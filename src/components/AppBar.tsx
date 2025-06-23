@@ -27,7 +27,7 @@ export const AppBar = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-white to-pink-50 rounded-full blur-sm opacity-80 group-hover:opacity-100 transition-all duration-300 scale-110"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-pink-200 to-pink-300 rounded-full opacity-30 animate-pulse"></div>
             <img src="/images/gavi_gadgets_logo.png" alt="Gavi Gadgets Logo" className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-white shadow-xl border-3 border-white/90 object-contain flex-shrink-0 group-hover:scale-110 transition-all duration-300 z-10" draggable={false} />
-            <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full opacity-90 animate-bounce"></div>
+            
           </div>
           
           <div className="min-w-0 flex-1">
