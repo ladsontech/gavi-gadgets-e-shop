@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, Shield, CreditCard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface CartItem {
@@ -129,198 +128,259 @@ Please confirm this order and your preferred payment method. Thank you for choos
 
   if (cartItems.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">
-          <ShoppingBag className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-          <p className="text-gray-600 mb-6">Add some products to get started!</p>
-          <Button onClick={() => navigate("/")}>
-            Continue Shopping
-          </Button>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-16">
+            <div className="bg-white rounded-3xl shadow-xl p-12 max-w-md mx-auto">
+              <ShoppingBag className="w-20 h-20 mx-auto text-pink-300 mb-6" />
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
+              <p className="text-gray-600 mb-8 text-lg">Discover amazing smartphones and add them to your cart!</p>
+              <Button 
+                onClick={() => navigate("/")}
+                className="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Start Shopping
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 sm:py-8">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">Shopping Cart</h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
-        {/* Cart Items */}
-        <div className="lg:col-span-2 order-2 lg:order-1">
-          <div className="bg-white rounded-lg shadow-md">
-            {cartItems.map((item) => (
-              <div key={item.id} className="p-4 sm:p-6 border-b last:border-b-0">
-                {/* Mobile Layout */}
-                <div className="block sm:hidden">
-                  <div className="flex gap-3 mb-3">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-16 h-16 object-contain rounded border flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-1 truncate">
-                        {item.name}
-                      </h3>
-                      <p className="text-green-600 font-bold text-sm">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Shopping Cart</h1>
+          <p className="text-gray-600">Review your items and proceed to checkout</p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* Enhanced Cart Items */}
+          <div className="lg:col-span-2 order-2 lg:order-1">
+            <div className="bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden">
+              <div className="p-4 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-b border-pink-100">
+                <h2 className="text-xl font-semibold text-gray-900">Order Items ({cartItems.length})</h2>
+              </div>
+              
+              {cartItems.map((item, index) => (
+                <div key={item.id} className={`p-4 sm:p-6 ${index !== cartItems.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                  {/* Mobile Layout */}
+                  <div className="block sm:hidden">
+                    <div className="flex gap-4 mb-4">
+                      <div className="w-20 h-20 bg-gray-50 rounded-xl overflow-hidden border border-gray-200 flex-shrink-0">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-contain p-2"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-2 line-clamp-2">
+                          {item.name}
+                        </h3>
+                        <p className="text-lg font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+                          UGX {Number(item.price).toLocaleString()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(item.id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 flex-shrink-0 h-8 w-8 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="h-8 w-8 rounded-lg border-pink-200 hover:bg-pink-50"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                        <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="h-8 w-8 rounded-lg border-pink-200 hover:bg-pink-50"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+                          UGX {(item.price * item.quantity).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desktop Layout */}
+                  <div className="hidden sm:flex items-center gap-6">
+                    <div className="w-24 h-24 bg-gray-50 rounded-xl overflow-hidden border border-gray-200">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-contain p-2"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 text-lg mb-1">{item.name}</h3>
+                      <p className="text-xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
                         UGX {Number(item.price).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="border-pink-200 hover:bg-pink-50"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </Button>
+                      <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="border-pink-200 hover:bg-pink-50"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <div className="text-right min-w-[120px]">
+                      <p className="font-bold text-xl bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+                        UGX {(item.price * item.quantity).toLocaleString()}
                       </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => removeItem(item.id)}
-                      className="text-red-500 hover:text-red-700 flex-shrink-0 h-8 w-8"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="h-8 w-8"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </Button>
-                      <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="h-8 w-8"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </Button>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-sm">
-                        UGX {(item.price * item.quantity).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                {/* Desktop Layout */}
-                <div className="hidden sm:flex items-center gap-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-20 h-20 object-contain rounded border"
+          {/* Enhanced Order Summary */}
+          <div className="bg-white rounded-2xl shadow-xl border border-pink-100 h-fit order-1 lg:order-2 overflow-hidden">
+            <div className="p-4 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-b border-pink-100">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-pink-600" />
+                Order Summary
+              </h2>
+            </div>
+            
+            <div className="p-4 sm:p-6">
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                  <Input
+                    placeholder="Enter your full name"
+                    value={customerInfo.name}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
+                    required
+                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
                   />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                    <p className="text-green-600 font-bold">
-                      UGX {Number(item.price).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    >
-                      <Minus className="w-4 h-4" />
-                    </Button>
-                    <span className="w-8 text-center">{item.quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold">
-                      UGX {(item.price * item.quantity).toLocaleString()}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeItem(item.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                  <Input
+                    placeholder="Enter your phone number"
+                    value={customerInfo.phone}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
+                    required
+                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">WhatsApp Number</label>
+                  <Input
+                    placeholder="WhatsApp number (optional)"
+                    value={customerInfo.whatsapp}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, whatsapp: e.target.value }))}
+                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
+                  <Input
+                    placeholder="Delivery address (optional)"
+                    value={customerInfo.address}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
+                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
+                  />
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Order Summary */}
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 h-fit order-1 lg:order-2">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Order Summary</h2>
-          
-          <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-            <Input
-              placeholder="Full Name *"
-              value={customerInfo.name}
-              onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
-              required
-              className="text-sm sm:text-base"
-            />
-            <Input
-              placeholder="Phone Number *"
-              value={customerInfo.phone}
-              onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
-              required
-              className="text-sm sm:text-base"
-            />
-            <Input
-              placeholder="WhatsApp Number (optional)"
-              value={customerInfo.whatsapp}
-              onChange={(e) => setCustomerInfo(prev => ({ ...prev, whatsapp: e.target.value }))}
-              className="text-sm sm:text-base"
-            />
-            <Input
-              placeholder="Delivery Address (optional)"
-              value={customerInfo.address}
-              onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
-              className="text-sm sm:text-base"
-            />
-          </div>
+              {/* Enhanced Payment Methods */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-blue-500" />
+                  Payment Options
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg">
+                    <span className="text-lg">📱</span>
+                    <span>Mobile Money: 0740799577</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg">
+                    <span className="text-lg">🏦</span>
+                    <span>Bank Transfer: Available</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg">
+                    <span className="text-lg">💵</span>
+                    <span>Cash on Delivery</span>
+                  </div>
+                </div>
+              </div>
 
-          {/* Payment Methods */}
-          <div className="mb-4 sm:mb-6 p-3 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2 text-sm">Payment Options:</h3>
-            <div className="text-xs text-gray-600 space-y-1">
-              <div>📱 Mobile Money: 0740799577</div>
-              <div>🏦 Bank Transfer: Available</div>
-              <div>💵 Cash on Delivery</div>
+              <div className="border-t border-gray-200 pt-4 mb-6">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="font-semibold text-lg bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+                    UGX {getTotalPrice().toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xl font-bold">
+                  <span>Total:</span>
+                  <span className="bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+                    UGX {getTotalPrice().toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleCheckout} 
+                  className="w-full bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
+                  size="lg"
+                >
+                  Checkout via WhatsApp
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/")}
+                  className="w-full border-pink-200 hover:bg-pink-50 hover:border-pink-300 rounded-xl"
+                >
+                  Continue Shopping
+                </Button>
+              </div>
             </div>
-          </div>
-
-          <div className="border-t pt-4 mb-4 sm:mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600 text-sm sm:text-base">Subtotal:</span>
-              <span className="font-semibold text-sm sm:text-base">UGX {getTotalPrice().toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between items-center text-base sm:text-lg font-bold">
-              <span>Total:</span>
-              <span className="text-green-600">UGX {getTotalPrice().toLocaleString()}</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Button onClick={handleCheckout} className="w-full text-sm sm:text-base" size="lg">
-              Checkout via WhatsApp
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => navigate("/")}
-              className="w-full text-sm sm:text-base"
-            >
-              Continue Shopping
-            </Button>
           </div>
         </div>
       </div>

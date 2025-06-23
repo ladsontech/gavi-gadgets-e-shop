@@ -7,6 +7,7 @@ import { useState, useMemo } from "react";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { MobileMainNav } from "@/components/MobileMainNav";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
+import { Search } from "lucide-react";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -84,25 +85,36 @@ const Index = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-gradient-to-br from-gray-50 to-pink-50 min-h-screen">
       <UpdatesCarousel />
       
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 py-4 md:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 md:py-8">
         <CategoryFilter
           categories={categories || []}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
         
-        <div className="mb-6 flex items-center max-w-2xl mx-auto lg:mx-0">
-          <input
-            type="text"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className="w-full border rounded-md px-4 py-3 text-base outline-none focus:ring-2 focus:ring-pink-400 bg-white text-black"
-            placeholder="Search for a phone by name, model, or brand..."
-            aria-label="Search products"
-          />
+        {/* Enhanced Search Bar */}
+        <div className="mb-8 max-w-2xl mx-auto lg:mx-0">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-pink-400" />
+            </div>
+            <input
+              type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 text-base border-2 border-pink-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 placeholder-gray-500"
+              placeholder="Search for smartphones by name, model, or brand..."
+              aria-label="Search products"
+            />
+            <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
+              <div className="text-sm text-gray-400">
+                {filteredProducts.length} found
+              </div>
+            </div>
+          </div>
         </div>
         
         {!selectedCategory && featuredProducts.length > 0 && (

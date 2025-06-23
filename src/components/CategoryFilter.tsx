@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Smartphone } from "lucide-react";
 import React from "react";
 
 interface Category {
@@ -19,22 +18,37 @@ interface CategoryFilterProps {
 export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
   return (
     <div className="mb-8 w-full">
-      <h2 className="text-2xl font-bold mb-4">Shop by Brand</h2>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-3 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl shadow-lg">
+          <Smartphone className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Brand</h2>
+          <p className="text-gray-600">Find your perfect smartphone</p>
+        </div>
+      </div>
+      
       {/* Mobile: dropdown menu */}
       <div className="sm:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-between">
-              {selectedCategory
-                ? categories.find((cat) => cat.id === selectedCategory)?.name || "All Phones"
-                : "All Phones"}
-              <ChevronDown className="ml-2 w-4 h-4" />
+            <Button 
+              variant="outline" 
+              className="w-full justify-between h-12 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300 text-left"
+            >
+              <span className="flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-pink-600" />
+                {selectedCategory
+                  ? categories.find((cat) => cat.id === selectedCategory)?.name || "All Phones"
+                  : "All Phones"}
+              </span>
+              <ChevronDown className="ml-2 w-4 h-4 text-pink-600" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-full !z-50">
+          <DropdownMenuContent className="w-full !z-50 bg-white/95 backdrop-blur-md border-pink-200 shadow-xl">
             <DropdownMenuItem
               onClick={() => onCategoryChange(null)}
-              className={!selectedCategory ? "font-bold text-pink-600" : ""}
+              className={`py-3 px-4 ${!selectedCategory ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}
             >
               All Phones
             </DropdownMenuItem>
@@ -42,7 +56,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               <DropdownMenuItem
                 key={category.id}
                 onClick={() => onCategoryChange(category.id)}
-                className={selectedCategory === category.id ? "font-bold text-pink-600" : ""}
+                className={`py-3 px-4 ${selectedCategory === category.id ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}
               >
                 {category.name}
               </DropdownMenuItem>
@@ -50,12 +64,17 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      
       {/* Desktop/tablet: horizontal buttons */}
-      <div className="hidden sm:flex flex-wrap gap-2">
+      <div className="hidden sm:flex flex-wrap gap-3">
         <Button
           variant={selectedCategory === null ? "default" : "outline"}
           onClick={() => onCategoryChange(null)}
-          className="mb-2"
+          className={`mb-2 rounded-xl px-6 py-3 transition-all duration-300 ${
+            selectedCategory === null 
+              ? "bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white shadow-lg" 
+              : "border-pink-200 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-700"
+          }`}
         >
           All Phones
         </Button>
@@ -64,7 +83,11 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
             key={category.id}
             variant={selectedCategory === category.id ? "default" : "outline"}
             onClick={() => onCategoryChange(category.id)}
-            className="mb-2"
+            className={`mb-2 rounded-xl px-6 py-3 transition-all duration-300 ${
+              selectedCategory === category.id 
+                ? "bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white shadow-lg" 
+                : "border-pink-200 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-700"
+            }`}
           >
             {category.name}
           </Button>
