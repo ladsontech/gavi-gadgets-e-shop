@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { BatchProductForm } from "@/components/admin/ProductForm";
+import { EditProductForm } from "@/components/admin/EditProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { Loader2, Plus, Package, ArrowLeft, LogOut, Image } from "lucide-react";
@@ -23,6 +24,8 @@ type Product = {
   slug: string;
   stock_quantity: number;
   is_featured: boolean;
+  storage_capacity?: string;
+  color?: string;
 };
 
 type Category = {
@@ -91,11 +94,13 @@ const Admin: React.FC = () => {
 
   const handleFormSave = () => {
     setShowForm(false);
+    setEditProduct(undefined);
     refreshProducts();
   };
 
   const handleFormCancel = () => {
     setShowForm(false);
+    setEditProduct(undefined);
   };
 
   if (!isAdmin) return null;
@@ -161,11 +166,20 @@ const Admin: React.FC = () => {
       <main className="px-3 py-4 sm:px-6 sm:py-6 max-w-7xl mx-auto">
         {showForm ? (
           <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            <BatchProductForm
-              categories={categories}
-              onSave={handleFormSave}
-              onCancel={handleFormCancel}
-            />
+            {editProduct ? (
+              <EditProductForm
+                product={editProduct}
+                categories={categories}
+                onSave={handleFormSave}
+                onCancel={handleFormCancel}
+              />
+            ) : (
+              <BatchProductForm
+                categories={categories}
+                onSave={handleFormSave}
+                onCancel={handleFormCancel}
+              />
+            )}
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">

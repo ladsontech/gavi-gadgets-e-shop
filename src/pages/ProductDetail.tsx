@@ -184,28 +184,28 @@ const ProductDetail: React.FC = () => {
         </div>
       </div>
 
-      <main className="container mx-auto px-3 sm:px-4 py-4 md:py-8">
+      <main className="container mx-auto px-3 sm:px-4 py-4 md:py-6 lg:py-8">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-pink-100">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            {/* Enhanced Product Images */}
-            <div className="p-4 md:p-8">
-              <div className="aspect-square mb-4 relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+            {/* Compact Product Images */}
+            <div className="p-3 md:p-6 lg:p-8">
+              <div className="aspect-square mb-3 md:mb-4 relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200">
                 <img
                   src={product.images[selectedImage] || "/placeholder.svg"}
                   alt={product.name}
-                  className="w-full h-full object-contain p-4"
+                  className="w-full h-full object-contain p-3 md:p-4"
                 />
                 
                 {/* Image badges */}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                <div className="absolute top-2 md:top-4 left-2 md:left-4 flex flex-col gap-1 md:gap-2">
                   {product.is_featured && (
-                    <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg">
-                      <Star className="w-3 h-3 mr-1 fill-white" />
+                    <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg text-xs">
+                      <Star className="w-2 h-2 md:w-3 md:h-3 mr-1 fill-white" />
                       Featured
                     </Badge>
                   )}
                   {discount > 0 && (
-                    <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg">
+                    <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg text-xs">
                       -{discount}% OFF
                     </Badge>
                   )}
@@ -213,12 +213,12 @@ const ProductDetail: React.FC = () => {
               </div>
               
               {product.images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-2">
+                <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2">
                   {product.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 overflow-hidden transition-all duration-300 ${
+                      className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-xl border-2 overflow-hidden transition-all duration-300 ${
                         selectedImage === index 
                           ? "border-pink-500 shadow-lg scale-105" 
                           : "border-gray-200 hover:border-pink-300"
@@ -235,19 +235,19 @@ const ProductDetail: React.FC = () => {
               )}
             </div>
 
-            {/* Enhanced Product Info */}
-            <div className="p-4 md:p-8">
-              <div className="flex justify-between items-start mb-6">
+            {/* Compact Product Info */}
+            <div className="p-3 md:p-6 lg:p-8">
+              <div className="flex justify-between items-start mb-4 md:mb-6">
                 <div className="flex-1">
                   {product.categories && (
-                    <Badge variant="secondary" className="mb-3 text-xs bg-pink-100 text-pink-700 border-pink-200">
+                    <Badge variant="secondary" className="mb-2 md:mb-3 text-xs bg-pink-100 text-pink-700 border-pink-200">
                       {product.categories.name}
                     </Badge>
                   )}
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">
+                  <h1 className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-2 md:mb-3 leading-tight">
                     {product.name}
                   </h1>
-                  <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-4">
+                  <p className="text-sm md:text-base lg:text-lg xl:text-xl text-gray-600 mb-3 md:mb-4">
                     {product.brand} {product.model}
                   </p>
                 </div>
@@ -274,36 +274,36 @@ const ProductDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* Enhanced Pricing */}
-              <div className="mb-8 p-6 bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl border border-pink-100">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
-                  <span className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+              {/* Compact Pricing */}
+              <div className="mb-4 md:mb-6 lg:mb-8 p-4 md:p-6 bg-gradient-to-r from-pink-50 to-rose-50 rounded-2xl border border-pink-100">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3 lg:gap-4 mb-3 md:mb-4">
+                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
                     UGX {Number(product.price).toLocaleString()}
                   </span>
                   {product.original_price && discount > 0 && (
                     <div className="flex items-center gap-2">
-                      <span className="text-lg sm:text-xl text-gray-400 line-through">
+                      <span className="text-base md:text-lg lg:text-xl text-gray-400 line-through">
                         UGX {Number(product.original_price).toLocaleString()}
                       </span>
-                      <Badge className="bg-red-500 text-white">
+                      <Badge className="bg-red-500 text-white text-xs">
                         Save UGX {Number(product.original_price - product.price).toLocaleString()}
                       </Badge>
                     </div>
                   )}
                 </div>
                 
-                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                  <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border">
-                    <Shield className="w-4 h-4 text-green-500" />
+                <div className="flex flex-wrap gap-2 md:gap-3 text-xs md:text-sm text-gray-600">
+                  <div className="flex items-center gap-2 bg-white px-2 md:px-3 py-1.5 md:py-2 rounded-lg border">
+                    <Shield className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
                     <span>Condition: <strong>{product.condition === 'new' ? 'Brand New' : 'UK Used'}</strong></span>
                   </div>
                   {product.color && (
-                    <div className="bg-white px-3 py-2 rounded-lg border">
+                    <div className="bg-white px-2 md:px-3 py-1.5 md:py-2 rounded-lg border">
                       Color: <strong>{product.color}</strong>
                     </div>
                   )}
                   {product.storage_capacity && (
-                    <div className="bg-white px-3 py-2 rounded-lg border">
+                    <div className="bg-white px-2 md:px-3 py-1.5 md:py-2 rounded-lg border">
                       Storage: <strong>{product.storage_capacity}</strong>
                     </div>
                   )}
@@ -311,20 +311,20 @@ const ProductDetail: React.FC = () => {
               </div>
 
               {product.description && (
-                <div className="mb-8">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-3 text-gray-900">Description</h3>
-                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-xl">
+                <div className="mb-4 md:mb-6 lg:mb-8">
+                  <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-2 md:mb-3 text-gray-900">Description</h3>
+                  <p className="text-sm md:text-base text-gray-700 leading-relaxed bg-gray-50 p-3 md:p-4 rounded-xl">
                     {product.description}
                   </p>
                 </div>
               )}
 
               {product.features && product.features.length > 0 && (
-                <div className="mb-8">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900">Key Features</h3>
+                <div className="mb-4 md:mb-6 lg:mb-8">
+                  <h3 className="text-base md:text-lg lg:text-xl font-semibold mb-3 md:mb-4 text-gray-900">Key Features</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {product.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm sm:text-base text-gray-700 bg-gray-50 p-3 rounded-lg">
+                      <div key={index} className="flex items-center gap-2 text-sm md:text-base text-gray-700 bg-gray-50 p-2 md:p-3 rounded-lg">
                         <div className="w-2 h-2 bg-pink-500 rounded-full flex-shrink-0"></div>
                         {feature}
                       </div>
@@ -333,8 +333,8 @@ const ProductDetail: React.FC = () => {
                 </div>
               )}
 
-              {/* Enhanced Quantity and Stock */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-8 p-4 bg-gray-50 rounded-xl">
+              {/* Compact Quantity and Stock */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 lg:gap-6 mb-4 md:mb-6 lg:mb-8 p-3 md:p-4 bg-gray-50 rounded-xl">
                 <div className="flex items-center gap-3">
                   <label htmlFor="quantity" className="text-sm font-medium whitespace-nowrap text-gray-700">
                     Quantity:
@@ -343,7 +343,7 @@ const ProductDetail: React.FC = () => {
                     id="quantity"
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="border border-gray-300 rounded-lg px-2 md:px-3 py-1.5 md:py-2 text-sm bg-white focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                   >
                     {[...Array(Math.min(10, product.stock_quantity))].map((_, i) => (
                       <option key={i + 1} value={i + 1}>
@@ -360,41 +360,41 @@ const ProductDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* Enhanced Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+              {/* Compact Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-4 md:mb-6">
                 <Button
                   onClick={addToCart}
                   disabled={product.stock_quantity === 0}
-                  className="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-base sm:text-lg py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-sm md:text-base lg:text-lg py-2.5 md:py-3 lg:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                   Add to Cart
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => navigate("/cart")}
-                  className="sm:flex-shrink-0 text-base sm:text-lg py-3 sm:py-4 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300"
+                  className="sm:flex-shrink-0 text-sm md:text-base lg:text-lg py-2.5 md:py-3 lg:py-4 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300"
                 >
                   View Cart
                 </Button>
               </div>
 
-              {/* Enhanced Payment Methods */}
-              <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
-                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-blue-500" />
+              {/* Compact Payment Methods */}
+              <div className="mt-4 md:mt-6 lg:mt-8 p-4 md:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+                <h4 className="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2">
+                  <Shield className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
                   Secure Payment Options
                 </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                  <div className="bg-white p-3 rounded-lg border flex items-center gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 text-sm">
+                  <div className="bg-white p-2 md:p-3 rounded-lg border flex items-center gap-2">
                     <span className="text-lg">📱</span>
                     <span>Mobile Money</span>
                   </div>
-                  <div className="bg-white p-3 rounded-lg border flex items-center gap-2">
+                  <div className="bg-white p-2 md:p-3 rounded-lg border flex items-center gap-2">
                     <span className="text-lg">🏦</span>
                     <span>Bank Transfer</span>
                   </div>
-                  <div className="bg-white p-3 rounded-lg border flex items-center gap-2">
+                  <div className="bg-white p-2 md:p-3 rounded-lg border flex items-center gap-2">
                     <span className="text-lg">💵</span>
                     <span>Cash on Delivery</span>
                   </div>
