@@ -34,11 +34,11 @@ export const CartIcon = () => {
       variant="ghost" 
       size="icon" 
       onClick={() => navigate("/cart")} 
-      className="relative text-white hover:bg-pink-100 hover:text-pink-600 p-2 sm:p-3 h-auto w-auto"
+      className="relative h-10 w-10 rounded-lg hover:bg-gray-100 text-gray-700 hover:text-gray-900 transition-colors"
     >
-      <ShoppingCart className="w-6 h-6 sm:w-7 sm:h-7" />
+      <ShoppingCart className="w-5 h-5" />
       {cartCount > 0 && (
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center font-semibold">
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold min-w-5">
           {cartCount > 99 ? "99+" : cartCount}
         </span>
       )}
