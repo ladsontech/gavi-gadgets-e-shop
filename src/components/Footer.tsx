@@ -1,9 +1,12 @@
+
 import React from "react";
 import { ShoppingBag, Phone, MapPin, CreditCard } from "lucide-react";
 import { WarrantyPolicy } from "./WarrantyPolicy";
-export const Footer = () => <footer className="text-white pt-10 pb-5 px-4 mt-8 bg-pink-700">
+
+export const Footer = () => (
+  <footer className="text-white pt-10 pb-5 px-4 mt-8 bg-pink-700 mb-16 md:mb-0">
     <div className="max-w-4xl mx-auto flex flex-col gap-4 md:flex-row justify-between items-center">
-      <div className="flex flex-col items-center md:items-start text-center md:text-left">
+      <div className="flex flex-col items-start text-left">
         <div className="flex items-center gap-2 mb-2">
           <ShoppingBag className="w-5 h-5 text-pink-100" />
           <span className="text-white font-semibold text-base">Your Mobile Source</span>
@@ -41,4 +44,5 @@ export const Footer = () => <footer className="text-white pt-10 pb-5 px-4 mt-8 b
     <div className="text-xs text-pink-200 text-center mt-4">
       &copy; {new Date().getFullYear()} Gavi Gadgets. All rights reserved.
     </div>
-  </footer>;
+  </footer>
+);
