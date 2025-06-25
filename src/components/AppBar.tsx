@@ -14,27 +14,30 @@ export const AppBar = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50 backdrop-blur-md bg-white/95">
-      <nav className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
+    <header className="w-full bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-lg sticky top-0 z-50">
+      <div className="absolute inset-0 bg-gradient-to-r from-white via-gray-50/50 to-white"></div>
+      
+      <nav className="relative flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         {/* Logo Section */}
         <div 
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-4 cursor-pointer group"
           onClick={() => navigate("/")}
         >
           <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <img 
               src="/images/gavi_gadgets_logo.png" 
               alt="Gavi Gadgets Logo" 
-              className="w-10 h-10 rounded-lg shadow-sm border border-gray-100 object-contain transition-transform duration-200 group-hover:scale-105" 
+              className="relative w-12 h-12 rounded-xl shadow-md border border-gray-200/50 object-contain transition-all duration-300 group-hover:shadow-xl animate-logo-rotation" 
               draggable={false} 
             />
           </div>
           
           <div className="hidden sm:block">
-            <h1 className="font-bold text-gray-900 text-xl tracking-tight">
+            <h1 className="font-bold text-gray-900 text-xl tracking-tight group-hover:text-purple-700 transition-colors duration-200">
               Gavi Gadgets UG
             </h1>
-            <p className="text-sm text-gray-600 font-medium">
+            <p className="text-sm text-gray-600 font-medium group-hover:text-purple-600 transition-colors duration-200">
               Your Mobile Source
             </p>
           </div>
@@ -48,7 +51,7 @@ export const AppBar = () => {
         </div>
 
         {/* Actions Section */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* Cart Icon */}
           <div className="relative">
             <CartIcon />
@@ -57,7 +60,7 @@ export const AppBar = () => {
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+            className="md:hidden p-2.5 rounded-xl hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all duration-200 hover:shadow-md"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
@@ -71,7 +74,7 @@ export const AppBar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button 
-                className="hidden md:flex p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors"
+                className="hidden md:flex p-2.5 rounded-xl hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all duration-200 hover:shadow-md"
                 aria-label="More options"
               >
                 <MoreVertical className="w-5 h-5 text-gray-700" />
@@ -79,14 +82,14 @@ export const AppBar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent 
               align="end" 
-              className="w-56 bg-white border border-gray-200 shadow-lg"
+              className="w-56 bg-white/95 backdrop-blur-md border border-gray-200/50 shadow-xl rounded-xl"
             >
               {!isAdmin && (
                 <DropdownMenuItem 
                   onClick={() => setShowLogin(true)}
-                  className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-purple-50/80 cursor-pointer rounded-lg mx-1 mt-1"
                 >
-                  <Shield className="w-4 h-4 text-gray-600" />
+                  <Shield className="w-4 h-4 text-purple-600" />
                   <span className="text-gray-700 font-medium">Admin Login</span>
                 </DropdownMenuItem>
               )}
@@ -94,15 +97,15 @@ export const AppBar = () => {
                 <>
                   <DropdownMenuItem 
                     onClick={() => navigate("/admin")}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-purple-50/80 cursor-pointer rounded-lg mx-1 mt-1"
                   >
-                    <Shield className="w-4 h-4 text-gray-600" />
+                    <Shield className="w-4 h-4 text-purple-600" />
                     <span className="text-gray-700 font-medium">Admin Dashboard</span>
                   </DropdownMenuItem>
-                  <div className="border-t border-gray-100 my-1"></div>
+                  <div className="border-t border-gray-200/50 my-2 mx-2"></div>
                   <DropdownMenuItem 
                     onClick={logoutAdmin}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-red-50 cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-red-50/80 cursor-pointer rounded-lg mx-1 mb-1"
                   >
                     <div className="w-4 h-4 rounded-full bg-red-500"></div>
                     <span className="text-red-600 font-medium">Logout</span>
@@ -115,17 +118,17 @@ export const AppBar = () => {
         
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg">
-            <div className="p-4 space-y-1">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-xl rounded-b-xl">
+            <div className="p-4 space-y-2">
               {!isAdmin && (
                 <button 
                   onClick={() => {
                     setShowLogin(true);
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-left transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50/80 text-left transition-all duration-200"
                 >
-                  <Shield className="w-5 h-5 text-gray-600" />
+                  <Shield className="w-5 h-5 text-purple-600" />
                   <span className="text-gray-700 font-medium">Admin Login</span>
                 </button>
               )}
@@ -136,18 +139,18 @@ export const AppBar = () => {
                       navigate("/admin");
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 text-left transition-colors"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50/80 text-left transition-all duration-200"
                   >
-                    <Shield className="w-5 h-5 text-gray-600" />
+                    <Shield className="w-5 h-5 text-purple-600" />
                     <span className="text-gray-700 font-medium">Admin Dashboard</span>
                   </button>
-                  <div className="border-t border-gray-100 my-2"></div>
+                  <div className="border-t border-gray-200/50 my-2"></div>
                   <button 
                     onClick={() => {
                       logoutAdmin();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 text-left transition-colors"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-50/80 text-left transition-all duration-200"
                   >
                     <div className="w-5 h-5 rounded-full bg-red-500"></div>
                     <span className="text-red-600 font-medium">Logout</span>
@@ -160,6 +163,20 @@ export const AppBar = () => {
         
         <AdminLoginModal open={showLogin} onOpenChange={setShowLogin} />
       </nav>
+
+      <style>{`
+        @keyframes logoRotation {
+          0% { transform: rotate(0deg); }
+          25% { transform: rotate(90deg); }
+          50% { transform: rotate(0deg); }
+          75% { transform: rotate(-90deg); }
+          100% { transform: rotate(0deg); }
+        }
+        
+        .animate-logo-rotation {
+          animation: logoRotation 3s ease-in-out infinite;
+        }
+      `}</style>
     </header>
   );
 };
