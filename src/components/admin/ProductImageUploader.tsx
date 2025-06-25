@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Upload, Image } from "lucide-react";
 
 interface ProductImageUploaderProps {
-  productId: string;
+  productId?: string;
   images: string[];
   onImagesChange: (newImages: string[]) => void;
 }
@@ -24,7 +24,9 @@ export const ProductImageUploader: React.FC<ProductImageUploaderProps> = ({
     
     const file = e.target.files[0];
     const fileExt = file.name.split('.').pop();
-    const fileName = `${productId}/${Date.now()}.${fileExt}`;
+    // Use a temporary folder when no productId is available
+    const folderName = productId || `temp-${Date.now()}`;
+    const fileName = `${folderName}/${Date.now()}.${fileExt}`;
 
     const { error } = await supabase.storage
       .from("products")
