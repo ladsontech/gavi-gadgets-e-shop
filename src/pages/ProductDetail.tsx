@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ShoppingCart, ArrowLeft, Share2, Heart, Star, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
 interface Product {
   id: string;
   name: string;
@@ -21,19 +22,23 @@ interface Product {
   description?: string;
   is_featured: boolean;
   features?: string[];
+  slug: string;
   categories?: {
     id: string;
     name: string;
     slug: string;
   };
 }
+
 interface CartItem {
   id: string;
   name: string;
   price: number;
   image: string;
   quantity: number;
+  slug: string;
 }
+
 const ProductDetail: React.FC = () => {
   const {
     slug
@@ -77,10 +82,13 @@ const ProductDetail: React.FC = () => {
     };
     fetchProduct();
   }, [slug, navigate]);
+
   const addToCart = () => {
     if (!product) return;
+
     const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItemIndex = existingCart.findIndex((item: CartItem) => item.id === product.id);
+
     if (existingItemIndex >= 0) {
       existingCart[existingItemIndex].quantity += quantity;
     } else {
@@ -89,18 +97,22 @@ const ProductDetail: React.FC = () => {
         name: product.name,
         price: product.price,
         image: product.images[0] || "/placeholder.svg",
-        quantity: quantity
+        quantity: quantity,
+        slug: product.slug
       });
     }
+
     localStorage.setItem("cart", JSON.stringify(existingCart));
 
     // Dispatch cart update event
     window.dispatchEvent(new Event("cartUpdated"));
+
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`
     });
   };
+
   const shareProduct = () => {
     if (!product) return;
     const currentUrl = window.location.href;
@@ -117,15 +129,18 @@ const ProductDetail: React.FC = () => {
       window.open(whatsappUrl, '_blank');
     }
   };
+
   const getDiscountPercentage = () => {
     if (!product?.original_price || product.original_price <= product.price) return 0;
     return Math.round((product.original_price - product.price) / product.original_price * 100);
   };
+
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
         <LoadingSpinner />
       </div>;
   }
+
   if (!product) {
     return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
         <div className="container mx-auto px-4 py-8">
@@ -133,8 +148,11 @@ const ProductDetail: React.FC = () => {
         </div>
       </div>;
   }
+
   const discount = getDiscountPercentage();
-  return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
       {/* Mobile Header */}
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-pink-100 px-4 py-2 md:hidden shadow-lg">
         <div className="flex items-center justify-between">
@@ -180,15 +198,15 @@ const ProductDetail: React.FC = () => {
 
             {/* Product Info */}
             <div className="p-3 md:p-4 lg:p-6">
-              <div className="flex justify-between items-start mb-3 md:mb-4">
+              <div className="flex justify-between items-start mb-2 md:mb-3">
                 <div className="flex-1">
-                  {product.categories && <Badge variant="secondary" className="mb-2 text-xs bg-pink-100 text-pink-700 border-pink-200">
+                  {product.categories && <Badge variant="secondary" className="mb-1 md:mb-2 text-xs bg-pink-100 text-pink-700 border-pink-200">
                       {product.categories.name}
                     </Badge>}
-                  <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-1 md:mb-2 leading-tight">
+                  <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-1 leading-tight">
                     {product.name}
                   </h1>
-                  <p className="text-xs md:text-sm lg:text-base xl:text-lg text-gray-600 mb-2 md:mb-3">
+                  <p className="text-xs md:text-sm text-gray-600 mb-1 md:mb-2">
                     {product.brand} {product.model}
                   </p>
                 </div>
@@ -207,13 +225,13 @@ const ProductDetail: React.FC = () => {
               </div>
 
               {/* Compact Pricing */}
-              <div className="mb-3 md:mb-4 lg:mb-5 p-3 md:p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl border border-pink-100">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 md:gap-2 lg:gap-3 mb-2 md:mb-3">
-                  <span className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
+              <div className="mb-2 md:mb-3 p-3 md:p-4 bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl border border-pink-100">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 md:gap-2 mb-2">
+                  <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
                     UGX {Number(product.price).toLocaleString()}
                   </span>
                   {product.original_price && discount > 0 && <div className="flex items-center gap-2">
-                      <span className="text-sm md:text-base lg:text-lg text-gray-400 line-through">
+                      <span className="text-sm md:text-base text-gray-400 line-through">
                         UGX {Number(product.original_price).toLocaleString()}
                       </span>
                       <Badge className="bg-red-500 text-white text-xs">
@@ -236,33 +254,30 @@ const ProductDetail: React.FC = () => {
                 </div>
               </div>
 
-              {product.description && <div className="mb-3 md:mb-4">
-                  <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-1 md:mb-2 text-gray-900">Description</h3>
-                  <p className="text-xs md:text-sm text-gray-700 leading-relaxed bg-gray-50 p-2 md:p-3 rounded-lg">
+              {product.description && <div className="mb-2 md:mb-3">
+                  <h3 className="text-sm md:text-base font-semibold mb-1 text-gray-900">Description</h3>
+                  <p className="text-xs md:text-sm text-gray-700 leading-relaxed bg-gray-50 p-2 rounded-lg">
                     {product.description}
                   </p>
                 </div>}
 
-              {product.features && product.features.length > 0 && <div className="mb-3 md:mb-4">
-                  <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-2 md:mb-3 text-gray-900">Key Features</h3>
+              {product.features && product.features.length > 0 && <div className="mb-2 md:mb-3">
+                  <h3 className="text-sm md:text-base font-semibold mb-1 md:mb-2 text-gray-900">Key Features</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                    {product.features.map((feature, index) => <div key={index} className="flex items-center gap-1 text-xs md:text-sm text-gray-700 bg-gray-50 p-1.5 md:p-2 rounded-lg">
+                    {product.features.map((feature, index) => <div key={index} className="flex items-center gap-1 text-xs md:text-sm text-gray-700 bg-gray-50 p-1.5 rounded-lg">
                         <div className="w-1.5 h-1.5 bg-pink-500 rounded-full flex-shrink-0"></div>
                         {feature}
                       </div>)}
                   </div>
                 </div>}
 
-              {/* Compact Quantity and Stock */}
-              
-
               {/* Compact Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mb-3 md:mb-4">
-                <Button onClick={addToCart} disabled={product.stock_quantity === 0} className="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-xs md:text-sm lg:text-base py-2 md:py-2.5 lg:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                  <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 mr-1 md:mr-2" />
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mb-2 md:mb-3">
+                <Button onClick={addToCart} disabled={product.stock_quantity === 0} className="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-xs md:text-sm py-2 md:py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                   Add to Cart
                 </Button>
-                <Button variant="outline" onClick={() => navigate("/cart")} className="sm:flex-shrink-0 text-xs md:text-sm lg:text-base py-2 md:py-2.5 lg:py-3 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300">
+                <Button variant="outline" onClick={() => navigate("/cart")} className="sm:flex-shrink-0 text-xs md:text-sm py-2 md:py-2.5 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300">
                   View Cart
                 </Button>
               </div>
@@ -271,10 +286,12 @@ const ProductDetail: React.FC = () => {
         </div>
 
         {/* Space reserved for related items */}
-        <div className="mt-6 md:mt-8">
+        <div className="mt-4 md:mt-6">
           {/* Related items section will go here */}
         </div>
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default ProductDetail;

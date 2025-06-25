@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ interface CartItem {
   price: number;
   image: string;
   quantity: number;
-  slug?: string;
+  slug: string;
 }
 
 const Cart: React.FC = () => {
@@ -65,12 +64,15 @@ const Cart: React.FC = () => {
       return;
     }
 
-    // Create simplified WhatsApp message
+    // Create simplified WhatsApp message with product links
     const baseUrl = window.location.origin;
     const orderDetails = cartItems.map(item => {
-      const productLink = item.slug ? `${baseUrl}/product/${item.slug}` : "Link not available";
-      return `📱 ${item.name}\n   Quantity: ${item.quantity}\n   Price: UGX ${(item.price * item.quantity).toLocaleString()}\n   Product Link: ${productLink}\n`;
-    }).join('\n');
+      const productLink = item.slug ? `${baseUrl}/product/${item.slug}` : "Product link not available";
+      return `📱 ${item.name}
+   Quantity: ${item.quantity}
+   Price: UGX ${(item.price * item.quantity).toLocaleString()}
+   Link: ${productLink}`;
+    }).join('\n\n');
     
     const totalAmount = getTotalPrice();
     
@@ -78,6 +80,7 @@ const Cart: React.FC = () => {
 Your Mobile Source
 
 📦 *Order Details:*
+
 ${orderDetails}
 
 💰 *Total Amount: UGX ${totalAmount.toLocaleString()}*
