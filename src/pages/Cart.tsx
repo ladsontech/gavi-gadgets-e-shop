@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Trash2, Plus, Minus, ShoppingBag, Shield, CreditCard } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface CartItem {
@@ -18,12 +18,6 @@ const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [customerInfo, setCustomerInfo] = useState({
-    name: "",
-    phone: "",
-    whatsapp: "",
-    address: "",
-  });
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -62,15 +56,6 @@ const Cart: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    if (!customerInfo.name || !customerInfo.phone) {
-      toast({
-        title: "Missing information",
-        description: "Please provide your name and phone number.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (cartItems.length === 0) {
       toast({
         title: "Empty cart",
@@ -80,7 +65,7 @@ const Cart: React.FC = () => {
       return;
     }
 
-    // Create detailed WhatsApp message with product links and payment info
+    // Create simplified WhatsApp message
     const baseUrl = window.location.origin;
     const orderDetails = cartItems.map(item => {
       const productLink = item.slug ? `${baseUrl}/product/${item.slug}` : "Link not available";
@@ -89,36 +74,21 @@ const Cart: React.FC = () => {
     
     const totalAmount = getTotalPrice();
     
-    const message = `🛍️ *GAVI GADGETS UG ORDER*
+    const message = `🛍️ *Order from Gavi Gadgets UG*
 Your Mobile Source
-
-👤 *Customer Details:*
-Name: ${customerInfo.name}
-Phone: ${customerInfo.phone}
-${customerInfo.whatsapp ? `WhatsApp: ${customerInfo.whatsapp}` : ''}
-${customerInfo.address ? `Address: ${customerInfo.address}` : ''}
 
 📦 *Order Details:*
 ${orderDetails}
 
 💰 *Total Amount: UGX ${totalAmount.toLocaleString()}*
 
-💳 *Payment Options:*
-📱 Mobile Money (MTN): 0740799577
-📱 Mobile Money (Airtel): 0740799577
-🏦 Bank Transfer: Centenary Bank
-   Account: 1234567890
-   Name: Gavi Gadgets UG
-💵 Cash on Delivery (Available)
-
-Please confirm this order and your preferred payment method. Thank you for choosing Gavi Gadgets UG! 🙏`;
+Thank you for choosing Gavi Gadgets UG! 🙏`;
 
     const whatsappUrl = `https://wa.me/256740799577?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
 
     // Clear cart after checkout
     updateCart([]);
-    setCustomerInfo({ name: "", phone: "", whatsapp: "", address: "" });
     
     toast({
       title: "Order sent!",
@@ -134,7 +104,7 @@ Please confirm this order and your preferred payment method. Thank you for choos
             <div className="bg-white rounded-3xl shadow-xl p-12 max-w-md mx-auto">
               <ShoppingBag className="w-20 h-20 mx-auto text-pink-300 mb-6" />
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">Your cart is empty</h2>
-              <p className="text-gray-600 mb-8 text-lg">Discover amazing smartphones and add them to your cart!</p>
+              <p className="text-gray-600 mb-8 text-lg">Discover amazing products and add them to your cart!</p>
               <Button 
                 onClick={() => navigate("/")}
                 className="bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
@@ -157,7 +127,7 @@ Please confirm this order and your preferred payment method. Thank you for choos
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Enhanced Cart Items */}
+          {/* Cart Items */}
           <div className="lg:col-span-2 order-2 lg:order-1">
             <div className="bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden">
               <div className="p-4 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-b border-pink-100">
@@ -275,79 +245,13 @@ Please confirm this order and your preferred payment method. Thank you for choos
             </div>
           </div>
 
-          {/* Enhanced Order Summary */}
+          {/* Order Summary */}
           <div className="bg-white rounded-2xl shadow-xl border border-pink-100 h-fit order-1 lg:order-2 overflow-hidden">
             <div className="p-4 sm:p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-b border-pink-100">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-pink-600" />
-                Order Summary
-              </h2>
+              <h2 className="text-xl font-semibold text-gray-900">Order Summary</h2>
             </div>
             
             <div className="p-4 sm:p-6">
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                  <Input
-                    placeholder="Enter your full name"
-                    value={customerInfo.name}
-                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
-                    required
-                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                  <Input
-                    placeholder="Enter your phone number"
-                    value={customerInfo.phone}
-                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
-                    required
-                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">WhatsApp Number</label>
-                  <Input
-                    placeholder="WhatsApp number (optional)"
-                    value={customerInfo.whatsapp}
-                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, whatsapp: e.target.value }))}
-                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
-                  <Input
-                    placeholder="Delivery address (optional)"
-                    value={customerInfo.address}
-                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
-                    className="border-pink-200 focus:ring-pink-500 focus:border-pink-500 rounded-xl"
-                  />
-                </div>
-              </div>
-
-              {/* Enhanced Payment Methods */}
-              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <CreditCard className="w-4 h-4 text-blue-500" />
-                  Payment Options
-                </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg">
-                    <span className="text-lg">📱</span>
-                    <span>Mobile Money: 0740799577</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg">
-                    <span className="text-lg">🏦</span>
-                    <span>Bank Transfer: Available</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-white p-2 rounded-lg">
-                    <span className="text-lg">💵</span>
-                    <span>Cash on Delivery</span>
-                  </div>
-                </div>
-              </div>
-
               <div className="border-t border-gray-200 pt-4 mb-6">
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-gray-600">Subtotal:</span>

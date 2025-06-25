@@ -145,7 +145,7 @@ export const SimpleProductForm = ({ editProduct, onSave, onCancel }: SimpleProdu
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="price" className="text-sm font-medium">
-                Price (₦) *
+                Price (UGX) *
               </Label>
               <Input
                 id="price"
@@ -183,7 +183,6 @@ export const SimpleProductForm = ({ editProduct, onSave, onCancel }: SimpleProdu
             <ProductImageUploader
               images={images}
               onImagesChange={setImages}
-              maxImages={5}
             />
           </div>
         </div>
