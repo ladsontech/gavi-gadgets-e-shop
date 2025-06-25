@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ShoppingCart, ArrowLeft, Share2, Heart, Star, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
 interface Product {
   id: string;
   name: string;
@@ -29,7 +27,6 @@ interface Product {
     slug: string;
   };
 }
-
 interface CartItem {
   id: string;
   name: string;
@@ -37,59 +34,53 @@ interface CartItem {
   image: string;
   quantity: number;
 }
-
 const ProductDetail: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const {
+    slug
+  } = useParams<{
+    slug: string;
+  }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-
   useEffect(() => {
     const fetchProduct = async () => {
       if (!slug) return;
-      
       setLoading(true);
-      const { data, error } = await supabase
-        .from("products")
-        .select(`
+      const {
+        data,
+        error
+      } = await supabase.from("products").select(`
           *,
           categories (
             id,
             name,
             slug
           )
-        `)
-        .eq("slug", slug)
-        .eq("is_active", true)
-        .maybeSingle();
-
+        `).eq("slug", slug).eq("is_active", true).maybeSingle();
       if (error) {
         console.error("Error fetching product:", error);
         navigate("/");
         return;
       }
-
       if (!data) {
         navigate("/");
         return;
       }
-
       setProduct(data);
       setLoading(false);
     };
-
     fetchProduct();
   }, [slug, navigate]);
-
   const addToCart = () => {
     if (!product) return;
-
     const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItemIndex = existingCart.findIndex((item: CartItem) => item.id === product.id);
-
     if (existingItemIndex >= 0) {
       existingCart[existingItemIndex].quantity += quantity;
     } else {
@@ -98,32 +89,27 @@ const ProductDetail: React.FC = () => {
         name: product.name,
         price: product.price,
         image: product.images[0] || "/placeholder.svg",
-        quantity: quantity,
+        quantity: quantity
       });
     }
-
     localStorage.setItem("cart", JSON.stringify(existingCart));
-    
+
     // Dispatch cart update event
     window.dispatchEvent(new Event("cartUpdated"));
-    
     toast({
       title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      description: `${product.name} has been added to your cart.`
     });
   };
-
   const shareProduct = () => {
     if (!product) return;
-
     const currentUrl = window.location.href;
     const shareText = `Check out this ${product.name} from Gavi Gadgets UG!\n\nPrice: UGX ${Number(product.price).toLocaleString()}\nCondition: ${product.condition}\n\nYour Mobile Source - Quality Products, Competitive Prices\n\n${currentUrl}`;
-
     if (navigator.share) {
       navigator.share({
         title: product.name,
         text: shareText,
-        url: currentUrl,
+        url: currentUrl
       });
     } else {
       // Fallback to WhatsApp share
@@ -131,53 +117,33 @@ const ProductDetail: React.FC = () => {
       window.open(whatsappUrl, '_blank');
     }
   };
-
   const getDiscountPercentage = () => {
     if (!product?.original_price || product.original_price <= product.price) return 0;
-    return Math.round(((product.original_price - product.price) / product.original_price) * 100);
+    return Math.round((product.original_price - product.price) / product.original_price * 100);
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+    return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
         <LoadingSpinner />
-      </div>
-    );
+      </div>;
   }
-
   if (!product) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+    return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
         <div className="container mx-auto px-4 py-8">
           <p>Product not found</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   const discount = getDiscountPercentage();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+  return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
       {/* Mobile Header */}
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-pink-100 px-4 py-2 md:hidden shadow-lg">
         <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-2 py-1"
-          >
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-2 py-1">
             <ArrowLeft className="w-4 h-4" />
             <span className="font-medium">Back</span>
           </Button>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={shareProduct}
-              className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-2 py-1"
-            >
+            <Button variant="ghost" size="sm" onClick={shareProduct} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-2 py-1">
               <Share2 className="w-4 h-4" />
               <span className="font-medium">Share</span>
             </Button>
@@ -191,60 +157,34 @@ const ProductDetail: React.FC = () => {
             {/* Product Images */}
             <div className="p-3 md:p-4 lg:p-6">
               <div className="aspect-square mb-2 md:mb-3 relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200">
-                <img
-                  src={product.images[selectedImage] || "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-full h-full object-contain p-2 md:p-3"
-                />
+                <img src={product.images[selectedImage] || "/placeholder.svg"} alt={product.name} className="w-full h-full object-contain p-2 md:p-3" />
                 
                 {/* Image badges */}
                 <div className="absolute top-2 md:top-3 left-2 md:left-3 flex flex-col gap-1">
-                  {product.is_featured && (
-                    <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg text-xs">
+                  {product.is_featured && <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg text-xs">
                       <Star className="w-2 h-2 md:w-3 md:h-3 mr-1 fill-white" />
                       Featured
-                    </Badge>
-                  )}
-                  {discount > 0 && (
-                    <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg text-xs">
+                    </Badge>}
+                  {discount > 0 && <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg text-xs">
                       -{discount}% OFF
-                    </Badge>
-                  )}
+                    </Badge>}
                 </div>
               </div>
               
-              {product.images.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {product.images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className={`flex-shrink-0 w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg border-2 overflow-hidden transition-all duration-300 ${
-                        selectedImage === index 
-                          ? "border-pink-500 shadow-lg scale-105" 
-                          : "border-gray-200 hover:border-pink-300"
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${product.name} ${index + 1}`}
-                        className="w-full h-full object-contain p-1"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
+              {product.images.length > 1 && <div className="flex gap-2 overflow-x-auto pb-2">
+                  {product.images.map((image, index) => <button key={index} onClick={() => setSelectedImage(index)} className={`flex-shrink-0 w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-lg border-2 overflow-hidden transition-all duration-300 ${selectedImage === index ? "border-pink-500 shadow-lg scale-105" : "border-gray-200 hover:border-pink-300"}`}>
+                      <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-contain p-1" />
+                    </button>)}
+                </div>}
             </div>
 
             {/* Product Info */}
             <div className="p-3 md:p-4 lg:p-6">
               <div className="flex justify-between items-start mb-3 md:mb-4">
                 <div className="flex-1">
-                  {product.categories && (
-                    <Badge variant="secondary" className="mb-2 text-xs bg-pink-100 text-pink-700 border-pink-200">
+                  {product.categories && <Badge variant="secondary" className="mb-2 text-xs bg-pink-100 text-pink-700 border-pink-200">
                       {product.categories.name}
-                    </Badge>
-                  )}
+                    </Badge>}
                   <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-1 md:mb-2 leading-tight">
                     {product.name}
                   </h1>
@@ -255,20 +195,11 @@ const ProductDetail: React.FC = () => {
                 
                 {/* Desktop Actions */}
                 <div className="hidden md:flex items-center gap-2 ml-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={shareProduct}
-                    className="flex items-center gap-1 hover:bg-pink-50 border-pink-200 text-xs"
-                  >
+                  <Button variant="outline" size="sm" onClick={shareProduct} className="flex items-center gap-1 hover:bg-pink-50 border-pink-200 text-xs">
                     <Share2 className="w-3 h-3" />
                     Share
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center gap-1 hover:bg-pink-50 border-pink-200 text-xs"
-                  >
+                  <Button variant="outline" size="sm" className="flex items-center gap-1 hover:bg-pink-50 border-pink-200 text-xs">
                     <Heart className="w-3 h-3" />
                     Save
                   </Button>
@@ -281,16 +212,14 @@ const ProductDetail: React.FC = () => {
                   <span className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-pink-600 to-pink-700 bg-clip-text text-transparent">
                     UGX {Number(product.price).toLocaleString()}
                   </span>
-                  {product.original_price && discount > 0 && (
-                    <div className="flex items-center gap-2">
+                  {product.original_price && discount > 0 && <div className="flex items-center gap-2">
                       <span className="text-sm md:text-base lg:text-lg text-gray-400 line-through">
                         UGX {Number(product.original_price).toLocaleString()}
                       </span>
                       <Badge className="bg-red-500 text-white text-xs">
                         Save UGX {Number(product.original_price - product.price).toLocaleString()}
                       </Badge>
-                    </div>
-                  )}
+                    </div>}
                 </div>
                 
                 <div className="flex flex-wrap gap-1 md:gap-2 text-xs text-gray-600">
@@ -298,84 +227,42 @@ const ProductDetail: React.FC = () => {
                     <Shield className="w-3 h-3 text-green-500" />
                     <span>Condition: <strong>{product.condition === 'new' ? 'Brand New' : 'UK Used'}</strong></span>
                   </div>
-                  {product.color && (
-                    <div className="bg-white px-2 py-1 rounded-lg border">
+                  {product.color && <div className="bg-white px-2 py-1 rounded-lg border">
                       Color: <strong>{product.color}</strong>
-                    </div>
-                  )}
-                  {product.storage_capacity && (
-                    <div className="bg-white px-2 py-1 rounded-lg border">
+                    </div>}
+                  {product.storage_capacity && <div className="bg-white px-2 py-1 rounded-lg border">
                       Storage: <strong>{product.storage_capacity}</strong>
-                    </div>
-                  )}
+                    </div>}
                 </div>
               </div>
 
-              {product.description && (
-                <div className="mb-3 md:mb-4">
+              {product.description && <div className="mb-3 md:mb-4">
                   <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-1 md:mb-2 text-gray-900">Description</h3>
                   <p className="text-xs md:text-sm text-gray-700 leading-relaxed bg-gray-50 p-2 md:p-3 rounded-lg">
                     {product.description}
                   </p>
-                </div>
-              )}
+                </div>}
 
-              {product.features && product.features.length > 0 && (
-                <div className="mb-3 md:mb-4">
+              {product.features && product.features.length > 0 && <div className="mb-3 md:mb-4">
                   <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-2 md:mb-3 text-gray-900">Key Features</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                    {product.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-1 text-xs md:text-sm text-gray-700 bg-gray-50 p-1.5 md:p-2 rounded-lg">
+                    {product.features.map((feature, index) => <div key={index} className="flex items-center gap-1 text-xs md:text-sm text-gray-700 bg-gray-50 p-1.5 md:p-2 rounded-lg">
                         <div className="w-1.5 h-1.5 bg-pink-500 rounded-full flex-shrink-0"></div>
                         {feature}
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Compact Quantity and Stock */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3 mb-3 md:mb-4 p-2 md:p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <label htmlFor="quantity" className="text-xs font-medium whitespace-nowrap text-gray-700">
-                    Quantity:
-                  </label>
-                  <select
-                    id="quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    className="border border-gray-300 rounded-lg px-2 py-1 text-xs bg-white focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                  >
-                    {[...Array(Math.min(10, product.stock_quantity))].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {i + 1}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className={`w-2 h-2 rounded-full ${product.stock_quantity > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                  <span className="text-xs text-gray-600">
-                    {product.stock_quantity > 0 ? `${product.stock_quantity} in stock` : 'Out of stock'}
-                  </span>
-                </div>
-              </div>
+              
 
               {/* Compact Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mb-3 md:mb-4">
-                <Button
-                  onClick={addToCart}
-                  disabled={product.stock_quantity === 0}
-                  className="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-xs md:text-sm lg:text-base py-2 md:py-2.5 lg:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <Button onClick={addToCart} disabled={product.stock_quantity === 0} className="flex-1 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-xs md:text-sm lg:text-base py-2 md:py-2.5 lg:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                   <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 mr-1 md:mr-2" />
                   Add to Cart
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/cart")}
-                  className="sm:flex-shrink-0 text-xs md:text-sm lg:text-base py-2 md:py-2.5 lg:py-3 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300"
-                >
+                <Button variant="outline" onClick={() => navigate("/cart")} className="sm:flex-shrink-0 text-xs md:text-sm lg:text-base py-2 md:py-2.5 lg:py-3 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300">
                   View Cart
                 </Button>
               </div>
@@ -388,8 +275,6 @@ const ProductDetail: React.FC = () => {
           {/* Related items section will go here */}
         </div>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default ProductDetail;
