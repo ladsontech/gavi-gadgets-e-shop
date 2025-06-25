@@ -1,5 +1,5 @@
 
-import { Home, Smartphone } from "lucide-react";
+import { Home, Smartphone, Package } from "lucide-react";
 import { useEffect } from "react";
 
 interface MobileMainNavProps {
@@ -40,23 +40,14 @@ export const MobileMainNav = ({
     },
     {
       label: "Others",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        !["iphone", "samsung", "pixel"].some((k) =>
-          c.slug?.toLowerCase().includes(k)
-        )
-      )?.id ?? null,
+      icon: Package,
+      value: "others", // Special value for non-phone items
     },
   ];
 
-  // Prevent all navs from showing null on missing category
-  const visibleNavs = navItems.map((item, idx) =>
-    idx === 0 || item.value ? item : null
-  ).filter(Boolean);
-
   return (
     <nav className="fixed bottom-0 left-0 right-0 w-full bg-white shadow-lg border-t flex z-20 md:hidden">
-      {visibleNavs.map((item: any) => {
+      {navItems.map((item) => {
         const active =
           (item.value === null && !selectedCategory) ||
           item.value === selectedCategory;

@@ -39,9 +39,14 @@ const Index = () => {
             slug
           )
         `).eq('is_active', true);
-      if (selectedCategory) {
+      
+      if (selectedCategory === 'others') {
+        // Filter for products without a category (non-phone items)
+        query = query.is('category_id', null);
+      } else if (selectedCategory) {
         query = query.eq('category_id', selectedCategory);
       }
+      
       const {
         data,
         error

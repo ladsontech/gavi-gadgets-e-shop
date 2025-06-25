@@ -1,6 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Smartphone } from "lucide-react";
+import { ChevronDown, Smartphone, Package } from "lucide-react";
 import React from "react";
 
 interface Category {
@@ -16,6 +17,12 @@ interface CategoryFilterProps {
 }
 
 export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
+  const getSelectedLabel = () => {
+    if (!selectedCategory) return "All Products";
+    if (selectedCategory === "others") return "Others (Non-Phones)";
+    return categories.find((cat) => cat.id === selectedCategory)?.name || "All Products";
+  };
+
   return (
     <div className="mb-8 w-full">
       <div className="flex items-center gap-3 mb-6">
@@ -23,8 +30,8 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
           <Smartphone className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Brand</h2>
-          <p className="text-gray-600">Find your perfect smartphone</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Category</h2>
+          <p className="text-gray-600">Find phones, accessories, and more</p>
         </div>
       </div>
       
@@ -37,10 +44,12 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               className="w-full justify-between h-12 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300 text-left"
             >
               <span className="flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-pink-600" />
-                {selectedCategory
-                  ? categories.find((cat) => cat.id === selectedCategory)?.name || "All Phones"
-                  : "All Phones"}
+                {selectedCategory === "others" ? (
+                  <Package className="w-4 h-4 text-pink-600" />
+                ) : (
+                  <Smartphone className="w-4 h-4 text-pink-600" />
+                )}
+                {getSelectedLabel()}
               </span>
               <ChevronDown className="ml-2 w-4 h-4 text-pink-600" />
             </Button>
@@ -50,7 +59,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               onClick={() => onCategoryChange(null)}
               className={`py-3 px-4 ${!selectedCategory ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}
             >
-              All Phones
+              All Products
             </DropdownMenuItem>
             {categories.map((category) => (
               <DropdownMenuItem
@@ -61,6 +70,12 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
                 {category.name}
               </DropdownMenuItem>
             ))}
+            <DropdownMenuItem
+              onClick={() => onCategoryChange("others")}
+              className={`py-3 px-4 ${selectedCategory === "others" ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}
+            >
+              Others (Non-Phones)
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -76,7 +91,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               : "border-pink-200 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-700"
           }`}
         >
-          All Phones
+          All Products
         </Button>
         {categories.map((category) => (
           <Button
@@ -92,6 +107,18 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
             {category.name}
           </Button>
         ))}
+        <Button
+          variant={selectedCategory === "others" ? "default" : "outline"}
+          onClick={() => onCategoryChange("others")}
+          className={`mb-2 rounded-xl px-6 py-3 transition-all duration-300 flex items-center gap-2 ${
+            selectedCategory === "others" 
+              ? "bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white shadow-lg" 
+              : "border-pink-200 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-700"
+          }`}
+        >
+          <Package className="w-4 h-4" />
+          Others
+        </Button>
       </div>
     </div>
   );
