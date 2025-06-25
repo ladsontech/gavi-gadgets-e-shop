@@ -1,7 +1,30 @@
+
 {
-  "name": "Gavi Gadgets",
-  "theme_color": "#000000",
-  "background_color": "#000000",
-  "short_name": "gavigadgets",
-  "prefer_related_applications": true
+  "name": "Gavi Gadgets UG - Your Mobile Source",
+  "short_name": "Gavi Gadgets",
+  "description": "Your trusted destination for premium smartphones in Uganda. Quality phones, competitive prices, and excellent service.",
+  "theme_color": "#ec4899",
+  "background_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["shopping", "electronics", "mobile"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/images/gavi_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/gavi_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }

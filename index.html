@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,6 +9,16 @@
     <meta name="author" content="Gavi Gadgets" />
     <meta name="keywords" content="smartphones, iPhone, Samsung, Pixel, Huawei, mobile phones, Uganda, Kampala, New Pioneer Mall" />
     <meta name="google-site-verification" content="zMPIUhN9CJU2Ifs5i5OwNn7iX1B7BYDTyY7cmM25PUI" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ec4899" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Gavi Gadgets" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
 
     <!-- Favicon -->
     <link rel="icon" href="/images/gavi_icon.png" type="image/png">
@@ -33,5 +44,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            }, function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
