@@ -13,6 +13,49 @@
   "dir": "ltr",
   "categories": ["shopping", "electronics", "mobile"],
   "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone"],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "image/*": [".jpg", ".jpeg", ".png", ".webp", ".gif"]
+      }
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+gavigadgets",
+      "url": "/?product=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Browse Products",
+      "short_name": "Products",
+      "description": "Browse our latest smartphone collection",
+      "url": "/",
+      "icons": [{ "src": "/images/gavi_icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "View Cart",
+      "short_name": "Cart",
+      "description": "View your shopping cart",
+      "url": "/cart",
+      "icons": [{ "src": "/images/gavi_icon.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "/images/gavi_icon.png",
