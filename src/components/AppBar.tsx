@@ -14,8 +14,8 @@ export const AppBar = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="w-full bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-lg sticky top-0 z-50">
-      <div className="absolute inset-0 bg-gradient-to-r from-white via-gray-50/50 to-white"></div>
+    <header className="w-full bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-lg sticky top-0 z-50">
+      <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-white/10"></div>
       
       <nav className="relative flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         {/* Logo Section */}
@@ -24,11 +24,10 @@ export const AppBar = () => {
           onClick={() => navigate("/")}
         >
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <img 
               src="/images/gavi_gadgets_logo.png" 
               alt="Gavi Gadgets Logo" 
-              className="relative w-12 h-12 rounded-xl shadow-md border border-gray-200/50 object-contain transition-all duration-300 group-hover:shadow-xl animate-logo-rotation" 
+              className="w-12 h-12 rounded-xl object-contain transition-all duration-300 group-hover:scale-110 animate-logo-rotation" 
               draggable={false} 
             />
           </div>
@@ -60,7 +59,7 @@ export const AppBar = () => {
           {/* Mobile Menu Button */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2.5 rounded-xl hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all duration-200 hover:shadow-md"
+            className="md:hidden p-2.5 rounded-xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all duration-200 hover:shadow-md"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
@@ -74,7 +73,7 @@ export const AppBar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button 
-                className="hidden md:flex p-2.5 rounded-xl hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all duration-200 hover:shadow-md"
+                className="hidden md:flex p-2.5 rounded-xl hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all duration-200 hover:shadow-md"
                 aria-label="More options"
               >
                 <MoreVertical className="w-5 h-5 text-gray-700" />
@@ -82,7 +81,7 @@ export const AppBar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent 
               align="end" 
-              className="w-56 bg-white/95 backdrop-blur-md border border-gray-200/50 shadow-xl rounded-xl"
+              className="w-56 bg-white/90 backdrop-blur-md border border-white/20 shadow-xl rounded-xl"
             >
               {!isAdmin && (
                 <DropdownMenuItem 
@@ -118,7 +117,7 @@ export const AppBar = () => {
         
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-xl rounded-b-xl">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white/90 backdrop-blur-lg border-b border-white/20 shadow-xl rounded-b-xl">
             <div className="p-4 space-y-2">
               {!isAdmin && (
                 <button 
@@ -174,7 +173,7 @@ export const AppBar = () => {
         }
         
         .animate-logo-rotation {
-          animation: logoRotation 3s ease-in-out infinite;
+          animation: logoRotation 6s ease-in-out infinite;
         }
       `}</style>
     </header>
