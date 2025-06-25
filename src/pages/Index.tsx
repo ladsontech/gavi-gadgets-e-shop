@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -8,9 +9,11 @@ import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { MobileMainNav } from "@/components/MobileMainNav";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 import { Search } from "lucide-react";
+
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
+
   const {
     data: categories,
     isLoading: categoriesLoading
@@ -25,6 +28,7 @@ const Index = () => {
       return data;
     }
   });
+
   const {
     data: products,
     isLoading: productsLoading
@@ -58,6 +62,13 @@ const Index = () => {
     }
   });
 
+  // Get unique brands that exist in the database
+  const availableBrands = useMemo(() => {
+    if (!products) return [];
+    const brands = new Set(products.map((p: any) => p.brand?.toLowerCase()).filter(Boolean));
+    return Array.from(brands);
+  }, [products]);
+
   // Memoize featured products (only when not filtering by category)
   const featuredProducts = useMemo(() => {
     if (!products) return [];
@@ -78,15 +89,27 @@ const Index = () => {
       productsToShow = products.filter((p: any) => !p.is_featured);
     }
 
-    // Apply search filter
+    // Apply search filter - only search in fields that exist in database
     if (!searchValue.trim()) return productsToShow;
     const search = searchValue.toLowerCase();
-    return productsToShow.filter((prod: any) => [prod.name, prod.model, prod.brand].join(" ").toLowerCase().includes(search));
+    return productsToShow.filter((prod: any) => {
+      const searchableText = [
+        prod.name,
+        prod.model,
+        prod.brand,
+        prod.description
+      ].filter(Boolean).join(" ").toLowerCase();
+      
+      return searchableText.includes(search);
+    });
   }, [products, searchValue, selectedCategory]);
+
   if (productsLoading || categoriesLoading) {
     return <LoadingSpinner />;
   }
-  return <div className="w-full bg-gradient-to-br from-gray-50 to-pink-50 min-h-screen">
+
+  return (
+    <div className="w-full bg-gradient-to-br from-gray-50 to-pink-50 min-h-screen">
       <UpdatesCarousel />
       
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 md:py-8">
@@ -98,11 +121,29 @@ const Index = () => {
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-pink-400" />
             </div>
-            <input type="text" value={searchValue} onChange={e => setSearchValue(e.target.value)} className="w-full pl-12 pr-4 py-4 text-base border-2 border-pink-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 placeholder-gray-500" placeholder="Search for smartphones by name, model, or brand..." aria-label="Search products" />
+            <input 
+              type="text" 
+              value={searchValue} 
+              onChange={e => setSearchValue(e.target.value)} 
+              className="w-full pl-12 pr-4 py-4 text-base border-2 border-pink-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 placeholder-gray-500" 
+              placeholder={
+                selectedCategory === 'others' 
+                  ? "Search accessories, TVs, speakers..."
+                  : availableBrands.length > 0 
+                    ? `Search ${availableBrands.join(', ')} and more...`
+                    : "Search products..."
+              }
+              aria-label="Search products" 
+            />
             <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
               
             </div>
           </div>
+          {searchValue && (
+            <div className="mt-2 text-sm text-gray-600">
+              Found {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''} for "{searchValue}"
+            </div>
+          )}
         </div>
         
         {!selectedCategory && featuredProducts.length > 0 && <FeaturedProducts products={featuredProducts} />}
@@ -111,6 +152,8 @@ const Index = () => {
         
         <MobileMainNav selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} categories={categories || []} />
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +9,7 @@ import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
 import { EditProductForm } from "@/components/admin/EditProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
+import { OthersManager } from "@/components/admin/OthersManager";
 import { Loader2, Plus, Package, ArrowLeft, LogOut, Image, Smartphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -209,10 +211,15 @@ const Admin: React.FC = () => {
           </div>
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="products" className="flex items-center gap-2">
+                <Smartphone className="w-4 h-4" />
+                <span className="hidden sm:inline">Products</span>
+                <span className="sm:hidden">Phones</span>
+              </TabsTrigger>
+              <TabsTrigger value="others" className="flex items-center gap-2">
                 <Package className="w-4 h-4" />
-                Products
+                Others
               </TabsTrigger>
               <TabsTrigger value="updates" className="flex items-center gap-2">
                 <Image className="w-4 h-4" />
@@ -273,6 +280,12 @@ const Admin: React.FC = () => {
                   />
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="others">
+              <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                <OthersManager />
+              </div>
             </TabsContent>
 
             <TabsContent value="updates">
