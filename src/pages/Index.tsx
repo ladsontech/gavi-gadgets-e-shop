@@ -1,158 +1,77 @@
-
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoryFilter } from "@/components/CategoryFilter";
+import { SearchBar } from "@/components/SearchBar";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
-import { useState, useMemo } from "react";
-import { FeaturedProducts } from "@/components/FeaturedProducts";
-import { MobileMainNav } from "@/components/MobileMainNav";
-import { UpdatesCarousel } from "@/components/UpdatesCarousel";
-import { Search } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState("");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const {
-    data: categories,
-    isLoading: categoriesLoading
-  } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('categories').select('*').eq('is_active', true).order('name');
-      if (error) throw error;
-      return data;
-    }
-  });
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory, searchQuery]);
 
-  const {
-    data: products,
-    isLoading: productsLoading
-  } = useQuery({
-    queryKey: ['products', selectedCategory],
-    queryFn: async () => {
-      let query = supabase.from('products').select(`
-          *,
-          categories (
-            id,
-            name,
-            slug
-          )
-        `).eq('is_active', true);
-      
-      if (selectedCategory === 'others') {
-        // Filter for products without a category (non-phone items)
-        query = query.is('category_id', null);
-      } else if (selectedCategory) {
-        query = query.eq('category_id', selectedCategory);
-      }
-      
-      const {
-        data,
-        error
-      } = await query.order('is_featured', {
-        ascending: false
-      });
-      if (error) throw error;
-      return data;
-    }
-  });
+  const fetchProducts = async () => {
+    setLoading(true);
+    let query = supabase.from("products").select("*").eq("is_active", true);
 
-  // Get unique brands that exist in the database
-  const availableBrands = useMemo(() => {
-    if (!products) return [];
-    const brands = new Set(products.map((p: any) => p.brand?.toLowerCase()).filter(Boolean));
-    return Array.from(brands);
-  }, [products]);
-
-  // Memoize featured products (only when not filtering by category)
-  const featuredProducts = useMemo(() => {
-    if (!products) return [];
-    // Show featured only if not filtering category
-    if (!selectedCategory) {
-      return products.filter((p: any) => p.is_featured);
-    }
-    return [];
-  }, [products, selectedCategory]);
-
-  // Apply search filter and remove featured products from main grid when showing featured section
-  const filteredProducts = useMemo(() => {
-    if (!products) return [];
-    let productsToShow = products;
-
-    // If we're showing featured section (no category selected), exclude featured products from main grid
-    if (!selectedCategory) {
-      productsToShow = products.filter((p: any) => !p.is_featured);
+    if (selectedCategory) {
+      query = query.eq("category_id", selectedCategory);
     }
 
-    // Apply search filter - only search in fields that exist in database
-    if (!searchValue.trim()) return productsToShow;
-    const search = searchValue.toLowerCase();
-    return productsToShow.filter((prod: any) => {
-      const searchableText = [
-        prod.name,
-        prod.model,
-        prod.brand,
-        prod.description
-      ].filter(Boolean).join(" ").toLowerCase();
-      
-      return searchableText.includes(search);
-    });
-  }, [products, searchValue, selectedCategory]);
+    if (searchQuery) {
+      query = query.ilike("name", `%${searchQuery}%`);
+    }
 
-  if (productsLoading || categoriesLoading) {
-    return <LoadingSpinner />;
-  }
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error fetching products:", error);
+    } else {
+      setProducts(data || []);
+    }
+    setLoading(false);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const homepageSEO = {
+    title: "Gavi Gadgets Uganda - Buy iPhone 15, 14, 13, Samsung Galaxy S24, S23, Google Pixel 8, 7 | Better than Jumia & Jiji Uganda",
+    description: "Uganda's premier electronics store offering genuine iPhone 15 Pro Max, iPhone 14, Samsung Galaxy S24 Ultra, S23, Google Pixel 8 Pro, Huawei smartphones at unbeatable prices in Kampala. Better service than Jumia Uganda and Jiji Uganda. Visit New Pioneer Mall Shop PA 82A for authentic smartphones with warranty.",
+    keywords: "smartphones Uganda, iPhone 15 Uganda, iPhone 14 Uganda, iPhone 13 Uganda, Samsung Galaxy S24 Uganda, Samsung Galaxy S23 Uganda, Google Pixel 8 Uganda, Google Pixel 7 Uganda, Huawei Uganda, mobile phones Kampala, electronics Uganda, gadgets Uganda, better than Jumia Uganda, better than Jiji Uganda, New Pioneer Mall electronics, authentic smartphones Uganda, iPhone Pro Max Uganda, Samsung Ultra Uganda, Pixel Pro Uganda"
+  };
 
   return (
-    <div className="w-full bg-gradient-to-br from-gray-50 to-pink-50 min-h-screen">
-      <UpdatesCarousel />
+    <>
+      <SEOHead
+        title={homepageSEO.title}
+        description={homepageSEO.description}
+        keywords={homepageSEO.keywords}
+      />
       
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 md:py-8">
-        <CategoryFilter categories={categories || []} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
-        
-        {/* Enhanced Search Bar */}
-        <div className="mb-8 max-w-2xl mx-auto lg:mx-0">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-pink-400" />
-            </div>
-            <input 
-              type="text" 
-              value={searchValue} 
-              onChange={e => setSearchValue(e.target.value)} 
-              className="w-full pl-12 pr-4 py-4 text-base border-2 border-pink-200 rounded-2xl outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 placeholder-gray-500" 
-              placeholder={
-                selectedCategory === 'others' 
-                  ? "Search accessories, TVs, speakers..."
-                  : availableBrands.length > 0 
-                    ? `Search ${availableBrands.join(', ')} and more...`
-                    : "Search products..."
-              }
-              aria-label="Search products" 
-            />
-            <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-              
-            </div>
-          </div>
-          {searchValue && (
-            <div className="mt-2 text-sm text-gray-600">
-              Found {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''} for "{searchValue}"
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+        <div className="container mx-auto px-4 py-8">
+          <SearchBar onSearch={handleSearch} />
+          <CategoryFilter onCategoryChange={handleCategoryChange} />
+          {loading ? (
+            <LoadingSpinner />
+          ) : (
+            <ProductGrid products={products} />
           )}
         </div>
-        
-        {!selectedCategory && featuredProducts.length > 0 && <FeaturedProducts products={featuredProducts} />}
-        
-        <ProductGrid products={filteredProducts} />
-        
-        <MobileMainNav selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} categories={categories || []} />
       </div>
-    </div>
+    </>
   );
 };
 
