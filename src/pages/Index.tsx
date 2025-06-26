@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -8,20 +9,39 @@ import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    fetchCategories();
     fetchProducts();
   }, [selectedCategory, searchQuery]);
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("name");
+    
+    if (error) {
+      console.error("Error fetching categories:", error);
+    } else {
+      setCategories(data || []);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
     let query = supabase.from("products").select("*").eq("is_active", true);
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "others") {
       query = query.eq("category_id", selectedCategory);
+    } else if (selectedCategory === "others") {
+      // For "others", we might want to show products that don't belong to phone categories
+      // This logic can be adjusted based on your category structure
+      query = query.is("category_id", null);
     }
 
     if (searchQuery) {
@@ -38,8 +58,8 @@ const Index = () => {
     setLoading(false);
   };
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
+  const handleCategoryChange = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
   };
 
   const handleSearch = (query: string) => {
@@ -63,7 +83,11 @@ const Index = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
         <div className="container mx-auto px-4 py-8">
           <SearchBar onSearch={handleSearch} />
-          <CategoryFilter onCategoryChange={handleCategoryChange} />
+          <CategoryFilter 
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange} 
+          />
           {loading ? (
             <LoadingSpinner />
           ) : (
