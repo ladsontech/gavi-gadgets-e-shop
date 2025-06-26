@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ShoppingCart, ArrowLeft, Share2, Heart, Star, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ProductGrid } from "@/components/ProductGrid";
 
 interface Product {
   id: string;
@@ -40,46 +41,73 @@ interface CartItem {
 }
 
 const ProductDetail: React.FC = () => {
-  const {
-    slug
-  } = useParams<{
-    slug: string;
-  }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [relatedLoading, setRelatedLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+
   useEffect(() => {
     const fetchProduct = async () => {
       if (!slug) return;
       setLoading(true);
-      const {
-        data,
-        error
-      } = await supabase.from("products").select(`
+      const { data, error } = await supabase
+        .from("products")
+        .select(`
           *,
           categories (
             id,
             name,
             slug
           )
-        `).eq("slug", slug).eq("is_active", true).maybeSingle();
+        `)
+        .eq("slug", slug)
+        .eq("is_active", true)
+        .maybeSingle();
+
       if (error) {
         console.error("Error fetching product:", error);
         navigate("/");
         return;
       }
+
       if (!data) {
         navigate("/");
         return;
       }
+
       setProduct(data);
       setLoading(false);
+
+      // Fetch related products
+      if (data.categories?.id) {
+        setRelatedLoading(true);
+        const { data: related, error: relatedError } = await supabase
+          .from("products")
+          .select(`
+            *,
+            categories (
+              id,
+              name,
+              slug
+            )
+          `)
+          .eq("category_id", data.categories.id)
+          .eq("is_active", true)
+          .neq("id", data.id)
+          .limit(8);
+
+        if (!relatedError && related) {
+          setRelatedProducts(related);
+        }
+        setRelatedLoading(false);
+      }
     };
+
     fetchProduct();
   }, [slug, navigate]);
 
@@ -170,6 +198,14 @@ const ProductDetail: React.FC = () => {
       </div>
 
       <main className="container mx-auto px-3 sm:px-4 py-3 md:py-4 lg:py-6">
+        {/* Desktop Back Button */}
+        <div className="hidden md:flex items-center mb-4">
+          <Button variant="ghost" onClick={() => navigate(-1)} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-3 py-2">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="font-medium">Back to Products</span>
+          </Button>
+        </div>
+
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-pink-100">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4 lg:gap-6">
             {/* Product Images */}
@@ -285,10 +321,22 @@ const ProductDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Space reserved for related items */}
-        <div className="mt-4 md:mt-6">
-          {/* Related items section will go here */}
-        </div>
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-6 md:mt-8">
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-pink-100 p-4 md:p-6">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="w-1 h-6 bg-gradient-to-b from-pink-500 to-pink-600 rounded-full"></div>
+                Related Products
+              </h2>
+              {relatedLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <ProductGrid products={relatedProducts} />
+              )}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
