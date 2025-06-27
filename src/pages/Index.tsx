@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -14,8 +13,13 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch categories once on mount
   useEffect(() => {
     fetchCategories();
+  }, []);
+
+  // Fetch products whenever category or search changes
+  useEffect(() => {
     fetchProducts();
   }, [selectedCategory, searchQuery]);
 
@@ -47,27 +51,35 @@ const Index = () => {
 
   const fetchProducts = async () => {
     setLoading(true);
-    let query = supabase.from("products").select("*").eq("is_active", true);
+    
+    // Build query without caching
+    let query = supabase
+      .from("products")
+      .select("*")
+      .eq("is_active", true);
 
+    // Apply category filter
     if (selectedCategory && selectedCategory !== "others") {
       query = query.eq("category_id", selectedCategory);
     } else if (selectedCategory === "others") {
-      // For "others", we might want to show products that don't belong to phone categories
-      // This logic can be adjusted based on your category structure
       query = query.is("category_id", null);
     }
 
-    if (searchQuery) {
-      query = query.ilike("name", `%${searchQuery}%`);
+    // Apply search filter
+    if (searchQuery.trim()) {
+      query = query.ilike("name", `%${searchQuery.trim()}%`);
     }
 
+    // Execute query with fresh data
     const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching products:", error);
+      setProducts([]);
     } else {
       setProducts(data || []);
     }
+    
     setLoading(false);
   };
 
