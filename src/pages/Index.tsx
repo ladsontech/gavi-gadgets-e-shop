@@ -19,6 +19,19 @@ const Index = () => {
     fetchProducts();
   }, [selectedCategory, searchQuery]);
 
+  // Listen for category changes from mobile nav
+  useEffect(() => {
+    const handleCategoryChange = (event: CustomEvent) => {
+      setSelectedCategory(event.detail);
+    };
+
+    window.addEventListener('categoryChanged', handleCategoryChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
+    };
+  }, []);
+
   const fetchCategories = async () => {
     const { data, error } = await supabase
       .from("categories")
