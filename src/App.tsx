@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,18 +30,6 @@ function App() {
     setShowSplash(false);
     sessionStorage.setItem('splashShown', 'true');
   };
-
-  // Handle sitemap.xml route specially - redirect to data URL
-  useEffect(() => {
-    if (window.location.pathname === '/sitemap.xml') {
-      // Generate and redirect to XML data URL
-      const generateSitemapDataUrl = async () => {
-        // This will be handled by creating a proper sitemap endpoint
-        console.log('Sitemap XML route accessed');
-      };
-      generateSitemapDataUrl();
-    }
-  }, []);
 
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
