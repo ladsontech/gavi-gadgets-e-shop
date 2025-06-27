@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,7 +15,7 @@ import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
-import SitemapXML from "./components/SitemapXML";
+import { SitemapXML } from "@/components/SitemapXML";
 
 const queryClient = new QueryClient();
 
@@ -47,13 +46,9 @@ function App() {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  // Special handling for sitemap.xml - serve raw XML
+  // Special handling for sitemap.xml - serve raw XML without any wrapper
   if (window.location.pathname === '/sitemap.xml') {
-    return (
-      <div style={{ margin: 0, padding: 0 }}>
-        <SitemapXML />
-      </div>
-    );
+    return <SitemapXML />;
   }
 
   return (
