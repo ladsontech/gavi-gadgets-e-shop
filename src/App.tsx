@@ -48,6 +48,7 @@ function App() {
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/admin" element={<Admin />} />
+                  <Route path="/sitemap.xml" element={<SitemapPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
