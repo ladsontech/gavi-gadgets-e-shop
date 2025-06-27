@@ -1,3 +1,4 @@
+
 {
   "name": "Gavi Gadgets UG - Your Mobile Source",
   "short_name": "Gavi Gadgets",
@@ -15,13 +16,12 @@
     "electronics",
     "mobile"
   ],
-  "iarc_rating_id": "e84b072d-71de-4725-85fa-42378ce81c5d",
   "prefer_related_applications": false,
   "related_applications": [
     {
-      "platform": "webapp",
+      "platform": "play",
       "url": "https://gavigadgets.ug/",
-      "id": "gavi-gadgets-webapp"
+      "id": "ug.gavigadgets.app"
     }
   ],
   "display_override": [
@@ -97,13 +97,25 @@
       "src": "/images/gavi_icon.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/images/gavi_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/images/gavi_icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/images/gavi_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
