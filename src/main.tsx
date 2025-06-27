@@ -179,4 +179,61 @@ window.addEventListener('appinstalled', () => {
   }, 3000);
 });
 
+// Enhanced service worker registration with update handling
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(registration) {
+        console.log('SW registered: ', registration);
+        
+        // Check for updates periodically
+        setInterval(() => {
+          registration.update();
+        }, 30000); // Check every 30 seconds
+        
+        // Handle service worker updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed') {
+                if (navigator.serviceWorker.controller) {
+                  // New update available
+                  console.log('New content is available; please refresh.');
+                  // Force the new service worker to activate
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  // Refresh the page to get the latest content
+                  window.location.reload();
+                } else {
+                  console.log('Content is cached for offline use.');
+                }
+              }
+            });
+          }
+        });
+        
+        // Request notification permission
+        if ('Notification' in window && 'PushManager' in window) {
+          Notification.requestPermission().then(permission => {
+            console.log('Notification permission:', permission);
+          });
+        }
+        
+      }, function(registrationError) {
+        console.log('SW registration failed: ', registrationError);
+      });
+    
+    // Listen for SW messages
+    navigator.serviceWorker.addEventListener('message', function(event) {
+      console.log('Message from SW:', event.data);
+    });
+    
+    // Handle service worker controller change (when new SW takes over)
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('Service worker controller changed, reloading page');
+      window.location.reload();
+    });
+  });
+}
+
 createRoot(document.getElementById("root")!).render(<App />);

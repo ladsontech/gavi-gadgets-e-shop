@@ -1,7 +1,7 @@
 
-const CACHE_NAME = 'gavi-gadgets-v2';
-const STATIC_CACHE = 'gavi-static-v2';
-const DYNAMIC_CACHE = 'gavi-dynamic-v2';
+const CACHE_NAME = 'gavi-gadgets-v3';
+const STATIC_CACHE = 'gavi-static-v3';
+const DYNAMIC_CACHE = 'gavi-dynamic-v3';
 
 // Static assets to cache immediately
 const staticAssets = [
@@ -9,13 +9,6 @@ const staticAssets = [
   '/images/gavi_icon.png',
   '/images/gavi_gadgets_logo.png',
   '/manifest.json'
-];
-
-// Dynamic assets patterns
-const dynamicAssets = [
-  /\/product\//,
-  /\/cart/,
-  /\/admin/
 ];
 
 // Install event - cache static assets
@@ -51,36 +44,25 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-// Fetch event - implement caching strategies
+// Fetch event - implement network-first caching strategy
 self.addEventListener('fetch', function(event) {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Handle API requests with network-first strategy
+  // Handle API requests with network-first strategy (no caching for real-time data)
   if (url.pathname.includes('/api/') || url.hostname.includes('supabase')) {
     event.respondWith(
       fetch(request)
-        .then(response => {
-          // Clone the response before caching
-          const responseClone = response.clone();
-          caches.open(DYNAMIC_CACHE).then(cache => {
-            cache.put(request, responseClone);
-          });
-          return response;
-        })
         .catch(() => {
-          // Fallback to cache if network fails
+          // Only fallback to cache if network completely fails
           return caches.match(request);
         })
     );
     return;
   }
 
-  // Handle static assets with cache-first strategy
-  if (staticAssets.some(asset => url.pathname === asset) || 
-      request.destination === 'image' || 
-      request.destination === 'style' || 
-      request.destination === 'script') {
+  // Handle static assets (images, icons, manifest) with cache-first
+  if (request.destination === 'image' || url.pathname.includes('/images/') || url.pathname === '/manifest.json') {
     event.respondWith(
       caches.match(request)
         .then(response => {
@@ -96,29 +78,52 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // Handle navigation requests
-  if (request.mode === 'navigate') {
+  // Handle navigation and app requests with network-first strategy
+  if (request.mode === 'navigate' || request.destination === 'document' || 
+      request.destination === 'script' || request.destination === 'style') {
     event.respondWith(
       fetch(request)
         .then(response => {
-          // Cache successful navigation responses
-          const responseClone = response.clone();
-          caches.open(DYNAMIC_CACHE).then(cache => {
-            cache.put(request, responseClone);
-          });
+          // Only cache if it's a successful response
+          if (response.status === 200) {
+            const responseClone = response.clone();
+            caches.open(DYNAMIC_CACHE).then(cache => {
+              // Set a short TTL by adding a timestamp
+              const headers = new Headers(responseClone.headers);
+              headers.set('sw-cache-timestamp', Date.now().toString());
+              cache.put(request, new Response(responseClone.body, {
+                status: responseClone.status,
+                statusText: responseClone.statusText,
+                headers: headers
+              }));
+            });
+          }
           return response;
         })
         .catch(() => {
-          // Fallback to cached version or offline page
-          return caches.match(request).then(cachedResponse => {
-            return cachedResponse || caches.match('/');
+          // Check cache age before serving cached content
+          return caches.open(DYNAMIC_CACHE).then(cache => {
+            return cache.match(request).then(cachedResponse => {
+              if (cachedResponse) {
+                const cacheTimestamp = cachedResponse.headers.get('sw-cache-timestamp');
+                const now = Date.now();
+                const cacheAge = now - parseInt(cacheTimestamp || '0');
+                
+                // If cached content is older than 5 minutes, don't serve it
+                if (cacheAge > 5 * 60 * 1000) {
+                  return caches.match('/');
+                }
+                return cachedResponse;
+              }
+              return caches.match('/');
+            });
           });
         })
     );
     return;
   }
 
-  // Default: try network first, fallback to cache
+  // Default: always try network first
   event.respondWith(
     fetch(request)
       .catch(() => caches.match(request))
@@ -180,22 +185,26 @@ self.addEventListener('notificationclick', function(event) {
       clients.openWindow('/')
     );
   } else if (event.action === 'close') {
-    // Just close the notification
     return;
   } else {
-    // Default action - open the app
     event.waitUntil(
       clients.openWindow('/')
     );
   }
 });
 
-// Periodic background sync (if supported)
-self.addEventListener('periodicsync', function(event) {
-  console.log('Periodic sync triggered:', event.tag);
+// Handle app updates - force update when new version is available
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('Forcing service worker update');
+    self.skipWaiting();
+  }
   
-  if (event.tag === 'update-products') {
-    event.waitUntil(updateProductsCache());
+  if (event.data && event.data.type === 'SHARE_TARGET') {
+    console.log('Share target activated:', event.data);
+    event.waitUntil(
+      clients.openWindow('/?shared=' + encodeURIComponent(event.data.url || event.data.text || ''))
+    );
   }
 });
 
@@ -203,7 +212,6 @@ self.addEventListener('periodicsync', function(event) {
 async function syncCartData() {
   try {
     console.log('Syncing cart data...');
-    // Implementation would sync cart data when online
     return Promise.resolve();
   } catch (error) {
     console.error('Cart sync failed:', error);
@@ -214,32 +222,9 @@ async function syncCartData() {
 async function syncOrderData() {
   try {
     console.log('Syncing order data...');
-    // Implementation would sync order data when online
     return Promise.resolve();
   } catch (error) {
     console.error('Order sync failed:', error);
     throw error;
   }
 }
-
-async function updateProductsCache() {
-  try {
-    console.log('Updating products cache...');
-    // Implementation would refresh product data
-    return Promise.resolve();
-  } catch (error) {
-    console.error('Products cache update failed:', error);
-    throw error;
-  }
-}
-
-// Handle share target
-self.addEventListener('message', function(event) {
-  if (event.data && event.data.type === 'SHARE_TARGET') {
-    console.log('Share target activated:', event.data);
-    // Handle shared content
-    event.waitUntil(
-      clients.openWindow('/?shared=' + encodeURIComponent(event.data.url || event.data.text || ''))
-    );
-  }
-});
