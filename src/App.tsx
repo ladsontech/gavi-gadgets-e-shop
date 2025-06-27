@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
+import SitemapXML from "./components/SitemapXML";
 
 const queryClient = new QueryClient();
 
@@ -29,8 +31,21 @@ function App() {
     sessionStorage.setItem('splashShown', 'true');
   };
 
+  // Handle sitemap.xml route specially
+  useEffect(() => {
+    if (window.location.pathname === '/sitemap.xml') {
+      // This will be handled by SitemapXML component
+      return;
+    }
+  }, []);
+
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  // Special handling for sitemap.xml
+  if (window.location.pathname === '/sitemap.xml') {
+    return <SitemapXML />;
   }
 
   return (
@@ -48,7 +63,7 @@ function App() {
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/admin" element={<Admin />} />
-                  <Route path="/sitemap.xml" element={<SitemapPage />} />
+                  <Route path="/sitemap" element={<SitemapPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
