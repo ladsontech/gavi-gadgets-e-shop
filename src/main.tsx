@@ -34,20 +34,22 @@ function showInstallPrompt() {
         transform: translateX(-50%);
         background: #ec4899;
         color: white;
-        padding: 16px 24px;
+        padding: 12px 16px;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         z-index: 9999;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         font-size: 14px;
         font-weight: 500;
-        max-width: 90vw;
+        max-width: calc(100vw - 40px);
+        width: 100%;
+        max-width: 400px;
         text-align: center;
         animation: slideDown 0.3s ease-out;
       ">
-        <div style="margin-bottom: 8px;">📱 Install Gavi Gadgets App</div>
-        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 12px;">Get the full experience with our mobile app!</div>
-        <div>
+        <div style="margin-bottom: 6px; font-size: 16px;">📱 Install Gavi Gadgets App</div>
+        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 10px; line-height: 1.3;">Get the full experience with our mobile app!</div>
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
           <button id="install-btn" style="
             background: white;
             color: #ec4899;
@@ -55,9 +57,11 @@ function showInstallPrompt() {
             padding: 8px 16px;
             border-radius: 6px;
             font-weight: 600;
-            margin-right: 8px;
             cursor: pointer;
             font-size: 12px;
+            min-width: 80px;
+            flex: 1;
+            max-width: 120px;
           ">Install Now</button>
           <button id="dismiss-btn" style="
             background: transparent;
@@ -68,6 +72,9 @@ function showInstallPrompt() {
             font-weight: 600;
             cursor: pointer;
             font-size: 12px;
+            min-width: 60px;
+            flex: 1;
+            max-width: 80px;
           ">Later</button>
         </div>
       </div>
@@ -75,6 +82,19 @@ function showInstallPrompt() {
         @keyframes slideDown {
           from { transform: translate(-50%, -100%); opacity: 0; }
           to { transform: translateX(-50%); opacity: 1; }
+        }
+        @media (max-width: 640px) {
+          #pwa-install-banner > div {
+            padding: 10px 12px !important;
+            font-size: 13px !important;
+          }
+          #pwa-install-banner > div > div:first-child {
+            font-size: 14px !important;
+          }
+          #pwa-install-banner button {
+            font-size: 11px !important;
+            padding: 6px 12px !important;
+          }
         }
       </style>
     `;

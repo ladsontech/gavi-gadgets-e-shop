@@ -222,28 +222,16 @@ const ProductDetail: React.FC = () => {
       />
       
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
-        {/* Mobile Header */}
-        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-md border-b border-pink-100 px-4 py-2 md:hidden shadow-lg">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-2 py-1">
+        <main className="container mx-auto px-3 sm:px-4 py-3 md:py-4 lg:py-6">
+          {/* Back Button and Share - Mobile and Desktop */}
+          <div className="flex items-center justify-between mb-4">
+            <Button variant="ghost" onClick={() => navigate(-1)} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-3 py-2">
               <ArrowLeft className="w-4 h-4" />
               <span className="font-medium">Back</span>
             </Button>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={shareProduct} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-2 py-1">
-                <Share2 className="w-4 h-4" />
-                <span className="font-medium">Share</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <main className="container mx-auto px-3 sm:px-4 py-3 md:py-4 lg:py-6">
-          {/* Desktop Back Button */}
-          <div className="flex items-center mb-4">
-            <Button variant="ghost" onClick={() => navigate(-1)} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-3 py-2">
-              <ArrowLeft className="w-4 h-4" />
-              <span className="font-medium">Back to Products</span>
+            <Button variant="ghost" onClick={shareProduct} className="flex items-center gap-2 hover:bg-pink-50 rounded-xl px-3 py-2 md:hidden">
+              <Share2 className="w-4 h-4" />
+              <span className="font-medium">Share</span>
             </Button>
           </div>
 
