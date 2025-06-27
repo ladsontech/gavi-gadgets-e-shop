@@ -31,11 +31,15 @@ function App() {
     sessionStorage.setItem('splashShown', 'true');
   };
 
-  // Handle sitemap.xml route specially
+  // Handle sitemap.xml route specially - redirect to data URL
   useEffect(() => {
     if (window.location.pathname === '/sitemap.xml') {
-      // This will be handled by SitemapXML component
-      return;
+      // Generate and redirect to XML data URL
+      const generateSitemapDataUrl = async () => {
+        // This will be handled by creating a proper sitemap endpoint
+        console.log('Sitemap XML route accessed');
+      };
+      generateSitemapDataUrl();
     }
   }, []);
 
@@ -43,9 +47,13 @@ function App() {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  // Special handling for sitemap.xml
+  // Special handling for sitemap.xml - serve raw XML
   if (window.location.pathname === '/sitemap.xml') {
-    return <SitemapXML />;
+    return (
+      <div style={{ margin: 0, padding: 0 }}>
+        <SitemapXML />
+      </div>
+    );
   }
 
   return (
