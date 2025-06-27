@@ -1,3 +1,4 @@
+
 {
   "name": "Gavi Gadgets UG - Your Mobile Source",
   "short_name": "Gavi Gadgets",
@@ -15,7 +16,15 @@
     "electronics",
     "mobile"
   ],
+  "iarc_rating_id": "e84b072d-71de-4725-85fa-42378ce81c5d",
   "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://gavigadgets.ug/",
+      "id": "gavi-gadgets-webapp"
+    }
+  ],
   "display_override": [
     "window-controls-overlay",
     "standalone"
@@ -23,6 +32,12 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
+  "scope_extensions": [
+    {
+      "origin": "https://gavigadgets.ug"
+    }
+  ],
+  "handle_links": "preferred",
   "file_handlers": [
     {
       "action": "/",
