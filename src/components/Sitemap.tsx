@@ -38,7 +38,7 @@ const Sitemap: React.FC = () => {
   };
 
   const generateSitemap = () => {
-    const baseUrl = 'https://gavistore.lovable.app';
+    const baseUrl = 'https://gavigadgets.ug';
     const currentDate = new Date().toISOString().split('T')[0];
 
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -117,7 +117,7 @@ const Sitemap: React.FC = () => {
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
         <h2 className="font-semibold mb-2">Google Search Console URL:</h2>
         <code className="bg-white p-2 rounded border block">
-          https://gavistore.lovable.app/sitemap.xml
+          https://gavigadgets.ug/sitemap.xml
         </code>
         <p className="text-sm text-gray-600 mt-2">
           Use this URL when submitting your sitemap to Google Search Console.
