@@ -92,9 +92,9 @@ const Index = () => {
   };
 
   const homepageSEO = {
-    title: "Gavi Gadgets Uganda - Buy iPhone 15, 14, 13, Samsung Galaxy S24, S23, Google Pixel 8, 7 | Better than Jumia & Jiji Uganda",
-    description: "Uganda's premier electronics store offering genuine iPhone 15 Pro Max, iPhone 14, Samsung Galaxy S24 Ultra, S23, Google Pixel 8 Pro, Huawei smartphones at unbeatable prices in Kampala. Better service than Jumia Uganda and Jiji Uganda. Visit New Pioneer Mall Shop PA 82A for authentic smartphones with warranty.",
-    keywords: "smartphones Uganda, iPhone 15 Uganda, iPhone 14 Uganda, iPhone 13 Uganda, Samsung Galaxy S24 Uganda, Samsung Galaxy S23 Uganda, Google Pixel 8 Uganda, Google Pixel 7 Uganda, Huawei Uganda, mobile phones Kampala, electronics Uganda, gadgets Uganda, better than Jumia Uganda, better than Jiji Uganda, New Pioneer Mall electronics, authentic smartphones Uganda, iPhone Pro Max Uganda, Samsung Ultra Uganda, Pixel Pro Uganda"
+    title: "Gavi Gadgets Uganda - Buy iPhone 15, 14, 13, Samsung Galaxy S24, S23, Google Pixel 8, 7 | Premium Electronics Store",
+    description: "Uganda's premier electronics store offering genuine iPhone 15 Pro Max, iPhone 14, Samsung Galaxy S24 Ultra, S23, Google Pixel 8 Pro, Huawei smartphones at competitive prices in Kampala. Visit New Pioneer Mall Shop PA 82A for authentic smartphones with warranty.",
+    keywords: "smartphones Uganda, iPhone 15 Uganda, iPhone 14 Uganda, iPhone 13 Uganda, Samsung Galaxy S24 Uganda, Samsung Galaxy S23 Uganda, Google Pixel 8 Uganda, Google Pixel 7 Uganda, Huawei Uganda, mobile phones Kampala, electronics Uganda, gadgets Uganda, Uganda marketplace, New Pioneer Mall electronics, authentic smartphones Uganda, iPhone Pro Max Uganda, Samsung Ultra Uganda, Pixel Pro Uganda"
   };
 
   return (

@@ -185,8 +185,8 @@ const ProductDetail: React.FC = () => {
   // Enhanced SEO data for product
   const productSEO = {
     title: `${product.name} - UGX ${Number(product.price).toLocaleString()} | Buy ${product.brand} ${product.model} in Uganda | Gavi Gadgets`,
-    description: `Buy ${product.name} (${product.brand} ${product.model}) in Uganda for UGX ${Number(product.price).toLocaleString()}. ${product.condition === 'new' ? 'Brand new' : 'UK Used'} condition. ${product.storage_capacity ? `${product.storage_capacity} storage` : ''} ${product.color ? `in ${product.color}` : ''}. Better prices than Jumia Uganda and Jiji Uganda. Located at New Pioneer Mall Shop PA 82A, Kampala.`,
-    keywords: `${product.name} Uganda, ${product.brand} ${product.model} Uganda, ${product.brand} Uganda, ${product.model} price Uganda, buy ${product.brand} Kampala, ${product.name} price, ${product.storage_capacity || ''} ${product.color || ''}, smartphone Uganda, mobile phone Uganda, ${product.brand} New Pioneer Mall, ${product.brand} better than Jumia, ${product.brand} better than Jiji`,
+    description: `Buy ${product.name} (${product.brand} ${product.model}) in Uganda for UGX ${Number(product.price).toLocaleString()}. ${product.condition === 'new' ? 'Brand new' : 'UK Used'} condition. ${product.storage_capacity ? `${product.storage_capacity} storage` : ''} ${product.color ? `in ${product.color}` : ''}. Quality smartphones at competitive prices. Located at New Pioneer Mall Shop PA 82A, Kampala.`,
+    keywords: `${product.name} Uganda, ${product.brand} ${product.model} Uganda, ${product.brand} Uganda, ${product.model} price Uganda, buy ${product.brand} Kampala, ${product.name} price, ${product.storage_capacity || ''} ${product.color || ''}, smartphone Uganda, mobile phone Uganda, ${product.brand} New Pioneer Mall, Uganda electronics marketplace`,
     image: product.images[0] || 'https://gavistore.lovable.app/images/gavi_gadgets_logo.png',
     url: currentUrl,
   };

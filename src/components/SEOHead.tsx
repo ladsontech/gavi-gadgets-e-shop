@@ -29,8 +29,8 @@ interface SEOHeadProps {
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
-  title = "Gavi Gadgets Uganda - Buy iPhone, Samsung, Pixel, Huawei | Better than Jumia & Jiji",
-  description = "Gavi Gadgets Uganda - Best online electronics store for iPhone 15, 14, 13, 12, 11, Samsung Galaxy S24, S23, S22, Google Pixel 8, 7, 6, Huawei smartphones in Kampala. Better prices than Jumia Uganda and Jiji Uganda.",
+  title = "Gavi Gadgets Uganda - Buy iPhone, Samsung, Pixel, Huawei | Premium Electronics Store",
+  description = "Gavi Gadgets Uganda - Premium electronics store for iPhone 15, 14, 13, 12, 11, Samsung Galaxy S24, S23, S22, Google Pixel 8, 7, 6, Huawei smartphones in Kampala. Quality products at competitive prices.",
   keywords = "smartphones Uganda, iPhone Uganda, Samsung Uganda, Google Pixel Uganda, Huawei Uganda, mobile phones Kampala, electronics Uganda, gadgets Uganda",
   image = "https://gavigadgets.ug/images/gavi_gadgets_logo.png",
   url = "https://gavigadgets.ug",
