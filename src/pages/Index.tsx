@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { SearchBar } from "@/components/SearchBar";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
@@ -106,6 +108,7 @@ const Index = () => {
       />
       
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+        <UpdatesCarousel />
         <div className="container mx-auto px-4 py-8">
           <SearchBar onSearch={handleSearch} />
           <CategoryFilter 
