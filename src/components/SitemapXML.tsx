@@ -54,19 +54,10 @@ const SitemapXML: React.FC = () => {
       sitemap += `
 </urlset>`;
 
-      // Set content type to XML and serve the sitemap
-      const response = new Response(sitemap, {
-        headers: {
-          'Content-Type': 'application/xml',
-          'Content-Disposition': 'inline'
-        }
-      });
-
       // Replace the current page content with XML
       document.open();
       document.write(sitemap);
       document.close();
-      document.contentType = 'application/xml';
     };
 
     generateAndServeSitemap();
