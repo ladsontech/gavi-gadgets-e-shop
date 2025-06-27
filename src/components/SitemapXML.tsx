@@ -8,41 +8,31 @@ const SitemapXML = () => {
       try {
         const sitemapXML = await generateSitemapXML();
         
-        // Create a blob with the XML content
-        const blob = new Blob([sitemapXML], { 
-          type: 'application/xml; charset=utf-8' 
-        });
+        // Replace the entire document with XML content
+        document.open();
+        document.write(sitemapXML);
+        document.close();
         
-        // Create a data URL
-        const dataUrl = `data:application/xml;charset=utf-8,${encodeURIComponent(sitemapXML)}`;
-        
-        // Replace the current page with the XML content
-        window.location.replace(dataUrl);
+        // Set the content type
+        if (document.contentType !== 'application/xml') {
+          document.querySelector('html')?.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+        }
       } catch (error) {
         console.error('Error generating sitemap:', error);
-        // Fallback: show a basic message
-        document.body.innerHTML = `
-          <pre style="font-family: monospace; white-space: pre-wrap;">
-Error generating sitemap. Please try again later.
-          </pre>
-        `;
+        // Fallback: show error in XML format
+        const errorXML = `<?xml version="1.0" encoding="UTF-8"?>
+<error>Unable to generate sitemap</error>`;
+        document.open();
+        document.write(errorXML);
+        document.close();
       }
     };
 
     serveSitemap();
   }, []);
 
-  return (
-    <div style={{ 
-      fontFamily: 'monospace', 
-      padding: '20px',
-      backgroundColor: '#f5f5f5',
-      minHeight: '100vh'
-    }}>
-      <p>Generating sitemap.xml...</p>
-      <p>You will be redirected to the XML content shortly.</p>
-    </div>
-  );
+  // Return null since we're replacing the entire document
+  return null;
 };
 
 export default SitemapXML;
