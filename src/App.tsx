@@ -15,7 +15,7 @@ import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
-import { SitemapXML } from "@/components/SitemapXML";
+import SitemapXML from "@/components/SitemapXML";
 
 const queryClient = new QueryClient();
 
