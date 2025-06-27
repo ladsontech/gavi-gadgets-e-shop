@@ -1,0 +1,83 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://gavigadgets.ug/</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://gavigadgets.ug/images/gavi_gadgets_logo.png</image:loc>
+      <image:title>Gavi Gadgets Uganda - Best Electronics Store</image:title>
+      <image:caption>Buy iPhone, Samsung, Google Pixel, Huawei smartphones in Uganda. Better prices than Jumia and Jiji.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/cart</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Product URLs will be automatically updated -->
+  <url>
+    <loc>https://gavigadgets.ug/product/zte-nubia-neo-2</loc>
+    <lastmod>2025-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/product/samsung-galaxy-s20</loc>
+    <lastmod>2025-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/product/samsung-galaxy-s24</loc>
+    <lastmod>2025-06-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/product/iphone-15-pro-max</loc>
+    <lastmod>2025-06-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!-- SEO URLs -->
+  <url>
+    <loc>https://gavigadgets.ug/smartphones-kampala</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/iphone-uganda</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/samsung-galaxy-uganda</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/google-pixel-uganda</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/huawei-smartphones-uganda</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gavigadgets.ug/electronics-new-pioneer-mall</loc>
+    <lastmod>2025-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

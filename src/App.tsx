@@ -9,14 +9,13 @@ import { AppBar } from "@/components/AppBar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SplashScreen } from "@/components/SplashScreen";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
-import SitemapXML from "@/components/SitemapXML";
 
 const queryClient = new QueryClient();
 
@@ -33,11 +32,6 @@ function App() {
 
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
-  // Special handling for sitemap.xml - serve raw XML without any wrapper
-  if (window.location.pathname === '/sitemap.xml') {
-    return <SitemapXML />;
   }
 
   return (
