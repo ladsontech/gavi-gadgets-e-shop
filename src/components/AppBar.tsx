@@ -44,11 +44,18 @@ export const AppBar = () => {
           </div>
         </div>
 
-        {/* Mobile Logo Title (visible only on mobile) - Also bigger */}
+        {/* Mobile Logo Title with Contact (visible only on mobile) */}
         <div className="sm:hidden flex-1 text-center">
-          <h1 className="font-bold text-gray-900 tracking-tight text-2xl">
+          <h1 className="font-bold text-gray-900 tracking-tight text-2xl leading-tight">
             Gavi Gadgets
           </h1>
+          <button
+            onClick={handleContactClick}
+            className="flex items-center justify-center gap-1 mx-auto mt-1 text-blue-600 hover:text-blue-700 transition-colors duration-200 group"
+          >
+            <Phone className="w-3 h-3 group-hover:scale-110 transition-transform duration-200" />
+            <span className="text-xs font-medium">+256 740799577</span>
+          </button>
         </div>
 
         {/* Actions Section - Compact */}
@@ -63,18 +70,6 @@ export const AppBar = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
             <Phone className="w-4 h-4 relative z-10" />
             <span className="text-sm font-medium relative z-10">+256 740799577</span>
-          </Button>
-
-          {/* Mobile Contact Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleContactClick}
-            className="sm:hidden h-10 w-10 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 group"
-            title="+256 740799577"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-            <Phone className="w-5 h-5 relative z-10" />
           </Button>
 
           {/* Cart Icon with enhanced styling */}
