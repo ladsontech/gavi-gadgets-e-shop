@@ -10,9 +10,8 @@ export const AppBar = () => {
 
   const handleContactClick = () => {
     const phoneNumber = "+256740799577";
-    const message = "Hello! I'm interested in your products at Gavi Gadgets UG. Could you please help me?";
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
+    // Direct phone call
+    window.location.href = `tel:${phoneNumber}`;
   };
 
   return (
@@ -54,16 +53,16 @@ export const AppBar = () => {
 
         {/* Actions Section - Compact */}
         <div className="flex items-center gap-2">
-          {/* Contact Button */}
+          {/* Contact Button - Desktop with phone number */}
           <Button
             variant="ghost"
             size="sm"
             onClick={handleContactClick}
-            className="hidden sm:flex items-center gap-2 h-10 px-3 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 text-gray-700 hover:text-green-600 transition-all duration-300 hover:scale-105 group"
+            className="hidden sm:flex items-center gap-2 h-10 px-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 group"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
             <Phone className="w-4 h-4 relative z-10" />
-            <span className="text-sm font-medium relative z-10">Contact</span>
+            <span className="text-sm font-medium relative z-10">+256 740799577</span>
           </Button>
 
           {/* Mobile Contact Button */}
@@ -71,9 +70,10 @@ export const AppBar = () => {
             variant="ghost"
             size="icon"
             onClick={handleContactClick}
-            className="sm:hidden h-10 w-10 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 text-gray-700 hover:text-green-600 transition-all duration-300 hover:scale-110 group"
+            className="sm:hidden h-10 w-10 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-110 group"
+            title="+256 740799577"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
             <Phone className="w-5 h-5 relative z-10" />
           </Button>
 
