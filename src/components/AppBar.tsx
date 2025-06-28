@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { CartIcon } from "./CartIcon";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export const AppBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleContactClick = () => {
+    const phoneNumber = "+256740799577";
+    const message = "Hello! I'm interested in your products at Gavi Gadgets UG. Could you please help me?";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
   return (
     <header className="w-full bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm sticky top-0 z-50">
@@ -46,6 +54,29 @@ export const AppBar = () => {
 
         {/* Actions Section - Compact */}
         <div className="flex items-center gap-2">
+          {/* Contact Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleContactClick}
+            className="hidden sm:flex items-center gap-2 h-10 px-3 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 text-gray-700 hover:text-green-600 transition-all duration-300 hover:scale-105 group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+            <Phone className="w-4 h-4 relative z-10" />
+            <span className="text-sm font-medium relative z-10">Contact</span>
+          </Button>
+
+          {/* Mobile Contact Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleContactClick}
+            className="sm:hidden h-10 w-10 rounded-xl hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 text-gray-700 hover:text-green-600 transition-all duration-300 hover:scale-110 group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+            <Phone className="w-5 h-5 relative z-10" />
+          </Button>
+
           {/* Cart Icon with enhanced styling */}
           <div className="relative">
             <CartIcon />
