@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ShoppingCart, ArrowLeft, Share2, Heart, Star, Shield } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { ProductGrid } from "@/components/ProductGrid";
 import SEOHead from "@/components/SEOHead";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -45,7 +44,6 @@ interface CartItem {
 const ProductDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,10 +135,7 @@ const ProductDetail: React.FC = () => {
     // Dispatch cart update event
     window.dispatchEvent(new Event("cartUpdated"));
 
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`
-    });
+    // Silent addition - no toast notification
   };
 
   const shareProduct = () => {

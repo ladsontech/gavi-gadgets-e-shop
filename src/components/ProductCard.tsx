@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Star, Heart } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 interface Product {
   id: string;
@@ -33,7 +32,6 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const addToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -59,10 +57,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     // Dispatch cart update event
     window.dispatchEvent(new Event("cartUpdated"));
     
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-    });
+    // Silent addition - no toast notification
   };
 
   const handleClick = () => {
