@@ -1,8 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
-import { CategoryFilter } from "@/components/CategoryFilter";
 import { SearchBar } from "@/components/SearchBar";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
@@ -10,46 +8,13 @@ import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch categories once on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  // Fetch products whenever category or search changes
+  // Fetch products whenever search changes
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, searchQuery]);
-
-  // Listen for category changes from mobile nav
-  useEffect(() => {
-    const handleCategoryChange = (event: CustomEvent) => {
-      setSelectedCategory(event.detail);
-    };
-
-    window.addEventListener('categoryChanged', handleCategoryChange as EventListener);
-    
-    return () => {
-      window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
-    };
-  }, []);
-
-  const fetchCategories = async () => {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .order("name");
-    
-    if (error) {
-      console.error("Error fetching categories:", error);
-    } else {
-      setCategories(data || []);
-    }
-  };
+  }, [searchQuery]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -59,13 +24,6 @@ const Index = () => {
       .from("products")
       .select("*")
       .eq("is_active", true);
-
-    // Apply category filter
-    if (selectedCategory && selectedCategory !== "others") {
-      query = query.eq("category_id", selectedCategory);
-    } else if (selectedCategory === "others") {
-      query = query.is("category_id", null);
-    }
 
     // Apply search filter
     if (searchQuery.trim()) {
@@ -83,10 +41,6 @@ const Index = () => {
     }
     
     setLoading(false);
-  };
-
-  const handleCategoryChange = (categoryId: string | null) => {
-    setSelectedCategory(categoryId);
   };
 
   const handleSearch = (query: string) => {
@@ -111,11 +65,6 @@ const Index = () => {
         <UpdatesCarousel />
         <div className="container mx-auto px-4 py-8">
           <SearchBar onSearch={handleSearch} />
-          <CategoryFilter 
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={handleCategoryChange} 
-          />
           {loading ? (
             <LoadingSpinner />
           ) : (
