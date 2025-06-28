@@ -19,7 +19,7 @@ export const AppBar = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-pink-50/30 via-white/20 to-purple-50/30"></div>
       
       <nav className="relative flex items-center justify-between px-4 py-3 max-w-6xl mx-auto">
-        {/* Logo Section - Compact */}
+        {/* Logo Section - Enhanced with bigger text */}
         <div 
           className="flex items-center gap-3 cursor-pointer group transition-all duration-300 hover:scale-105" 
           onClick={() => navigate("/")}
@@ -29,24 +29,24 @@ export const AppBar = () => {
             <img 
               src="/images/gavi_gadgets_logo.png" 
               alt="Gavi Gadgets Logo" 
-              className="w-10 h-10 rounded-xl object-contain transition-all duration-300 group-hover:rotate-12 relative z-10" 
+              className="w-12 h-12 rounded-xl object-contain transition-all duration-300 group-hover:rotate-12 relative z-10" 
               draggable={false} 
             />
           </div>
           
           <div className="hidden sm:block">
-            <h1 className="font-bold text-gray-900 text-lg tracking-tight group-hover:text-pink-600 transition-colors duration-300">
+            <h1 className="font-bold text-gray-900 text-2xl xl:text-3xl tracking-tight group-hover:text-pink-600 transition-colors duration-300 leading-tight">
               Gavi Gadgets
             </h1>
-            <p className="text-xs text-gray-500 font-medium group-hover:text-pink-500 transition-colors duration-300 -mt-0.5">
+            <p className="text-sm text-gray-500 font-medium group-hover:text-pink-500 transition-colors duration-300 -mt-1">
               Your Mobile Source
             </p>
           </div>
         </div>
 
-        {/* Mobile Logo Title (visible only on mobile) */}
+        {/* Mobile Logo Title (visible only on mobile) - Also bigger */}
         <div className="sm:hidden flex-1 text-center">
-          <h1 className="font-bold text-gray-900 tracking-tight text-lg">
+          <h1 className="font-bold text-gray-900 tracking-tight text-2xl">
             Gavi Gadgets
           </h1>
         </div>
