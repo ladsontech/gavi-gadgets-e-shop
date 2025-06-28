@@ -14,6 +14,7 @@ import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
+import Warranty from "./pages/Warranty";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
 
@@ -49,6 +50,7 @@ function App() {
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/admin" element={<Admin />} />
+                  <Route path="/warranty" element={<Warranty />} />
                   <Route path="/sitemap" element={<SitemapPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
