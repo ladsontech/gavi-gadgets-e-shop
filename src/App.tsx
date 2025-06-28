@@ -9,7 +9,8 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MobileMainNav } from "@/components/MobileMainNav";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
@@ -26,9 +27,36 @@ function App() {
     return !sessionStorage.getItem('splashShown');
   });
 
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   const handleSplashComplete = () => {
     setShowSplash(false);
     sessionStorage.setItem('splashShown', 'true');
+  };
+
+  // Fetch categories for mobile nav
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name");
+      
+      if (error) {
+        console.error("Error fetching categories:", error);
+      } else {
+        setCategories(data || []);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleCategoryChange = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+    // Dispatch custom event to notify Index page about category change
+    window.dispatchEvent(new CustomEvent('categoryChanged', { detail: categoryId }));
   };
 
   if (showSplash) {
@@ -57,7 +85,11 @@ function App() {
               </main>
               <Footer />
               <WhatsAppButton />
-              <MobileMainNav />
+              <MobileMainNav 
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={handleCategoryChange}
+              />
             </div>
           </BrowserRouter>
         </TooltipProvider>

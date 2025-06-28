@@ -8,13 +8,46 @@ import SEOHead from "@/components/SEOHead";
 
 const Index = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch products whenever search changes
+  // Fetch categories once on mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch products whenever category or search changes
   useEffect(() => {
     fetchProducts();
-  }, [searchQuery]);
+  }, [selectedCategory, searchQuery]);
+
+  // Listen for category changes from mobile nav
+  useEffect(() => {
+    const handleCategoryChange = (event: CustomEvent) => {
+      setSelectedCategory(event.detail);
+    };
+
+    window.addEventListener('categoryChanged', handleCategoryChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
+    };
+  }, []);
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("name");
+    
+    if (error) {
+      console.error("Error fetching categories:", error);
+    } else {
+      setCategories(data || []);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -24,6 +57,13 @@ const Index = () => {
       .from("products")
       .select("*")
       .eq("is_active", true);
+
+    // Apply category filter
+    if (selectedCategory && selectedCategory !== "others") {
+      query = query.eq("category_id", selectedCategory);
+    } else if (selectedCategory === "others") {
+      query = query.is("category_id", null);
+    }
 
     // Apply search filter
     if (searchQuery.trim()) {
