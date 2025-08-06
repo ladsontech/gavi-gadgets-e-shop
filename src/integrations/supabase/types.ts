@@ -14,121 +14,328 @@ export type Database = {
   }
   public: {
     Tables: {
-      products: {
+      categories: {
         Row: {
-          category: string | null
-          condition: string | null
-          created_at: string
+          created_at: string | null
           description: string | null
-          featured: boolean
           id: string
-          images: string[] | null
-          in_stock: boolean | null
-          original_price: number | null
-          price: number
-          section: string
-          title: string
-          updated_at: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          slug: string
+          updated_at: string | null
         }
         Insert: {
-          category?: string | null
-          condition?: string | null
-          created_at?: string
+          created_at?: string | null
           description?: string | null
-          featured?: boolean
           id?: string
-          images?: string[] | null
-          in_stock?: boolean | null
-          original_price?: number | null
-          price: number
-          section: string
-          title: string
-          updated_at?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          slug: string
+          updated_at?: string | null
         }
         Update: {
-          category?: string | null
-          condition?: string | null
-          created_at?: string
+          created_at?: string | null
           description?: string | null
-          featured?: boolean
           id?: string
-          images?: string[] | null
-          in_stock?: boolean | null
-          original_price?: number | null
-          price?: number
-          section?: string
-          title?: string
-          updated_at?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          slug?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
-      properties: {
+      customers: {
         Row: {
-          area: number | null
-          bathrooms: number | null
-          bedrooms: number | null
-          created_at: string
+          address: string | null
+          city: string | null
+          created_at: string | null
+          email: string | null
           id: string
-          images: string[] | null
-          location: string
-          price: number
-          title: string
-          type: string
-          updated_at: string
+          name: string
+          phone: string
+          updated_at: string | null
+          whatsapp_number: string | null
         }
         Insert: {
-          area?: number | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          created_at?: string
+          address?: string | null
+          city?: string | null
+          created_at?: string | null
+          email?: string | null
           id?: string
-          images?: string[] | null
-          location: string
-          price: number
-          title: string
-          type: string
-          updated_at?: string
+          name: string
+          phone: string
+          updated_at?: string | null
+          whatsapp_number?: string | null
         }
         Update: {
-          area?: number | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          created_at?: string
+          address?: string | null
+          city?: string | null
+          created_at?: string | null
+          email?: string | null
           id?: string
-          images?: string[] | null
-          location?: string
-          price?: number
-          title?: string
-          type?: string
-          updated_at?: string
+          name?: string
+          phone?: string
+          updated_at?: string | null
+          whatsapp_number?: string | null
         }
         Relationships: []
+      }
+      order_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_id: string | null
+          product_id: string | null
+          product_name: string
+          product_price: number
+          quantity: number
+          total_price: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_id?: string | null
+          product_id?: string | null
+          product_name: string
+          product_price: number
+          quantity?: number
+          total_price: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_id?: string | null
+          product_id?: string | null
+          product_name?: string
+          product_price?: number
+          quantity?: number
+          total_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          customer_address: string | null
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string
+          customer_whatsapp: string | null
+          id: string
+          notes: string | null
+          order_number: string
+          payment_method: string | null
+          payment_status: string | null
+          status: string | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_address?: string | null
+          customer_id?: string | null
+          customer_name: string
+          customer_phone: string
+          customer_whatsapp?: string | null
+          id?: string
+          notes?: string | null
+          order_number: string
+          payment_method?: string | null
+          payment_status?: string | null
+          status?: string | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_address?: string | null
+          customer_id?: string | null
+          customer_name?: string
+          customer_phone?: string
+          customer_whatsapp?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          payment_method?: string | null
+          payment_status?: string | null
+          status?: string | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          brand: string
+          category_id: string | null
+          color: string | null
+          condition: string | null
+          created_at: string | null
+          description: string | null
+          features: string[] | null
+          id: string
+          images: string[] | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          model: string
+          name: string
+          original_price: number | null
+          price: number
+          slug: string
+          specifications: Json | null
+          stock_quantity: number | null
+          storage_capacity: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          brand: string
+          category_id?: string | null
+          color?: string | null
+          condition?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          model: string
+          name: string
+          original_price?: number | null
+          price: number
+          slug: string
+          specifications?: Json | null
+          stock_quantity?: number | null
+          storage_capacity?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          brand?: string
+          category_id?: string | null
+          color?: string | null
+          condition?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          model?: string
+          name?: string
+          original_price?: number | null
+          price?: number
+          slug?: string
+          specifications?: Json | null
+          stock_quantity?: number | null
+          storage_capacity?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          product_id: string | null
+          rating: number | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          product_id?: string | null
+          rating?: number | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          product_id?: string | null
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       updates: {
         Row: {
           created_at: string
-          description: string | null
+          display_order: number | null
           id: string
-          image_url: string | null
-          published: boolean
+          image_url: string
+          is_active: boolean | null
           title: string
           updated_at: string
         }
         Insert: {
           created_at?: string
-          description?: string | null
+          display_order?: number | null
           id?: string
-          image_url?: string | null
-          published?: boolean
+          image_url: string
+          is_active?: boolean | null
           title: string
           updated_at?: string
         }
         Update: {
           created_at?: string
-          description?: string | null
+          display_order?: number | null
           id?: string
-          image_url?: string | null
-          published?: boolean
+          image_url?: string
+          is_active?: boolean | null
           title?: string
           updated_at?: string
         }
