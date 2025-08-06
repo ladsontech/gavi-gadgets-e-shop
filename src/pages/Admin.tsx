@@ -10,6 +10,7 @@ import { EditProductForm } from "@/components/admin/EditProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { OthersManager } from "@/components/admin/OthersManager";
+import { AdminLoginModal } from "@/components/AdminLoginModal";
 import { Loader2, Plus, Package, ArrowLeft, LogOut, Image, Smartphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -48,13 +49,19 @@ const Admin: React.FC = () => {
   const [formType, setFormType] = useState<'phone' | 'other'>('phone');
   const [editProduct, setEditProduct] = useState<Product | undefined>();
   const [activeTab, setActiveTab] = useState("products");
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    if (!isAdmin) navigate("/");
-  }, [isAdmin, navigate]);
+    // Show login modal if not authenticated, otherwise redirect to home
+    if (!isAdmin) {
+      setShowLoginModal(true);
+    }
+  }, [isAdmin]);
 
   useEffect(() => {
     const loadData = async () => {
+      if (!isAdmin) return;
+      
       setIsLoading(true);
       
       // Load categories
@@ -69,7 +76,7 @@ const Admin: React.FC = () => {
       setIsLoading(false);
     };
     loadData();
-  }, []);
+  }, [isAdmin]);
 
   const refreshProducts = async () => {
     const { data: prodData } = await supabase
@@ -77,6 +84,11 @@ const Admin: React.FC = () => {
       .select("*")
       .order("created_at", { ascending: false });
     setProducts(prodData || []);
+  };
+
+  const handleLoginModalClose = () => {
+    setShowLoginModal(false);
+    navigate("/"); // Redirect to home if login modal is closed without logging in
   };
 
   const handleAddPhone = () => {
@@ -115,7 +127,19 @@ const Admin: React.FC = () => {
     setEditProduct(undefined);
   };
 
-  if (!isAdmin) return null;
+  // Show login modal if not authenticated
+  if (!isAdmin) {
+    return (
+      <AdminLoginModal 
+        open={showLoginModal} 
+        onOpenChange={(open) => {
+          if (!open) {
+            handleLoginModalClose();
+          }
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
