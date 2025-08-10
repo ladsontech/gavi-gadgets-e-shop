@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,7 +49,7 @@ type Category = {
 };
 
 const Admin = () => {
-  const { isAdmin, loginAdmin } = useAdminAuth();
+  const { isAdmin } = useAdminAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -63,9 +62,9 @@ const Admin = () => {
     }
   }, [isAdmin]);
 
-  const handleLoginClose = () => {
-    setShowLoginModal(false);
-    if (!isAdmin) {
+  const handleLoginModalChange = (open: boolean) => {
+    setShowLoginModal(open);
+    if (!open && !isAdmin) {
       window.location.href = "/";
     }
   };
@@ -162,8 +161,7 @@ const Admin = () => {
     return (
       <AdminLoginModal
         open={showLoginModal}
-        onClose={handleLoginClose}
-        onLogin={loginAdmin}
+        onOpenChange={handleLoginModalChange}
       />
     );
   }
