@@ -8,11 +8,23 @@ import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 import { WeeklyOffers } from "@/components/WeeklyOffers";
 import SEOHead from "@/components/SEOHead";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Listen for category changes from mobile nav
+  useEffect(() => {
+    const handleCategoryChange = (event: CustomEvent) => {
+      setSelectedCategory(event.detail);
+    };
+
+    window.addEventListener('categoryChanged', handleCategoryChange as EventListener);
+    return () => {
+      window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
+    };
+  }, []);
 
   const { data: products } = useQuery({
     queryKey: ["products", selectedCategory, searchQuery],
@@ -31,8 +43,10 @@ const Index = () => {
         )
         .eq("is_active", true);
 
-      if (selectedCategory) {
+      if (selectedCategory && selectedCategory !== "others") {
         query = query.eq("category_id", selectedCategory);
+      } else if (selectedCategory === "others") {
+        query = query.is("category_id", null);
       }
 
       if (searchQuery) {
@@ -69,8 +83,10 @@ const Index = () => {
   });
 
   const filteredProducts = products?.filter((product) => {
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "others") {
       return product.category_id === selectedCategory;
+    } else if (selectedCategory === "others") {
+      return !product.category_id;
     }
     return true;
   });
@@ -87,9 +103,10 @@ const Index = () => {
         <HeroSection />
         <UpdatesCarousel />
         <WeeklyOffers />
-        <FeaturedProducts products={products || []} />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FeaturedProducts products={products || []} />
+          
           <div className="mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
               Shop by Category
@@ -104,7 +121,9 @@ const Index = () => {
           <div className="mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
               {selectedCategory 
-                ? `${categories?.find(c => c.id === selectedCategory)?.name} Products`
+                ? selectedCategory === "others"
+                  ? "Other Products"
+                  : `${categories?.find(c => c.id === selectedCategory)?.name} Products`
                 : searchQuery 
                   ? `Search Results for "${searchQuery}"`
                   : "All Products"

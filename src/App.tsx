@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MobileMainNav } from "@/components/MobileMainNav";
+import { DesktopNav } from "@/components/DesktopNav";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
@@ -23,7 +25,6 @@ const queryClient = new QueryClient();
 
 function App() {
   const [showSplash, setShowSplash] = useState(() => {
-    // Check if splash has been shown in this session
     return !sessionStorage.getItem('splashShown');
   });
 
@@ -35,7 +36,6 @@ function App() {
     sessionStorage.setItem('splashShown', 'true');
   };
 
-  // Fetch categories for mobile nav
   useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase
@@ -55,7 +55,6 @@ function App() {
 
   const handleCategoryChange = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
-    // Dispatch custom event to notify Index page about category change
     window.dispatchEvent(new CustomEvent('categoryChanged', { detail: categoryId }));
   };
 
@@ -71,7 +70,13 @@ function App() {
           <Sonner />
           <BrowserRouter>
             <div className="min-h-screen flex flex-col">
-              <AppBar />
+              <AppBar>
+                <DesktopNav 
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={handleCategoryChange}
+                />
+              </AppBar>
               <main className="flex-1 pb-16 md:pb-0">
                 <Routes>
                   <Route path="/" element={<Index />} />
