@@ -32,6 +32,9 @@ type Product = {
   is_featured: boolean;
   storage_capacity?: string;
   color?: string;
+  is_weekly_offer?: boolean;
+  offer_start_date?: string | null;
+  offer_end_date?: string | null;
 };
 
 type Category = {

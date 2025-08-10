@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -160,7 +161,7 @@ const Admin = () => {
   if (!isAdmin) {
     return (
       <AdminLoginModal
-        isOpen={showLoginModal}
+        open={showLoginModal}
         onClose={handleLoginClose}
         onLogin={loginAdmin}
       />
@@ -252,7 +253,10 @@ const Admin = () => {
                     products={products || []}
                     categories={categories || []}
                     onEdit={(product) => {
-                      setEditingProduct(product);
+                      setEditingProduct({
+                        ...product,
+                        stock_quantity: product.stock_quantity || 0
+                      });
                       setShowProductForm(true);
                     }}
                     onDelete={deleteProduct.mutate}
