@@ -70,13 +70,12 @@ function App() {
           <Sonner />
           <BrowserRouter>
             <div className="min-h-screen flex flex-col">
-              <AppBar>
-                <DesktopNav 
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  onCategoryChange={handleCategoryChange}
-                />
-              </AppBar>
+              <AppBar />
+              <DesktopNav 
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={handleCategoryChange}
+              />
               <main className="flex-1 pb-16 md:pb-0">
                 <Routes>
                   <Route path="/" element={<Index />} />
