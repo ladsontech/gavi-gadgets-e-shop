@@ -87,6 +87,22 @@ export const EditProductForm: React.FC<EditProductFormProps> = ({
     }
   };
 
+  const handleWeeklyOfferChange = (isOffer: boolean) => {
+    updateField('is_weekly_offer', isOffer);
+    
+    if (isOffer) {
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setDate(startDate.getDate() + 7); // 7 days from now
+      
+      updateField('offer_start_date', startDate.toISOString());
+      updateField('offer_end_date', endDate.toISOString());
+    } else {
+      updateField('offer_start_date', null);
+      updateField('offer_end_date', null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -247,14 +263,37 @@ export const EditProductForm: React.FC<EditProductFormProps> = ({
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={formData.is_featured}
-            onChange={(e) => updateField("is_featured", e.target.checked)}
-            id="featured"
-          />
-          <label htmlFor="featured" className="text-sm">Mark as featured</label>
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={formData.is_featured}
+              onChange={(e) => updateField("is_featured", e.target.checked)}
+              id="featured"
+            />
+            <label htmlFor="featured" className="text-sm">Mark as featured</label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={formData.is_weekly_offer || false}
+              onChange={(e) => handleWeeklyOfferChange(e.target.checked)}
+              id="weeklyOffer"
+            />
+            <label htmlFor="weeklyOffer" className="text-sm">Add to weekly offers (7 days)</label>
+          </div>
+
+          {formData.is_weekly_offer && formData.offer_end_date && (
+            <div className="p-3 bg-yellow-50 rounded-lg">
+              <p className="text-sm text-yellow-700">
+                This product will be featured in weekly offers until:{" "}
+                <span className="font-semibold">
+                  {new Date(formData.offer_end_date).toLocaleDateString()}
+                </span>
+              </p>
+            </div>
+          )}
         </div>
 
         {formData.original_price && (

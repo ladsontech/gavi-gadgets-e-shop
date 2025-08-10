@@ -1,115 +1,116 @@
-import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
-import { SearchBar } from "@/components/SearchBar";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { CategoryFilter } from "@/components/CategoryFilter";
+import { HeroSection } from "@/components/HeroSection";
+import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
-import SEOHead from "@/components/SEOHead";
+import { WeeklyOffers } from "@/components/WeeklyOffers";
+import { SEOHead } from "@/components/SEOHead";
+import { useState } from "react";
 
 const Index = () => {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch categories once on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const { data: products } = useQuery({
+    queryKey: ["products", selectedCategory, searchQuery],
+    queryFn: async () => {
+      let query = supabase
+        .from("products")
+        .select(
+          `
+          *,
+          categories (
+            id,
+            name,
+            slug
+          )
+        `
+        )
+        .eq("is_active", true);
 
-  // Fetch products whenever category or search changes
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, searchQuery]);
+      if (selectedCategory) {
+        query = query.eq("category_id", selectedCategory);
+      }
 
-  // Listen for category changes from mobile nav
-  useEffect(() => {
-    const handleCategoryChange = (event: CustomEvent) => {
-      setSelectedCategory(event.detail);
-    };
+      if (searchQuery) {
+        query = query.ilike("name", `%${searchQuery}%`);
+      }
 
-    window.addEventListener('categoryChanged', handleCategoryChange as EventListener);
-    
-    return () => {
-      window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
-    };
-  }, []);
+      const { data, error } = await query.order("created_at", {
+        ascending: false,
+      });
 
-  const fetchCategories = async () => {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .order("name");
-    
-    if (error) {
-      console.error("Error fetching categories:", error);
-    } else {
-      setCategories(data || []);
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .eq("is_active", true)
+        .order("name", { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      return data;
+    },
+  });
+
+  const filteredProducts = products?.filter((product) => {
+    if (selectedCategory) {
+      return product.category_id === selectedCategory;
     }
-  };
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    
-    // Build query without caching
-    let query = supabase
-      .from("products")
-      .select("*")
-      .eq("is_active", true);
-
-    // Apply category filter
-    if (selectedCategory && selectedCategory !== "others") {
-      query = query.eq("category_id", selectedCategory);
-    } else if (selectedCategory === "others") {
-      query = query.is("category_id", null);
-    }
-
-    // Apply search filter
-    if (searchQuery.trim()) {
-      query = query.ilike("name", `%${searchQuery.trim()}%`);
-    }
-
-    // Execute query with fresh data
-    const { data, error } = await query;
-
-    if (error) {
-      console.error("Error fetching products:", error);
-      setProducts([]);
-    } else {
-      setProducts(data || []);
-    }
-    
-    setLoading(false);
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
-  const homepageSEO = {
-    title: "Gavi Gadgets Uganda - Buy iPhone 15, 14, 13, Samsung Galaxy S24, S23, Google Pixel 8, 7 | Premium Electronics Store",
-    description: "Uganda's premier electronics store offering genuine iPhone 15 Pro Max, iPhone 14, Samsung Galaxy S24 Ultra, S23, Google Pixel 8 Pro, Huawei smartphones at competitive prices in Kampala. Visit New Pioneer Mall Shop PA 82A for authentic smartphones with warranty.",
-    keywords: "smartphones Uganda, iPhone 15 Uganda, iPhone 14 Uganda, iPhone 13 Uganda, Samsung Galaxy S24 Uganda, Samsung Galaxy S23 Uganda, Google Pixel 8 Uganda, Google Pixel 7 Uganda, Huawei Uganda, mobile phones Kampala, electronics Uganda, gadgets Uganda, Uganda marketplace, New Pioneer Mall electronics, authentic smartphones Uganda, iPhone Pro Max Uganda, Samsung Ultra Uganda, Pixel Pro Uganda"
-  };
+    return true;
+  });
 
   return (
     <>
-      <SEOHead
-        title={homepageSEO.title}
-        description={homepageSEO.description}
-        keywords={homepageSEO.keywords}
+      <SEOHead 
+        title="Gavi Gadgets - Premium Smartphones in Uganda"
+        description="Shop the latest smartphones including iPhone, Samsung, Huawei and more. Best prices on new and UK used phones in Uganda with warranty."
+        keywords="smartphones, iPhone, Samsung, Huawei, Uganda, phones, mobile"
       />
       
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+      <div className="min-h-screen bg-gray-50">
+        <HeroSection onSearch={setSearchQuery} />
         <UpdatesCarousel />
-        <div className="container mx-auto px-4 py-8">
-          <SearchBar onSearch={handleSearch} />
-          {loading ? (
-            <LoadingSpinner />
-          ) : (
-            <ProductGrid products={products} />
-          )}
+        <WeeklyOffers />
+        <FeaturedProducts />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+              Shop by Category
+            </h2>
+            <CategoryFilter
+              categories={categories || []}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
+          </div>
+
+          <div className="mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+              {selectedCategory 
+                ? `${categories?.find(c => c.id === selectedCategory)?.name} Products`
+                : searchQuery 
+                  ? `Search Results for "${searchQuery}"`
+                  : "All Products"
+              }
+            </h2>
+            <ProductGrid products={filteredProducts || []} />
+          </div>
         </div>
       </div>
     </>

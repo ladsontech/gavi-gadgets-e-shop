@@ -203,8 +203,11 @@ export type Database = {
           images: string[] | null
           is_active: boolean | null
           is_featured: boolean | null
+          is_weekly_offer: boolean | null
           model: string
           name: string
+          offer_end_date: string | null
+          offer_start_date: string | null
           original_price: number | null
           price: number
           slug: string
@@ -225,8 +228,11 @@ export type Database = {
           images?: string[] | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          is_weekly_offer?: boolean | null
           model: string
           name: string
+          offer_end_date?: string | null
+          offer_start_date?: string | null
           original_price?: number | null
           price: number
           slug: string
@@ -247,8 +253,11 @@ export type Database = {
           images?: string[] | null
           is_active?: boolean | null
           is_featured?: boolean | null
+          is_weekly_offer?: boolean | null
           model?: string
           name?: string
+          offer_end_date?: string | null
+          offer_start_date?: string | null
           original_price?: number | null
           price?: number
           slug?: string
@@ -346,7 +355,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      expire_weekly_offers: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
