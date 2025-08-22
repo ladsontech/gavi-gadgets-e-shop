@@ -53,10 +53,12 @@ export const MobileMainNav = ({
   ];
 
   const handleNavClick = (item: typeof navItems[0]) => {
+    // Immediately update category for faster response
+    onCategoryChange(item.value);
+    
     if (location.pathname !== item.route) {
       navigate(item.route);
     }
-    onCategoryChange(item.value);
   };
 
   return (
@@ -70,7 +72,7 @@ export const MobileMainNav = ({
           <button
             key={item.label}
             type="button"
-            className={`flex-1 py-2 flex flex-col items-center justify-center gap-0.5 text-xs font-medium
+            className={`flex-1 py-1.5 flex flex-col items-center justify-center gap-0.5 text-xs font-medium
               ${active
                 ? "text-pink-600 bg-pink-50"
                 : "text-gray-500 hover:text-pink-500"}
@@ -78,8 +80,8 @@ export const MobileMainNav = ({
             onClick={() => handleNavClick(item)}
             aria-current={active ? "page" : undefined}
           >
-            <Icon className={`w-5 h-5 mb-1 ${active ? "text-pink-600" : ""}`} />
-            <span className={active ? "font-semibold" : ""}>{item.label}</span>
+            <Icon className={`w-4 h-4 mb-0.5 ${active ? "text-pink-600" : ""}`} />
+            <span className={`text-xs leading-tight ${active ? "font-semibold" : ""}`}>{item.label}</span>
           </button>
         );
       })}

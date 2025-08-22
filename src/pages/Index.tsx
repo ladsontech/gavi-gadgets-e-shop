@@ -8,7 +8,7 @@ import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 import { WeeklyOffers } from "@/components/WeeklyOffers";
 import SEOHead from "@/components/SEOHead";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 const Index = () => {
@@ -29,10 +29,17 @@ const Index = () => {
     };
   }, []);
 
+  // Memoize query key to prevent unnecessary refetches
+  const queryKey = useMemo(() => 
+    ["products", selectedCategory, searchQuery], 
+    [selectedCategory, searchQuery]
+  );
+
   const {
-    data: products
+    data: products,
+    isLoading: productsLoading
   } = useQuery({
-    queryKey: ["products", selectedCategory, searchQuery],
+    queryKey,
     queryFn: async () => {
       let query = supabase.from("products").select(`
           *,
@@ -66,7 +73,9 @@ const Index = () => {
         throw error;
       }
       return data;
-    }
+    },
+    staleTime: 5 * 60 * 1000, // Keep data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
   
   const {
@@ -84,7 +93,8 @@ const Index = () => {
         throw error;
       }
       return data;
-    }
+    },
+    staleTime: 10 * 60 * 1000, // Categories don't change often
   });
 
   const getCategoryDisplayName = () => {
@@ -130,7 +140,13 @@ const Index = () => {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
               {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
             </h2>
-            <ProductGrid products={products || []} />
+            {productsLoading ? (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Loading products...</p>
+              </div>
+            ) : (
+              <ProductGrid products={products || []} />
+            )}
           </div>
         </div>
       </div>
