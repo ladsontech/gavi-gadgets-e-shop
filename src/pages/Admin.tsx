@@ -1,9 +1,10 @@
+
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProductForm } from "@/components/admin/ProductForm";
+import { BatchProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { OthersManager } from "@/components/admin/OthersManager";
@@ -50,9 +51,10 @@ interface Category {
 }
 
 const Admin = () => {
-  const { isAuthenticated, logout } = useAdminAuth();
+  const { isAdmin, logoutAdmin } = useAdminAuth();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showSimpleForm, setShowSimpleForm] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(!isAdmin);
 
   const {
     data: products,
@@ -94,8 +96,35 @@ const Admin = () => {
     },
   });
 
-  if (!isAuthenticated) {
-    return <AdminLoginModal />;
+  const handleEdit = (product: Product) => {
+    // Handle product editing
+    console.log("Edit product:", product);
+  };
+
+  const handleDelete = async (productId: string) => {
+    try {
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", productId);
+      
+      if (error) {
+        console.error("Error deleting product:", error);
+      } else {
+        refetchProducts();
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  if (!isAdmin) {
+    return (
+      <AdminLoginModal 
+        open={showLoginModal} 
+        onOpenChange={setShowLoginModal}
+      />
+    );
   }
 
   return (
@@ -103,7 +132,7 @@ const Admin = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <Button onClick={logout} variant="outline">
+          <Button onClick={logoutAdmin} variant="outline">
             Logout
           </Button>
         </div>
@@ -154,7 +183,7 @@ const Admin = () => {
               {showAddForm && (
                 <div className="mb-6 p-4 border rounded-lg bg-gray-50">
                   <h3 className="text-lg font-medium mb-4">Add New Product</h3>
-                  <ProductForm
+                  <BatchProductForm
                     categories={categories || []}
                     onSave={() => {
                       setShowAddForm(false);
@@ -168,7 +197,8 @@ const Admin = () => {
               <ProductList 
                 products={products || []} 
                 categories={categories || []}
-                onProductUpdated={refetchProducts}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
             </div>
           </TabsContent>
