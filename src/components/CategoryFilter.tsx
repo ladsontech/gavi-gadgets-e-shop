@@ -19,7 +19,7 @@ interface CategoryFilterProps {
 export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
   const getSelectedLabel = () => {
     if (!selectedCategory) return "All Products";
-    if (selectedCategory === "others") return "Others (Non-Phones)";
+    if (selectedCategory === "accessories") return "Accessories";
     return categories.find((cat) => cat.id === selectedCategory)?.name || "All Products";
   };
 
@@ -44,7 +44,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               className="w-full justify-between h-12 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300 text-left"
             >
               <span className="flex items-center gap-2">
-                {selectedCategory === "others" ? (
+                {selectedCategory === "accessories" ? (
                   <Package className="w-4 h-4 text-pink-600" />
                 ) : (
                   <Smartphone className="w-4 h-4 text-pink-600" />
@@ -71,10 +71,10 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem
-              onClick={() => onCategoryChange("others")}
-              className={`py-3 px-4 ${selectedCategory === "others" ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}
+              onClick={() => onCategoryChange("accessories")}
+              className={`py-3 px-4 ${selectedCategory === "accessories" ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}
             >
-              Others (Non-Phones)
+              Accessories
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -108,16 +108,16 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
           </Button>
         ))}
         <Button
-          variant={selectedCategory === "others" ? "default" : "outline"}
-          onClick={() => onCategoryChange("others")}
+          variant={selectedCategory === "accessories" ? "default" : "outline"}
+          onClick={() => onCategoryChange("accessories")}
           className={`mb-2 rounded-xl px-6 py-3 transition-all duration-300 flex items-center gap-2 ${
-            selectedCategory === "others" 
+            selectedCategory === "accessories" 
               ? "bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white shadow-lg" 
               : "border-pink-200 hover:bg-pink-50 hover:border-pink-300 hover:text-pink-700"
           }`}
         >
           <Package className="w-4 h-4" />
-          Others
+          Accessories
         </Button>
       </div>
     </div>

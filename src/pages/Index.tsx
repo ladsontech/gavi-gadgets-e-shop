@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -41,20 +42,26 @@ const Index = () => {
             slug
           )
         `).eq("is_active", true);
-      if (selectedCategory && selectedCategory !== "others") {
+
+      // Handle different category filtering
+      if (selectedCategory && selectedCategory !== "accessories") {
         query = query.eq("category_id", selectedCategory);
-      } else if (selectedCategory === "others") {
+      } else if (selectedCategory === "accessories") {
+        // Filter for accessories - products without category_id (non-phones)
         query = query.is("category_id", null);
       }
+
       if (searchQuery) {
         query = query.ilike("name", `%${searchQuery}%`);
       }
+      
       const {
         data,
         error
       } = await query.order("created_at", {
         ascending: false
       });
+      
       if (error) {
         throw error;
       }
@@ -80,14 +87,13 @@ const Index = () => {
     }
   });
 
-  const filteredProducts = products?.filter(product => {
-    if (selectedCategory && selectedCategory !== "others") {
-      return product.category_id === selectedCategory;
-    } else if (selectedCategory === "others") {
-      return !product.category_id;
-    }
-    return true;
-  });
+  const getCategoryDisplayName = () => {
+    if (!selectedCategory) return "All Products";
+    if (selectedCategory === "accessories") return "Accessories";
+    
+    const category = categories?.find(c => c.id === selectedCategory);
+    return category ? `${category.name} Products` : "Products";
+  };
 
   return (
     <>
@@ -122,14 +128,9 @@ const Index = () => {
           {/* Products section with data attribute for smooth scrolling */}
           <div className="mb-8" data-products-section>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-              {selectedCategory ? 
-                selectedCategory === "others" ? "Other Products" : 
-                `${categories?.find(c => c.id === selectedCategory)?.name} Products` : 
-                searchQuery ? `Search Results for "${searchQuery}"` : 
-                "All Products"
-              }
+              {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
             </h2>
-            <ProductGrid products={filteredProducts || []} />
+            <ProductGrid products={products || []} />
           </div>
         </div>
       </div>

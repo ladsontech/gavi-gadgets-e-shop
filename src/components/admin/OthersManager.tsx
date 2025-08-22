@@ -27,7 +27,7 @@ export const OthersManager = () => {
   const queryClient = useQueryClient();
 
   const { data: others, isLoading } = useQuery({
-    queryKey: ['admin-others'],
+    queryKey: ['admin-accessories'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('products')
@@ -81,7 +81,7 @@ export const OthersManager = () => {
   const handleFormSave = () => {
     setShowForm(false);
     setEditProduct(undefined);
-    queryClient.invalidateQueries({ queryKey: ['admin-others'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-accessories'] });
     queryClient.invalidateQueries({ queryKey: ['products'] });
   };
 
@@ -139,8 +139,8 @@ export const OthersManager = () => {
             <Package className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Manage Others</h2>
-            <p className="text-gray-600">Accessories, TVs, speakers, and more</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Manage Accessories</h2>
+            <p className="text-gray-600">Cases, chargers, headphones, speakers, and more</p>
           </div>
         </div>
         <Button 
@@ -149,7 +149,7 @@ export const OthersManager = () => {
           size="sm"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Add Item
+          Add Accessory
         </Button>
       </div>
 
@@ -297,14 +297,14 @@ export const OthersManager = () => {
         {(!others || others.length === 0) && (
           <div className="text-center py-12 text-gray-500">
             <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No items yet</h3>
-            <p className="text-sm text-gray-600 mb-4">Add accessories, TVs, speakers, and other items</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No accessories yet</h3>
+            <p className="text-sm text-gray-600 mb-4">Add cases, chargers, headphones, speakers, and other accessories</p>
             <Button 
               onClick={() => setShowForm(true)}
               className="bg-purple-600 hover:bg-purple-700"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Add First Item
+              Add First Accessory
             </Button>
           </div>
         )}

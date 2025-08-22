@@ -27,14 +27,14 @@ export const DesktopNav = ({
       icon: Smartphone,
       value: categories.find((c) =>
         c.slug?.toLowerCase().includes("iphone") || c.name?.toLowerCase().includes("iphone")
-      )?.id,
+      )?.id || null,
     },
     {
       label: "Samsung",
       icon: Smartphone,
       value: categories.find((c) =>
         c.slug?.toLowerCase().includes("samsung") || c.name?.toLowerCase().includes("samsung")
-      )?.id,
+      )?.id || null,
     },
     {
       label: "Pixel",
@@ -42,12 +42,12 @@ export const DesktopNav = ({
       value: categories.find((c) =>
         c.slug?.toLowerCase().includes("pixel") ||
         c.name?.toLowerCase().includes("pixel")
-      )?.id,
+      )?.id || null,
     },
     {
-      label: "Others",
+      label: "Accessories",
       icon: Package,
-      value: "others",
+      value: "accessories",
     },
   ];
 
