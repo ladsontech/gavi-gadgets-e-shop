@@ -4,6 +4,22 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin, Clock, Shield } from 'lucide-react';
 
 export const HeroSection = () => {
+  const handleShopNow = () => {
+    // Scroll to products section
+    const productsSection = document.querySelector('[data-products-section]');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleViewOffers = () => {
+    // Scroll to weekly offers section
+    const offersSection = document.querySelector('[data-offers-section]');
+    if (offersSection) {
+      offersSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="relative bg-gradient-to-r from-pink-600 to-purple-700 text-white">
       <div className="absolute inset-0 bg-black/20"></div>
@@ -19,10 +35,19 @@ export const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4">
-            <Button size="lg" className="bg-white text-pink-600 hover:bg-pink-50 font-semibold px-6 sm:px-8 py-3">
+            <Button 
+              size="lg" 
+              className="bg-white text-pink-600 hover:bg-pink-50 font-semibold px-6 sm:px-8 py-3"
+              onClick={handleShopNow}
+            >
               Shop Now <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
-            <Button size="lg" variant="outline" className="border-white hover:bg-white font-semibold px-6 sm:px-8 py-3 text-pink-700">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white hover:bg-white font-semibold px-6 sm:px-8 py-3 text-pink-700"
+              onClick={handleViewOffers}
+            >
               View Offers
             </Button>
           </div>

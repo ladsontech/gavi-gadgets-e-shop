@@ -8,7 +8,12 @@ import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 import { WeeklyOffers } from "@/components/WeeklyOffers";
 import SEOHead from "@/components/SEOHead";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 const Index = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -22,6 +27,7 @@ const Index = () => {
       window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
     };
   }, []);
+
   const {
     data: products
   } = useQuery({
@@ -55,6 +61,7 @@ const Index = () => {
       return data;
     }
   });
+  
   const {
     data: categories
   } = useQuery({
@@ -72,6 +79,7 @@ const Index = () => {
       return data;
     }
   });
+
   const filteredProducts = products?.filter(product => {
     if (selectedCategory && selectedCategory !== "others") {
       return product.category_id === selectedCategory;
@@ -80,30 +88,53 @@ const Index = () => {
     }
     return true;
   });
-  return <>
-      <SEOHead title="Gavi Gadgets - Premium Smartphones in Uganda" description="Shop the latest smartphones including iPhone, Samsung, Huawei and more. Best prices on new and UK used phones in Uganda with warranty." keywords="smartphones, iPhone, Samsung, Huawei, Uganda, phones, mobile" />
+
+  return (
+    <>
+      <SEOHead 
+        title="Gavi Gadgets - Premium Smartphones in Uganda" 
+        description="Shop the latest smartphones including iPhone, Samsung, Huawei and more. Best prices on new and UK used phones in Uganda with warranty." 
+        keywords="smartphones, iPhone, Samsung, Huawei, Uganda, phones, mobile" 
+      />
       
       <div className="min-h-screen bg-gray-50">
-        <HeroSection />
-        <UpdatesCarousel />
-        <WeeklyOffers />
+        {/* Only show hero section on home page */}
+        {isHomePage && <HeroSection />}
+        
+        {isHomePage && <UpdatesCarousel />}
+        
+        {/* Weekly offers section with data attribute for smooth scrolling */}
+        <div data-offers-section>
+          <WeeklyOffers />
+        </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FeaturedProducts products={products || []} />
           
           <div className="mb-8">
-            
-            <CategoryFilter categories={categories || []} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+            <CategoryFilter 
+              categories={categories || []} 
+              selectedCategory={selectedCategory} 
+              onCategoryChange={setSelectedCategory} 
+            />
           </div>
 
-          <div className="mb-8">
+          {/* Products section with data attribute for smooth scrolling */}
+          <div className="mb-8" data-products-section>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-              {selectedCategory ? selectedCategory === "others" ? "Other Products" : `${categories?.find(c => c.id === selectedCategory)?.name} Products` : searchQuery ? `Search Results for "${searchQuery}"` : "All Products"}
+              {selectedCategory ? 
+                selectedCategory === "others" ? "Other Products" : 
+                `${categories?.find(c => c.id === selectedCategory)?.name} Products` : 
+                searchQuery ? `Search Results for "${searchQuery}"` : 
+                "All Products"
+              }
             </h2>
             <ProductGrid products={filteredProducts || []} />
           </div>
         </div>
       </div>
-    </>;
+    </>
+  );
 };
+
 export default Index;
