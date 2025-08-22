@@ -1,7 +1,10 @@
+
 import React, { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Upload, Image } from "lucide-react";
+import { compressImage } from "@/utils/imageCompression";
+import { useToast } from "@/components/ui/use-toast";
 
 interface UpdateImageUploaderProps {
   onImageUploaded: (imageUrl: string) => void;
@@ -16,6 +19,7 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
 }) => {
   const fileInput = useRef<HTMLInputElement | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
@@ -23,19 +27,26 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
     
     const file = e.target.files[0];
     
-    // Create preview URL
-    const preview = URL.createObjectURL(file);
-    setPreviewUrl(preview);
-    
-    // Generate filename with timestamp to avoid conflicts
-    const fileExt = file.name.split('.').pop() || 'jpg';
-    const fileName = `updates/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-
     try {
+      // Compress image for updates (16:9 ratio, optimized for web)
+      const compressedImage = await compressImage(file, {
+        maxWidth: 1200,
+        maxHeight: 675, // 16:9 ratio
+        quality: 0.85,
+        format: 'webp'
+      });
+
+      // Create preview URL from compressed image
+      const preview = URL.createObjectURL(compressedImage);
+      setPreviewUrl(preview);
+      
+      // Generate filename with timestamp to avoid conflicts
+      const fileName = `updates/${Date.now()}-${Math.random().toString(36).substring(2)}.webp`;
+
       const { error } = await supabase.storage
         .from("updates")
-        .upload(fileName, file, {
-          cacheControl: "3600",
+        .upload(fileName, compressedImage, {
+          cacheControl: "31536000", // 1 year cache
           upsert: true,
         });
 
@@ -46,15 +57,21 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
         
         if (data?.publicUrl) {
           onImageUploaded(data.publicUrl);
+          toast({
+            title: "Success!",
+            description: "Image optimized and uploaded successfully"
+          });
         }
       } else {
-        alert("Image upload failed: " + (error.message || JSON.stringify(error)));
-        console.error("Upload error:", error);
-        setPreviewUrl(null);
+        throw error;
       }
     } catch (error) {
-      alert("Image upload failed: " + (error instanceof Error ? error.message : JSON.stringify(error)));
-      console.error("Upload exception:", error);
+      console.error("Upload error:", error);
+      toast({
+        title: "Upload failed",
+        description: "Please try a smaller file or different format",
+        variant: "destructive"
+      });
       setPreviewUrl(null);
     }
     
@@ -69,7 +86,7 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
         <Image className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <h4 className="text-lg font-medium text-gray-900 mb-2">Upload Update Image</h4>
         <p className="text-sm text-gray-500 mb-4">
-          Upload any image - it will be displayed in 16:9 format
+          Upload any image - it will be optimized and displayed in 16:9 format
         </p>
         <Button
           type="button"
@@ -78,19 +95,20 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
           className="bg-pink-600 hover:bg-pink-700"
         >
           <Upload className="w-4 h-4 mr-2" />
-          {uploading ? "Uploading..." : "Choose Image"}
+          {uploading ? "Optimizing..." : "Choose Image"}
         </Button>
       </div>
 
       {/* Preview Area */}
       {previewUrl && (
         <div className="space-y-2">
-          <h5 className="text-sm font-medium text-gray-700">Preview (16:9 format):</h5>
+          <h5 className="text-sm font-medium text-gray-700">Preview (optimized 16:9 format):</h5>
           <div className="w-full aspect-video bg-gray-100 rounded-lg overflow-hidden border">
             <img
               src={previewUrl}
               alt="Preview"
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
         </div>
@@ -106,7 +124,7 @@ export const UpdateImageUploader: React.FC<UpdateImageUploaderProps> = ({
       />
       
       <p className="text-xs text-gray-500 text-center">
-        All file types accepted. Images will be displayed in 16:9 aspect ratio format.
+        <strong>Smart Optimization:</strong> Images are automatically compressed to WebP format and optimized for web delivery with fast loading.
       </p>
     </div>
   );

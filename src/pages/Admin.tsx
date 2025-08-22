@@ -1,83 +1,82 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { AdminLoginModal } from "@/components/AdminLoginModal";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
-import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
+import { ProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { OthersManager } from "@/components/admin/OthersManager";
-import { 
-  Package, 
-  Users, 
-  ShoppingCart, 
-  Star,
-  Plus,
-  Settings,
-  Image,
-  Tag,
-  Calendar
-} from "lucide-react";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { AdminLoginModal } from "@/components/AdminLoginModal";
+import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
+import { Plus } from "lucide-react";
 
-type Product = {
+interface Product {
   id: string;
   name: string;
-  price: number;
-  original_price?: number;
   brand: string;
   model: string;
-  condition: string;
-  images: string[];
+  price: number;
+  original_price?: number;
   description?: string;
-  category_id?: string;
+  images: string[];
+  category_id: string | null;
   slug: string;
-  is_featured: boolean;
+  is_active: boolean;
+  condition: string;
+  features?: string[];
   stock_quantity: number;
-  is_weekly_offer?: boolean;
+  is_featured: boolean;
+  is_weekly_offer: boolean;
   offer_start_date?: string;
   offer_end_date?: string;
-};
+  created_at: string;
+  updated_at: string;
+  categories?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+}
 
-type Category = {
+interface Category {
   id: string;
   name: string;
   slug: string;
-};
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 const Admin = () => {
-  const { isAdmin } = useAdminAuth();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showProductForm, setShowProductForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { isAuthenticated, logout } = useAdminAuth();
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [showSimpleForm, setShowSimpleForm] = useState(false);
 
-  useEffect(() => {
-    if (!isAdmin) {
-      setShowLoginModal(true);
-    }
-  }, [isAdmin]);
-
-  const handleLoginModalChange = (open: boolean) => {
-    setShowLoginModal(open);
-    if (!open && !isAdmin) {
-      window.location.href = "/";
-    }
-  };
-
-  const { data: products } = useQuery({
-    queryKey: ["admin-products"],
+  const {
+    data: products,
+    refetch: refetchProducts,
+  } = useQuery({
+    queryKey: ["products"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select(
+          `
+            *,
+            categories (
+              id,
+              name,
+              slug
+            )
+          `
+        )
         .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data as Product[];
+      if (error) {
+        throw error;
+      }
+      return data;
     },
   });
 
@@ -88,274 +87,121 @@ const Admin = () => {
         .from("categories")
         .select("*")
         .order("name", { ascending: true });
-      if (error) throw error;
-      return data as Category[];
-    },
-  });
-
-  const deleteProduct = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("products").delete().eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast({
-        title: "Success",
-        description: "Item deleted successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to delete item",
-        variant: "destructive",
-      });
-      console.error("Error deleting item:", error);
-    },
-  });
-
-  const toggleWeeklyOffer = useMutation({
-    mutationFn: async ({ productId, isOffer }: { productId: string; isOffer: boolean }) => {
-      const updateData: any = {
-        is_weekly_offer: isOffer,
-      };
-
-      if (isOffer) {
-        const startDate = new Date();
-        const endDate = new Date();
-        endDate.setDate(startDate.getDate() + 7); // 7 days from now
-        
-        updateData.offer_start_date = startDate.toISOString();
-        updateData.offer_end_date = endDate.toISOString();
-      } else {
-        updateData.offer_start_date = null;
-        updateData.offer_end_date = null;
+      if (error) {
+        throw error;
       }
-
-      const { error } = await supabase
-        .from("products")
-        .update(updateData)
-        .eq("id", productId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast({
-        title: "Success",
-        description: "Weekly offer status updated successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to update weekly offer status",
-        variant: "destructive",
-      });
-      console.error("Error updating weekly offer:", error);
+      return data;
     },
   });
 
-  if (!isAdmin) {
-    return (
-      <AdminLoginModal
-        open={showLoginModal}
-        onOpenChange={handleLoginModalChange}
-      />
-    );
+  if (!isAuthenticated) {
+    return <AdminLoginModal />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Admin Dashboard
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              Manage your products, categories, and content
-            </p>
-          </div>
-          <Button
-            onClick={() => setShowProductForm(true)}
-            className="bg-pink-600 hover:bg-pink-700 w-full sm:w-auto"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Product
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <Button onClick={logout} variant="outline">
+            Logout
           </Button>
         </div>
 
-        <Tabs defaultValue="products" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 h-auto">
-            <TabsTrigger value="products" className="flex items-center gap-2 p-2 sm:p-3">
-              <Package className="w-4 h-4" />
-              <span className="hidden sm:inline">Products</span>
-            </TabsTrigger>
-            <TabsTrigger value="categories" className="flex items-center gap-2 p-2 sm:p-3">
-              <Tag className="w-4 h-4" />
-              <span className="hidden sm:inline">Categories</span>
-            </TabsTrigger>
-            <TabsTrigger value="offers" className="flex items-center gap-2 p-2 sm:p-3">
-              <Star className="w-4 h-4" />
-              <span className="hidden sm:inline">Weekly Offers</span>
-            </TabsTrigger>
-            <TabsTrigger value="updates" className="flex items-center gap-2 p-2 sm:p-3">
-              <Image className="w-4 h-4" />
-              <span className="hidden sm:inline">Updates</span>
-            </TabsTrigger>
-            <TabsTrigger value="stats" className="flex items-center gap-2 p-2 sm:p-3">
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Stats</span>
-            </TabsTrigger>
+        <Tabs defaultValue="products" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="products">Products ({products?.length || 0})</TabsTrigger>
+            <TabsTrigger value="categories">Categories ({categories?.length || 0})</TabsTrigger>
+            <TabsTrigger value="updates">Updates</TabsTrigger>
+            <TabsTrigger value="others">Others</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="products" className="space-y-4">
-            {showProductForm ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {editingProduct ? "Edit Product" : "Add New Product"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <SimpleProductForm
-                    editProduct={editingProduct ? {
-                      id: editingProduct.id,
-                      name: editingProduct.name,
-                      price: editingProduct.price,
-                      description: editingProduct.description,
-                      images: editingProduct.images,
-                      stock_quantity: editingProduct.stock_quantity,
-                    } : undefined}
-                    onSave={() => {
-                      setShowProductForm(false);
-                      setEditingProduct(null);
-                      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-                    }}
-                    onCancel={() => {
-                      setShowProductForm(false);
-                      setEditingProduct(null);
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Products Management</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ProductList
-                    products={products || []}
-                    categories={categories || []}
-                    onEdit={(product) => {
-                      setEditingProduct({
-                        ...product,
-                        stock_quantity: product.stock_quantity || 0
-                      });
-                      setShowProductForm(true);
-                    }}
-                    onDelete={deleteProduct.mutate}
-                  />
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          <TabsContent value="categories" className="space-y-4">
-            <OthersManager />
-          </TabsContent>
-
-          <TabsContent value="offers" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500" />
-                  Weekly Offers Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {products?.map((product) => (
-                    <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{product.name}</h3>
-                        <p className="text-sm text-gray-600">
-                          UGX {Number(product.price).toLocaleString()}
-                        </p>
-                        {product.is_weekly_offer && product.offer_end_date && (
-                          <p className="text-xs text-green-600">
-                            Offer expires: {new Date(product.offer_end_date).toLocaleDateString()}
-                          </p>
-                        )}
-                      </div>
-                      <Button
-                        variant={product.is_weekly_offer ? "destructive" : "default"}
-                        size="sm"
-                        onClick={() => toggleWeeklyOffer.mutate({
-                          productId: product.id,
-                          isOffer: !product.is_weekly_offer
-                        })}
-                        disabled={toggleWeeklyOffer.isPending}
-                      >
-                        {product.is_weekly_offer ? "Remove from Offers" : "Add to Offers"}
-                      </Button>
-                    </div>
-                  ))}
+          <TabsContent value="products" className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-xl font-semibold">Product Management</h2>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button 
+                    onClick={() => setShowSimpleForm(true)}
+                    className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Quick Add
+                  </Button>
+                  <Button 
+                    onClick={() => setShowAddForm(true)}
+                    className="w-full sm:w-auto"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Product
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+
+              {showSimpleForm && (
+                <div className="mb-6 p-4 border rounded-lg bg-purple-50">
+                  <h3 className="text-lg font-medium mb-4">Quick Add Item</h3>
+                  <SimpleProductForm
+                    onSave={() => {
+                      setShowSimpleForm(false);
+                      refetchProducts();
+                    }}
+                    onCancel={() => setShowSimpleForm(false)}
+                  />
+                </div>
+              )}
+
+              {showAddForm && (
+                <div className="mb-6 p-4 border rounded-lg bg-gray-50">
+                  <h3 className="text-lg font-medium mb-4">Add New Product</h3>
+                  <ProductForm
+                    categories={categories || []}
+                    onSave={() => {
+                      setShowAddForm(false);
+                      refetchProducts();
+                    }}
+                    onCancel={() => setShowAddForm(false)}
+                  />
+                </div>
+              )}
+
+              <ProductList 
+                products={products || []} 
+                categories={categories || []}
+                onProductUpdated={refetchProducts}
+              />
+            </div>
           </TabsContent>
 
-          <TabsContent value="updates" className="space-y-4">
+          <TabsContent value="categories" className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold mb-4">Categories</h2>
+              <div className="space-y-4">
+                {categories?.map((category) => (
+                  <div key={category.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h3 className="font-medium">{category.name}</h3>
+                      <p className="text-sm text-gray-500">Slug: {category.slug}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        category.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {category.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="updates">
             <UpdatesManager />
           </TabsContent>
 
-          <TabsContent value="stats" className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-                  <Package className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{products?.length || 0}</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Featured Products</CardTitle>
-                  <Star className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {products?.filter(p => p.is_featured).length || 0}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Weekly Offers</CardTitle>
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {products?.filter(p => p.is_weekly_offer).length || 0}
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Categories</CardTitle>
-                  <Tag className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{categories?.length || 0}</div>
-                </CardContent>
-              </Card>
-            </div>
+          <TabsContent value="others">
+            <OthersManager />
           </TabsContent>
         </Tabs>
       </div>
