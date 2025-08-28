@@ -20,33 +20,15 @@ export const AppBar = () => {
           
           {/* Logo Section */}
           <div 
-            className="flex items-center gap-3 cursor-pointer group" 
+            className="flex items-center cursor-pointer" 
             onClick={() => navigate("/")}
           >
-            <div className="relative bg-gray-50 p-2 rounded-xl border group-hover:border-pink-200 transition-colors">
-              <img 
-                src="/images/gavi_gadgets_logo.png" 
-                alt="Gavi Gadgets Logo" 
-                className="w-10 h-10 object-contain" 
-                draggable={false} 
-              />
-            </div>
-            
-            <div className="hidden sm:block">
-              <h1 className="font-bold text-gray-900 text-2xl group-hover:text-pink-600 transition-colors">
-                Gavi Gadgets
-              </h1>
-              <p className="text-sm text-gray-600 -mt-1">
-                Your Mobile Source
-              </p>
-            </div>
-          </div>
-
-          {/* Mobile Brand Section */}
-          <div className="sm:hidden flex-1 text-center">
-            <h1 className="font-bold text-gray-900 text-xl">
-              Gavi Gadgets
-            </h1>
+            <img 
+              src="/images/appbar_logo.png" 
+              alt="Gavi Gadgets" 
+              className="h-16 w-auto object-contain" 
+              draggable={false} 
+            />
           </div>
 
           {/* Actions Section */}
