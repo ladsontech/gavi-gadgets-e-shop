@@ -32,26 +32,16 @@ export const AppBar = () => {
           </div>
 
           {/* Actions Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             
-            {/* Contact Button - Desktop */}
+            {/* Contact Button - All Views */}
             <Button
               variant="outline"
               onClick={handleContactClick}
-              className="hidden md:flex items-center gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
+              className="flex items-center gap-2 text-blue-600 border-blue-200 hover:bg-blue-50 bg-blue-50/50 px-3 py-2 h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200"
             >
               <Phone className="w-4 h-4" />
               <span className="font-medium">+256 740799577</span>
-            </Button>
-
-            {/* Contact Button - Mobile */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleContactClick}
-              className="md:hidden text-blue-600"
-            >
-              <Phone className="w-4 h-4" />
             </Button>
 
             {/* Cart Icon */}
