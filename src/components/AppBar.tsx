@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Phone, Facebook, Twitter, Instagram } from "lucide-react";
+import { Phone, Facebook, Instagram } from "lucide-react";
 import { CartIcon } from "./CartIcon";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,17 +14,37 @@ export const AppBar = () => {
   };
 
   const socialLinks = [
-    { icon: Facebook, url: "https://facebook.com/gavigadgets", label: "Facebook" },
-    { icon: Twitter, url: "https://x.com/gavigadgets", label: "X (Twitter)" },
-    { icon: Instagram, url: "https://instagram.com/gavigadgets", label: "Instagram" },
+    { 
+      icon: Facebook, 
+      url: "https://www.facebook.com/p/GAVI-Gadgets-UG-100083303156382/", 
+      label: "Facebook",
+      color: "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+    },
+    { 
+      icon: ({ className }: { className?: string }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      ), 
+      url: "https://x.com/gavigadgetsug", 
+      label: "X (Twitter)",
+      color: "text-black hover:text-gray-800 hover:bg-gray-50"
+    },
+    { 
+      icon: Instagram, 
+      url: "https://www.instagram.com/gavi_gadgets_0740799577/?hl=en", 
+      label: "Instagram",
+      color: "text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+    },
     { 
       icon: ({ className }: { className?: string }) => (
         <svg className={className} viewBox="0 0 24 24" fill="currentColor">
           <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-2.08v5.73a2.89 2.89 0 01-2.88 2.88 2.89 2.89 0 01-2.88-2.88V2H6.9v5.73a4.83 4.83 0 01-3.77 4.25 4.84 4.84 0 01-1.84-3.81A4.84 4.84 0 014.96 3.5h.54V2H4.96A6.84 6.84 0 00-1.88 8.84a6.84 6.84 0 006.84 6.84A6.84 6.84 0 0011.8 8.84V22h2.4V8.84a6.84 6.84 0 006.84-6.84A6.84 6.84 0 0014.2 2h-.54v1.5h.54a4.84 4.84 0 014.84 4.84 4.84 4.84 0 01-1.84 3.81z"/>
         </svg>
       ), 
-      url: "https://tiktok.com/@gavigadgets", 
-      label: "TikTok" 
+      url: "https://www.tiktok.com/discover/gavi-gadgets?lang=en", 
+      label: "TikTok",
+      color: "text-black hover:text-gray-800 hover:bg-gray-50"
     },
   ];
 
@@ -59,7 +79,7 @@ export const AppBar = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => window.open(social.url, '_blank')}
-                    className="w-8 h-8 p-0 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+                    className={`w-8 h-8 p-0 ${social.color}`}
                     title={social.label}
                   >
                     <Icon className="w-4 h-4" />
@@ -93,7 +113,7 @@ export const AppBar = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => window.open(social.url, '_blank')}
-                className="w-8 h-8 p-0 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+                className={`w-8 h-8 p-0 ${social.color}`}
                 title={social.label}
               >
                 <Icon className="w-3 h-3" />
