@@ -2,14 +2,31 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin, Clock, Shield } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 export const HeroSection = () => {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  
+  // Don't render if not on home page or if there's a category filter active
   const isHomePage = location.pathname === '/';
+  const hasActiveCategory = searchParams.get('category') || window.location.hash.includes('category');
+  
+  // Check if any category is selected via the app state (listen for category changes)
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
+  
+  React.useEffect(() => {
+    const handleCategoryChange = (event: CustomEvent) => {
+      setSelectedCategory(event.detail);
+    };
+    window.addEventListener('categoryChanged', handleCategoryChange as EventListener);
+    return () => {
+      window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
+    };
+  }, []);
 
-  // Don't render on non-home pages
-  if (!isHomePage) {
+  // Don't render on non-home pages or when a category is selected
+  if (!isHomePage || selectedCategory || hasActiveCategory) {
     return null;
   }
 

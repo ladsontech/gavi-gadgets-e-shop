@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Phone } from "lucide-react";
+import { Phone, Facebook, Twitter, Instagram } from "lucide-react";
 import { CartIcon } from "./CartIcon";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,21 @@ export const AppBar = () => {
     const phoneNumber = "+256740799577";
     window.location.href = `tel:${phoneNumber}`;
   };
+
+  const socialLinks = [
+    { icon: Facebook, url: "https://facebook.com/gavigadgets", label: "Facebook" },
+    { icon: Twitter, url: "https://x.com/gavigadgets", label: "X (Twitter)" },
+    { icon: Instagram, url: "https://instagram.com/gavigadgets", label: "Instagram" },
+    { 
+      icon: ({ className }: { className?: string }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-2.08v5.73a2.89 2.89 0 01-2.88 2.88 2.89 2.89 0 01-2.88-2.88V2H6.9v5.73a4.83 4.83 0 01-3.77 4.25 4.84 4.84 0 01-1.84-3.81A4.84 4.84 0 014.96 3.5h.54V2H4.96A6.84 6.84 0 00-1.88 8.84a6.84 6.84 0 006.84 6.84A6.84 6.84 0 0011.8 8.84V22h2.4V8.84a6.84 6.84 0 006.84-6.84A6.84 6.84 0 0014.2 2h-.54v1.5h.54a4.84 4.84 0 014.84 4.84 4.84 4.84 0 01-1.84 3.81z"/>
+        </svg>
+      ), 
+      url: "https://tiktok.com/@gavigadgets", 
+      label: "TikTok" 
+    },
+  ];
 
   return (
     <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
@@ -34,11 +49,30 @@ export const AppBar = () => {
           {/* Actions Section */}
           <div className="flex items-center gap-2">
             
+            {/* Social Media Links - Hidden on mobile */}
+            <div className="hidden md:flex items-center gap-1 mr-2">
+              {socialLinks.map((social, index) => {
+                const Icon = social.icon;
+                return (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => window.open(social.url, '_blank')}
+                    className="w-8 h-8 p-0 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+                    title={social.label}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </Button>
+                );
+              })}
+            </div>
+            
             {/* Contact Button - All Views */}
             <Button
               variant="outline"
               onClick={handleContactClick}
-              className="flex items-center gap-2 text-blue-600 border-blue-200 hover:bg-blue-50 bg-blue-50/50 px-3 py-2 h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200"
+              className="flex items-center gap-2 text-pink-600 border-pink-200 hover:bg-pink-50 bg-pink-50/50 px-3 py-2 h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200"
             >
               <Phone className="w-4 h-4" />
               <span className="font-medium">+256 740799577</span>
@@ -47,6 +81,25 @@ export const AppBar = () => {
             {/* Cart Icon */}
             <CartIcon />
           </div>
+        </div>
+        
+        {/* Mobile Social Media Links */}
+        <div className="md:hidden flex justify-center gap-4 py-2 border-t border-gray-100">
+          {socialLinks.map((social, index) => {
+            const Icon = social.icon;
+            return (
+              <Button
+                key={index}
+                variant="ghost"
+                size="sm"
+                onClick={() => window.open(social.url, '_blank')}
+                className="w-8 h-8 p-0 text-pink-600 hover:text-pink-700 hover:bg-pink-50"
+                title={social.label}
+              >
+                <Icon className="w-3 h-3" />
+              </Button>
+            );
+          })}
         </div>
       </nav>
     </header>
