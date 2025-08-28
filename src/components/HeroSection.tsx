@@ -2,8 +2,17 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin, Clock, Shield } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export const HeroSection = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  // Don't render on non-home pages
+  if (!isHomePage) {
+    return null;
+  }
+
   const handleShopNow = () => {
     // Scroll to products section
     const productsSection = document.querySelector('[data-products-section]');
