@@ -1,20 +1,17 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MapPin, Clock, Shield } from 'lucide-react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-
 export const HeroSection = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  
+
   // Don't render if not on home page or if there's a category filter active
   const isHomePage = location.pathname === '/';
   const hasActiveCategory = searchParams.get('category') || window.location.hash.includes('category');
-  
+
   // Check if any category is selected via the app state (listen for category changes)
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
-  
   React.useEffect(() => {
     const handleCategoryChange = (event: CustomEvent) => {
       setSelectedCategory(event.detail);
@@ -29,51 +26,40 @@ export const HeroSection = () => {
   if (!isHomePage || selectedCategory || hasActiveCategory) {
     return null;
   }
-
   const handleShopNow = () => {
     // Scroll to products section
     const productsSection = document.querySelector('[data-products-section]');
     if (productsSection) {
-      productsSection.scrollIntoView({ behavior: 'smooth' });
+      productsSection.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-
   const handleViewOffers = () => {
     // Scroll to weekly offers section
     const offersSection = document.querySelector('[data-offers-section]');
     if (offersSection) {
-      offersSection.scrollIntoView({ behavior: 'smooth' });
+      offersSection.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-
-  return (
-    <div className="relative bg-gradient-to-r from-pink-600 to-purple-700 text-white">
+  return <div className="relative bg-gradient-to-r from-pink-600 to-purple-700 text-white">
       <div className="absolute inset-0 bg-black/20"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24 bg-fuchsia-700">
         <div className="text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6">
-            Premium <span className="text-pink-200">Electronics</span> in Uganda
-          </h1>
+          
           
           <p className="text-lg sm:text-xl lg:text-2xl mb-6 sm:mb-8 text-pink-100 max-w-3xl mx-auto px-2">
             Discover the latest smartphones, accessories, and gadgets with authentic warranties and competitive prices.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4">
-            <Button 
-              size="lg" 
-              className="bg-white text-pink-600 hover:bg-pink-50 font-semibold px-6 sm:px-8 py-3"
-              onClick={handleShopNow}
-            >
+            <Button size="lg" className="bg-white text-pink-600 hover:bg-pink-50 font-semibold px-6 sm:px-8 py-3" onClick={handleShopNow}>
               Shop Now <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white hover:bg-white font-semibold px-6 sm:px-8 py-3 text-pink-700"
-              onClick={handleViewOffers}
-            >
+            <Button size="lg" variant="outline" className="border-white hover:bg-white font-semibold px-6 sm:px-8 py-3 text-pink-700" onClick={handleViewOffers}>
               View Offers
             </Button>
           </div>
@@ -112,6 +98,5 @@ export const HeroSection = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
