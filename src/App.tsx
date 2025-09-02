@@ -76,7 +76,7 @@ function App() {
                 selectedCategory={selectedCategory}
                 onCategoryChange={handleCategoryChange}
               />
-              <main className="flex-1 pb-16 md:pb-0">
+              <main className="flex-1 pb-16 md:pb-0 max-w-[1400px] mx-auto w-full px-4 md:px-8 lg:px-12 xl:px-16">
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/product/:slug" element={<ProductDetail />} />

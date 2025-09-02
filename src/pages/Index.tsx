@@ -124,10 +124,10 @@ const Index = () => {
           <WeeklyOffers />
         </div>
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full">
           <FeaturedProducts products={products || []} />
           
-          <div className="mb-8">
+          <div className="mb-6 lg:mb-8">
             <CategoryFilter 
               categories={categories || []} 
               selectedCategory={selectedCategory} 
@@ -136,12 +136,12 @@ const Index = () => {
           </div>
 
           {/* Products section with data attribute for smooth scrolling */}
-          <div className="mb-8" data-products-section>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+          <div className="mb-6 lg:mb-8" data-products-section>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 lg:mb-6">
               {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
             </h2>
             {productsLoading ? (
-              <div className="text-center py-8">
+              <div className="text-center py-6 lg:py-8">
                 <p className="text-gray-500">Loading products...</p>
               </div>
             ) : (
