@@ -113,18 +113,18 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </Badge>
       </div>
       
-      <div className="p-3 flex-1 flex flex-col">
-        <div className="mb-3 flex-1">
-          <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2 group-hover:text-pink-600 transition-colors">
+      <div className="p-2 sm:p-3 flex-1 flex flex-col">
+        <div className="mb-2 flex-1">
+          <h3 className="font-medium text-xs sm:text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-pink-600 transition-colors">
             {product.name}
           </h3>
           
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg font-bold text-pink-600">
+          <div className="flex items-center gap-1 mb-1">
+            <span className="text-sm sm:text-lg font-bold text-pink-600">
               UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && discount > 0 && (
-              <span className="text-sm text-gray-400 line-through">
+              <span className="text-xs text-gray-400 line-through">
                 UGX {Number(product.original_price).toLocaleString()}
               </span>
             )}
@@ -134,12 +134,12 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           {(product.storage_capacity || product.color) && (
             <div className="flex items-center gap-1 text-xs text-gray-500 flex-wrap">
               {product.storage_capacity && (
-                <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                <span className="bg-gray-100 px-1 py-0.5 rounded text-xs">
                   {product.storage_capacity}
                 </span>
               )}
               {product.color && (
-                <span className="bg-gray-100 px-2 py-1 rounded text-xs">
+                <span className="bg-gray-100 px-1 py-0.5 rounded text-xs">
                   {product.color}
                 </span>
               )}
@@ -151,7 +151,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           size="sm"
           onClick={addToCart}
           disabled={product.stock_quantity === 0}
-          className="w-full text-xs bg-pink-600 hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full text-xs h-7 bg-pink-600 hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ShoppingCart className="w-3 h-3 mr-1" />
           {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}

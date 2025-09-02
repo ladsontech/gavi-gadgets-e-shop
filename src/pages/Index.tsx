@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoryFilter } from "@/components/CategoryFilter";
+import { ProductSidebar } from "@/components/ProductSidebar";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
@@ -17,6 +18,8 @@ const Index = () => {
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [priceRange, setPriceRange] = useState("all");
 
   // Listen for category changes from mobile nav
   useEffect(() => {
@@ -31,8 +34,8 @@ const Index = () => {
 
   // Memoize query key to prevent unnecessary refetches
   const queryKey = useMemo(() => 
-    ["products", selectedCategory, searchQuery], 
-    [selectedCategory, searchQuery]
+    ["products", selectedCategory, searchQuery, sortBy, priceRange], 
+    [selectedCategory, searchQuery, sortBy, priceRange]
   );
 
   const {
@@ -61,13 +64,38 @@ const Index = () => {
       if (searchQuery) {
         query = query.ilike("name", `%${searchQuery}%`);
       }
+
+      // Handle price range filtering
+      if (priceRange !== "all") {
+        if (priceRange === "5000000+") {
+          query = query.gte("price", 5000000);
+        } else if (priceRange.includes("-")) {
+          const [min, max] = priceRange.split("-").map(Number);
+          query = query.gte("price", min).lte("price", max);
+        } else if (priceRange.startsWith("0-")) {
+          const max = Number(priceRange.split("-")[1]);
+          query = query.lte("price", max);
+        }
+      }
       
-      const {
-        data,
-        error
-      } = await query.order("created_at", {
-        ascending: false
-      });
+      // Handle sorting
+      if (sortBy === "newest") {
+        query = query.order("created_at", { ascending: false });
+      } else if (sortBy === "oldest") {
+        query = query.order("created_at", { ascending: true });
+      } else if (sortBy === "price-low") {
+        query = query.order("price", { ascending: true });
+      } else if (sortBy === "price-high") {
+        query = query.order("price", { ascending: false });
+      } else if (sortBy === "name-asc") {
+        query = query.order("name", { ascending: true });
+      } else if (sortBy === "name-desc") {
+        query = query.order("name", { ascending: false });
+      } else {
+        query = query.order("created_at", { ascending: false });
+      }
+      
+      const { data, error } = await query;
       
       if (error) {
         throw error;
@@ -127,7 +155,8 @@ const Index = () => {
         <div className="w-full">
           <FeaturedProducts products={products || []} />
           
-          <div className="mb-6 lg:mb-8">
+          {/* Mobile Category Filter */}
+          <div className="lg:hidden mb-4">
             <CategoryFilter 
               categories={categories || []} 
               selectedCategory={selectedCategory} 
@@ -135,18 +164,32 @@ const Index = () => {
             />
           </div>
 
-          {/* Products section with data attribute for smooth scrolling */}
-          <div className="mb-6 lg:mb-8" data-products-section>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 lg:mb-6">
-              {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
-            </h2>
-            {productsLoading ? (
-              <div className="text-center py-6 lg:py-8">
-                <p className="text-gray-500">Loading products...</p>
-              </div>
-            ) : (
-              <ProductGrid products={products || []} />
-            )}
+          {/* Desktop Layout with Sidebar */}
+          <div className="flex gap-6">
+            {/* Sidebar - Desktop Only */}
+            <ProductSidebar 
+              categories={categories || []}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              priceRange={priceRange}
+              onPriceRangeChange={setPriceRange}
+            />
+            
+            {/* Main Content */}
+            <div className="flex-1" data-products-section>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4">
+                {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
+              </h2>
+              {productsLoading ? (
+                <div className="text-center py-6 lg:py-8">
+                  <p className="text-gray-500">Loading products...</p>
+                </div>
+              ) : (
+                <ProductGrid products={products || []} />
+              )}
+            </div>
           </div>
         </div>
       </div>
