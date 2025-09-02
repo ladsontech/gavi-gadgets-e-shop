@@ -96,7 +96,7 @@ export const ProductCard = ({
           </h3>
           
           <div className="flex items-center gap-1 mb-1">
-            <span className="text-sm sm:text-lg font-bold text-pink-600">
+            <span className="text-sm font-bold text-pink-600 sm:text-sm">
               UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && discount > 0 && <span className="text-xs text-gray-400 line-through">
