@@ -22,7 +22,7 @@ export const MobileMainNav = ({
     {
       label: "Offers",
       icon: Tag,
-      value: "weekly-offers",
+      value: "featured",
       route: "/",
     },
     {

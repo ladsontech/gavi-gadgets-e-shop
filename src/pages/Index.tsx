@@ -54,11 +54,22 @@ const Index = () => {
         `).eq("is_active", true);
 
       // Handle different category filtering
-      if (selectedCategory && selectedCategory !== "accessories") {
+      if (selectedCategory === "featured") {
+        // Filter for featured products (offers)
+        query = query.eq("is_featured", true);
+      } else if (selectedCategory && selectedCategory !== "accessories") {
         query = query.eq("category_id", selectedCategory);
       } else if (selectedCategory === "accessories") {
-        // Filter for accessories - products without category_id (non-phones)
-        query = query.is("category_id", null);
+        // Filter for accessories category
+        const accessoriesCategory = await supabase
+          .from("categories")
+          .select("id")
+          .ilike("name", "%accessories%")
+          .single();
+        
+        if (accessoriesCategory.data) {
+          query = query.eq("category_id", accessoriesCategory.data.id);
+        }
       }
 
       if (searchQuery) {
@@ -127,6 +138,7 @@ const Index = () => {
 
   const getCategoryDisplayName = () => {
     if (!selectedCategory) return "All Products";
+    if (selectedCategory === "featured") return "Featured Offers";
     if (selectedCategory === "accessories") return "Accessories";
     
     const category = categories?.find(c => c.id === selectedCategory);
