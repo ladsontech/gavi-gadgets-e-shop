@@ -1,5 +1,5 @@
 
-import { Home, Smartphone, Package } from "lucide-react";
+import { Home, Tag, Package, Headphones } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface MobileMainNavProps {
@@ -20,34 +20,30 @@ export const MobileMainNav = ({
   const navItems = [
     { label: "Home", icon: Home, value: null, route: "/" },
     {
-      label: "iPhones",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("iphone") || c.name?.toLowerCase().includes("iphone")
-      )?.id || null,
-      route: "/",
-    },
-    {
-      label: "Samsung",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("samsung") || c.name?.toLowerCase().includes("samsung")
-      )?.id || null,
-      route: "/",
-    },
-    {
-      label: "Pixel",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("pixel") ||
-        c.name?.toLowerCase().includes("pixel")
-      )?.id || null,
+      label: "Offers",
+      icon: Tag,
+      value: "weekly-offers",
       route: "/",
     },
     {
       label: "Accessories",
       icon: Package,
-      value: "accessories",
+      value: categories.find((c) =>
+        c.slug?.toLowerCase().includes("accessories") || c.name?.toLowerCase().includes("accessories")
+      )?.id || null,
+      route: "/",
+    },
+    {
+      label: "Audio",
+      icon: Headphones,
+      value: categories.find((c) =>
+        c.slug?.toLowerCase().includes("audio") || 
+        c.name?.toLowerCase().includes("audio") ||
+        c.slug?.toLowerCase().includes("headphones") ||
+        c.name?.toLowerCase().includes("headphones") ||
+        c.slug?.toLowerCase().includes("speakers") ||
+        c.name?.toLowerCase().includes("speakers")
+      )?.id || null,
       route: "/",
     },
   ];
