@@ -115,7 +115,7 @@ export const ProductCard = ({
             </div>}
         </div>
 
-        <Button size="sm" onClick={addToCart} disabled={product.stock_quantity === 0} className="w-full text-xs h-7 bg-pink-600 hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed">
+        <Button size="sm" onClick={addToCart} disabled={product.stock_quantity === 0} className="w-full text-xs h-7 bg-pink-600 hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-center mx-0 px-[5px]">
           <ShoppingCart className="w-3 h-3 mr-1" />
           {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
         </Button>
