@@ -52,7 +52,7 @@ export const AppBar = () => {
 
   return (
     <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 lg:px-24 xl:px-32">
+      <nav className="max-w-7xl mx-auto px-4 lg:px-16 xl:px-20">
         <div className="flex items-center justify-between h-16">
           
           {/* Logo Section */}
