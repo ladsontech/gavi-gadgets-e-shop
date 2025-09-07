@@ -39,7 +39,7 @@ export const AppBar = () => {
     { 
       icon: ({ className }: { className?: string }) => (
         <img 
-          src="/src/assets/tiktok-logo.png" 
+          src="/images/tiktok-logo.png" 
           alt="TikTok" 
           className={`${className} rounded-full object-cover`}
         />
@@ -52,7 +52,7 @@ export const AppBar = () => {
 
   return (
     <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4">
+      <nav className="max-w-7xl mx-auto px-4 lg:px-24 xl:px-32">
         <div className="flex items-center justify-between h-16">
           
           {/* Logo Section */}

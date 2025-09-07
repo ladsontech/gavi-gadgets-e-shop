@@ -174,9 +174,9 @@ const Index = () => {
           </div>
 
           {/* Desktop Layout with Sidebar */}
-          <div className="flex gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-24 xl:px-32">
             {/* Sidebar - Desktop Only */}
-            <ProductSidebar 
+            <ProductSidebar
               categories={categories || []}
               selectedCategory={selectedCategory}
               onCategoryChange={setSelectedCategory}

@@ -54,7 +54,7 @@ export const ProductSidebar = ({
   ];
 
   return (
-    <div className="hidden lg:block w-64 bg-white rounded-lg border border-gray-200 p-4 h-fit sticky top-4">
+    <div className="hidden md:block w-64 bg-white rounded-lg border border-gray-200 p-4 h-fit sticky top-4">
       {/* Categories Section */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
