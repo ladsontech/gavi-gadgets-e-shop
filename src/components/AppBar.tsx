@@ -38,13 +38,15 @@ export const AppBar = () => {
     },
     { 
       icon: ({ className }: { className?: string }) => (
-        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-2.08v5.73a2.89 2.89 0 01-2.88 2.88 2.89 2.89 0 01-2.88-2.88V2H6.9v5.73a4.83 4.83 0 01-3.77 4.25 4.84 4.84 0 01-1.84-3.81A4.84 4.84 0 014.96 3.5h.54V2H4.96A6.84 6.84 0 00-1.88 8.84a6.84 6.84 0 006.84 6.84A6.84 6.84 0 0011.8 8.84V22h2.4V8.84a6.84 6.84 0 006.84-6.84A6.84 6.84 0 0014.2 2h-.54v1.5h.54a4.84 4.84 0 014.84 4.84 4.84 4.84 0 01-1.84 3.81z"/>
-        </svg>
+        <img 
+          src="/src/assets/tiktok-logo.png" 
+          alt="TikTok" 
+          className={`${className} rounded-full object-cover`}
+        />
       ), 
       url: "https://www.tiktok.com/discover/gavi-gadgets?lang=en", 
       label: "TikTok",
-      color: "text-black hover:text-gray-800 hover:bg-gray-50"
+      color: "hover:bg-gray-50"
     },
   ];
 

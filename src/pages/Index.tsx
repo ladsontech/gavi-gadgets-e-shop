@@ -154,9 +154,6 @@ const Index = () => {
       />
       
       <div className="min-h-screen bg-gray-50">
-        {/* Only show hero section on home page */}
-        {isHomePage && <HeroSection />}
-        
         {isHomePage && <UpdatesCarousel />}
         
         {/* Weekly offers section with data attribute for smooth scrolling */}
@@ -177,7 +174,7 @@ const Index = () => {
           </div>
 
           {/* Desktop Layout with Sidebar */}
-          <div className="flex gap-6">
+          <div className="flex gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Sidebar - Desktop Only */}
             <ProductSidebar 
               categories={categories || []}
@@ -204,6 +201,9 @@ const Index = () => {
             </div>
           </div>
         </div>
+        
+        {/* Hero section moved to bottom on home page */}
+        {isHomePage && <HeroSection />}
       </div>
     </>
   );
