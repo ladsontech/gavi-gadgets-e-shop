@@ -11,13 +11,14 @@ import { WeeklyOffers } from "@/components/WeeklyOffers";
 import SEOHead from "@/components/SEOHead";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
+import { useSearch } from "@/contexts/SearchContext";
 
 const Index = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const { searchQuery } = useSearch();
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState("all");
 

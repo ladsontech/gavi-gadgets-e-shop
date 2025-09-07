@@ -1,16 +1,28 @@
 
 import React from "react";
-import { Phone, Facebook, Instagram } from "lucide-react";
+import { Phone, Facebook, Instagram, Search } from "lucide-react";
 import { CartIcon } from "./CartIcon";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useSearch } from "@/contexts/SearchContext";
 
 export const AppBar = () => {
   const navigate = useNavigate();
+  const { searchQuery, setSearchQuery } = useSearch();
 
   const handleContactClick = () => {
     const phoneNumber = "+256740799577";
     window.location.href = `tel:${phoneNumber}`;
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
   };
 
   const socialLinks = [
@@ -68,6 +80,20 @@ export const AppBar = () => {
             />
           </div>
 
+          {/* Desktop Search Bar */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <form onSubmit={handleSearchSubmit} className="relative w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="Search for iPhone, Samsung, Pixel..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-4 h-10 w-full rounded-lg border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+              />
+            </form>
+          </div>
+
           {/* Actions Section */}
           <div className="flex items-center gap-2">
             
@@ -90,11 +116,11 @@ export const AppBar = () => {
               })}
             </div>
             
-            {/* Contact Button - All Views */}
+            {/* Contact Button - Desktop Only */}
             <Button
               variant="outline"
               onClick={handleContactClick}
-              className="flex items-center gap-2 text-pink-600 border-pink-200 hover:bg-pink-50 bg-pink-50/50 px-3 py-2 h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200"
+              className="hidden md:flex items-center gap-2 text-pink-600 border-pink-200 hover:bg-pink-50 bg-pink-50/50 px-3 py-2 h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200"
             >
               <Phone className="w-4 h-4" />
               <span className="font-medium">+256 740799577</span>
@@ -105,8 +131,24 @@ export const AppBar = () => {
           </div>
         </div>
         
-        {/* Mobile Social Media Links */}
-        <div className="md:hidden flex justify-center gap-4 py-2 border-t border-gray-100">
+        {/* Mobile Search Bar and Social Media Links */}
+        <div className="md:hidden">
+          {/* Mobile Search Bar */}
+          <div className="px-4 py-3 border-t border-gray-100">
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                type="text"
+                placeholder="Search for iPhone, Samsung, Pixel..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-4 h-10 w-full rounded-lg border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+              />
+            </form>
+          </div>
+          
+          {/* Mobile Social Media Links */}
+          <div className="flex justify-center gap-4 py-2 border-t border-gray-100">
           {socialLinks.map((social, index) => {
             const Icon = social.icon;
             return (
@@ -122,6 +164,7 @@ export const AppBar = () => {
               </Button>
             );
           })}
+          </div>
         </div>
       </nav>
     </header>
