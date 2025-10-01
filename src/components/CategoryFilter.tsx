@@ -36,15 +36,17 @@ export const CategoryFilter = ({
       {/* Mobile: dropdown menu */}
       <div className="sm:hidden">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-between h-12 rounded-xl border-pink-200 hover:bg-pink-50 hover:border-pink-300 text-left">
-              <span className="flex items-center gap-2">
-                {selectedCategory === "accessories" ? <Package className="w-4 h-4 text-pink-600" /> : <Smartphone className="w-4 h-4 text-pink-600" />}
-                {getSelectedLabel()}
-              </span>
-              <ChevronDown className="ml-2 w-4 h-4 text-pink-600" />
-            </Button>
-          </DropdownMenuTrigger>
+          <div className="w-full h-12 rounded-xl border border-pink-200 hover:bg-pink-50 hover:border-pink-300 flex items-center justify-between px-4">
+            <span className="flex items-center gap-2 flex-1">
+              {selectedCategory === "accessories" ? <Package className="w-4 h-4 text-pink-600" /> : <Smartphone className="w-4 h-4 text-pink-600" />}
+              <span className="text-sm">{getSelectedLabel()}</span>
+            </span>
+            <DropdownMenuTrigger asChild>
+              <button className="p-2 hover:bg-pink-100 rounded transition-colors">
+                <ChevronDown className="w-4 h-4 text-pink-600" />
+              </button>
+            </DropdownMenuTrigger>
+          </div>
           <DropdownMenuContent className="w-full !z-50 bg-white/95 backdrop-blur-md border-pink-200 shadow-xl">
             <DropdownMenuItem onClick={() => onCategoryChange(null)} className={`py-3 px-4 ${!selectedCategory ? "font-bold bg-pink-50 text-pink-700" : "hover:bg-pink-50"}`}>
               All Products

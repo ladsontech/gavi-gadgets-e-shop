@@ -115,15 +115,16 @@ export const ProductSidebar = ({
         </div>
         
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              variant="outline" 
-              className="w-full justify-between h-9 text-sm"
-            >
+          <div className="w-full h-9 rounded-md border border-input flex items-center justify-between px-3 bg-background hover:bg-accent">
+            <span className="text-sm flex-1">
               {sortOptions.find(opt => opt.value === sortBy)?.label || "Newest First"}
-              <ChevronDown className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
+            </span>
+            <DropdownMenuTrigger asChild>
+              <button className="p-1 hover:bg-muted rounded transition-colors">
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+          </div>
           <DropdownMenuContent className="w-full !z-50 bg-white border shadow-lg">
             {sortOptions.map((option) => (
               <DropdownMenuItem
@@ -148,15 +149,16 @@ export const ProductSidebar = ({
         </div>
         
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              variant="outline" 
-              className="w-full justify-between h-9 text-sm"
-            >
+          <div className="w-full h-9 rounded-md border border-input flex items-center justify-between px-3 bg-background hover:bg-accent">
+            <span className="text-sm flex-1">
               {priceRanges.find(range => range.value === priceRange)?.label || "All Prices"}
-              <ChevronDown className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
+            </span>
+            <DropdownMenuTrigger asChild>
+              <button className="p-1 hover:bg-muted rounded transition-colors">
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+          </div>
           <DropdownMenuContent className="w-full !z-50 bg-white border shadow-lg">
             {priceRanges.map((range) => (
               <DropdownMenuItem
