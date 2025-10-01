@@ -42,9 +42,7 @@ export const Footer = () => {
           <Button variant="outline" size="sm" onClick={() => navigate("/warranty")} className="border-white hover:bg-white text-purple-950">
             Warranty Policy
           </Button>
-          <Button variant="outline" size="sm" onClick={() => navigate("/sitemap")} className="text-white border-white hover:bg-white hover:text-pink-700">
-            Sitemap
-          </Button>
+          
         </div>
       </div>
       
