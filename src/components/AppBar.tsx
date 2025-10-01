@@ -134,7 +134,7 @@ export const AppBar = () => {
         {/* Mobile Search Bar and Social Media Links */}
         <div className="md:hidden">
           {/* Mobile Search Bar */}
-          <div className="px-4 py-3 border-t border-gray-100">
+          <div className="px-6 py-3 border-t border-gray-100">
             <form onSubmit={handleSearchSubmit} className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
