@@ -1,14 +1,10 @@
-
 import React from "react";
 import { ShoppingBag, Phone, MapPin, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-
 export const Footer = () => {
   const navigate = useNavigate();
-  
-  return (
-    <footer className="text-white pt-10 pb-5 px-4 mt-8 bg-pink-700 mb-16 md:mb-0">
+  return <footer className="text-white pt-10 pb-5 px-4 mt-8 bg-pink-700 mb-16 md:mb-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-4 md:flex-row justify-between items-center">
         <div className="flex flex-col items-start text-left">
           <div className="flex items-center gap-2 mb-2">
@@ -43,20 +39,10 @@ export const Footer = () => {
       
       <div className="text-center mt-6 pt-4 border-t border-pink-400">
         <div className="flex justify-center gap-4 mb-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/warranty")}
-            className="text-white border-white hover:bg-white hover:text-pink-700"
-          >
+          <Button variant="outline" size="sm" onClick={() => navigate("/warranty")} className="border-white hover:bg-white text-purple-950">
             Warranty Policy
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/sitemap")}
-            className="text-white border-white hover:bg-white hover:text-pink-700"
-          >
+          <Button variant="outline" size="sm" onClick={() => navigate("/sitemap")} className="text-white border-white hover:bg-white hover:text-pink-700">
             Sitemap
           </Button>
         </div>
@@ -65,6 +51,5 @@ export const Footer = () => {
       <div className="text-xs text-pink-200 text-center mt-4">
         &copy; {new Date().getFullYear()} Gavi Gadgets. All rights reserved.
       </div>
-    </footer>
-  );
+    </footer>;
 };
