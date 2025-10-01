@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,50 +20,41 @@ import Admin from "./pages/Admin";
 import Warranty from "./pages/Warranty";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
-
 const queryClient = new QueryClient();
-
 function App() {
   const [showSplash, setShowSplash] = useState(() => {
     return !sessionStorage.getItem('splashShown');
   });
-
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
   const handleSplashComplete = () => {
     setShowSplash(false);
     sessionStorage.setItem('splashShown', 'true');
   };
-
   useEffect(() => {
     const fetchCategories = async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("*")
-        .order("name");
-      
+      const {
+        data,
+        error
+      } = await supabase.from("categories").select("*").order("name");
       if (error) {
         console.error("Error fetching categories:", error);
       } else {
         setCategories(data || []);
       }
     };
-
     fetchCategories();
   }, []);
-
   const handleCategoryChange = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
-    window.dispatchEvent(new CustomEvent('categoryChanged', { detail: categoryId }));
+    window.dispatchEvent(new CustomEvent('categoryChanged', {
+      detail: categoryId
+    }));
   };
-
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
-
-  return (
-    <HelmetProvider>
+  return <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <SearchProvider>
           <TooltipProvider>
@@ -73,12 +63,8 @@ function App() {
             <BrowserRouter>
               <div className="min-h-screen flex flex-col">
                 <AppBar />
-                <DesktopNav 
-                  categories={categories}
-                  selectedCategory={selectedCategory}
-                  onCategoryChange={handleCategoryChange}
-                />
-                <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32">
+                <DesktopNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
+                <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/product/:slug" element={<ProductDetail />} />
@@ -91,18 +77,12 @@ function App() {
               </main>
               <Footer />
               <WhatsAppButton />
-              <MobileMainNav 
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onCategoryChange={handleCategoryChange}
-              />
+              <MobileMainNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
             </div>
           </BrowserRouter>
         </TooltipProvider>
         </SearchProvider>
       </QueryClientProvider>
-    </HelmetProvider>
-  );
+    </HelmetProvider>;
 }
-
 export default App;
