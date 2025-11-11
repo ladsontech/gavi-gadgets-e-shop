@@ -56,9 +56,20 @@ const Admin = () => {
   const [showSimpleForm, setShowSimpleForm] = useState(false);
   const navigate = useNavigate();
 
+  // Debug logging
   useEffect(() => {
+    console.log("Admin page state:", { isAdmin, isLoading });
+  }, [isAdmin, isLoading]);
+
+  useEffect(() => {
+    // Only redirect if we're sure the user is not an admin
+    // Add a small delay to prevent flickering
     if (!isLoading && !isAdmin) {
-      navigate("/auth");
+      console.log("Redirecting to auth - user is not admin");
+      const timer = setTimeout(() => {
+        navigate("/auth");
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isAdmin, isLoading, navigate]);
 
@@ -133,18 +144,19 @@ const Admin = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mx-auto mb-4"></div>
           <p className="text-gray-400 text-sm">Loading...</p>
-          <p className="text-gray-300 text-xs mt-2">If this takes too long, please refresh the page</p>
+          <p className="text-gray-300 text-xs mt-2">Checking authentication...</p>
         </div>
       </div>
     );
   }
 
-  // Redirect happens in useEffect, just show nothing while redirecting
+  // Show redirect message if not admin (redirect happens in useEffect)
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-400 text-sm">Redirecting to login...</p>
+          <p className="text-gray-300 text-xs mt-2">You are not authorized to access this page</p>
         </div>
       </div>
     );

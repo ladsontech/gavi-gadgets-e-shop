@@ -10,24 +10,44 @@ export function useAdminAuth() {
 
   useEffect(() => {
     let cancelled = false;
+    let initialCheckComplete = false;
 
     const checkAuth = async () => {
       try {
+        console.log("Starting auth check...");
         // Get current session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (cancelled) return;
 
-        if (sessionError || !session?.user) {
-          setIsAuthenticated(false);
-          setIsLoading(false);
-          setSession(null);
-          setUser(null);
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          if (!cancelled) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            setSession(null);
+            setUser(null);
+          }
           return;
         }
 
-        setSession(session);
-        setUser(session.user);
+        if (!session?.user) {
+          console.log("No session found");
+          if (!cancelled) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            setSession(null);
+            setUser(null);
+          }
+          return;
+        }
+
+        console.log("Session found, checking admin status for:", session.user.email);
+        
+        if (!cancelled) {
+          setSession(session);
+          setUser(session.user);
+        }
 
         // Check if user is admin
         const { data: adminData, error: adminError } = await supabase
@@ -40,12 +60,19 @@ export function useAdminAuth() {
 
         if (adminError) {
           console.error("Admin check error:", adminError);
-          setIsAuthenticated(false);
+          if (!cancelled) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+          }
         } else {
-          setIsAuthenticated(!!adminData);
+          const isAdmin = !!adminData;
+          console.log("Admin check result:", { email: session.user.email, isAdmin });
+          if (!cancelled) {
+            setIsAuthenticated(isAdmin);
+            setIsLoading(false);
+            initialCheckComplete = true;
+          }
         }
-        
-        setIsLoading(false);
       } catch (error) {
         console.error("Auth check error:", error);
         if (!cancelled) {
@@ -57,40 +84,27 @@ export function useAdminAuth() {
 
     checkAuth();
 
-    // Listen for auth changes
+    // Listen for auth changes (only handle sign out to prevent state resets)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (cancelled) return;
-
-        if (!session?.user) {
-          setIsAuthenticated(false);
-          setIsLoading(false);
-          setSession(null);
-          setUser(null);
-          return;
-        }
-
-        setSession(session);
-        setUser(session.user);
-
-        // Check admin status
-        try {
-          const { data: adminData, error: adminError } = await supabase
-            .from("admin_users")
-            .select("email")
-            .eq("email", session.user.email)
-            .maybeSingle();
-
-          if (cancelled) return;
-
-          setIsAuthenticated(!!adminData && !adminError);
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Admin check error:", error);
+        console.log("Auth state change event:", event);
+        
+        // Only handle sign out events to prevent interfering with initial check
+        if (event === 'SIGNED_OUT' || (!session?.user && initialCheckComplete)) {
+          console.log("User signed out or session lost");
           if (!cancelled) {
             setIsAuthenticated(false);
             setIsLoading(false);
+            setSession(null);
+            setUser(null);
           }
+          return;
+        }
+
+        // Ignore other events if initial check is complete to prevent state resets
+        if (initialCheckComplete) {
+          console.log("Initial check complete, ignoring auth state change");
+          return;
         }
       }
     );
