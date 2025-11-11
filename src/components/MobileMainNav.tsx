@@ -1,6 +1,6 @@
 import { Home, Tag, LayoutGrid } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 
 interface MobileMainNavProps {
   selectedCategory?: string | null;
@@ -16,12 +16,35 @@ export const MobileMainNav = ({
   const navigate = useNavigate();
   const location = useLocation();
   const clickTimeoutRef = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const [activeTab, setActiveTab] = useState<"home" | "categories" | "offers">("home");
 
   const navItems = [
-    { label: "Home", icon: Home, route: "/" },
-    { label: "Categories", icon: LayoutGrid, route: "/categories" },
-    { label: "Offers", icon: Tag, route: "/offers" },
+    { label: "Home", icon: Home, route: "/", tab: "home" as const },
+    { label: "Categories", icon: LayoutGrid, route: "/categories", tab: "categories" as const },
+    { label: "Offers", icon: Tag, route: "/offers", tab: "offers" as const },
   ];
+
+  // Listen for tab changes from Index page
+  useEffect(() => {
+    const handleTabChange = (event: CustomEvent) => {
+      setActiveTab(event.detail);
+    };
+    window.addEventListener('mobileTabChanged', handleTabChange as EventListener);
+    return () => {
+      window.removeEventListener('mobileTabChanged', handleTabChange as EventListener);
+    };
+  }, []);
+
+  // Sync with location changes
+  useEffect(() => {
+    if (location.pathname === "/categories") {
+      setActiveTab("categories");
+    } else if (location.pathname === "/offers") {
+      setActiveTab("offers");
+    } else if (location.pathname === "/") {
+      setActiveTab("home");
+    }
+  }, [location.pathname]);
 
   const handleNavClick = useCallback(
     (item: typeof navItems[number]) => {
@@ -34,8 +57,23 @@ export const MobileMainNav = ({
         delete clickTimeoutRef.current[itemKey];
       }, 450);
 
-      if (location.pathname !== item.route) {
-        navigate(item.route, { replace: false });
+      // On mobile, always navigate to home and switch tabs
+      const tabMap: Record<string, "home" | "categories" | "offers"> = {
+        "/": "home",
+        "/categories": "categories",
+        "/offers": "offers",
+      };
+      const targetTab = tabMap[item.route];
+      
+      if (targetTab) {
+        // Always navigate to home page first
+        if (location.pathname !== "/") {
+          navigate("/", { replace: false });
+        }
+        // Then switch to the appropriate tab
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent("switchMobileTab", { detail: targetTab }));
+        }, 100);
       }
     },
     [location.pathname, navigate]
@@ -48,7 +86,10 @@ export const MobileMainNav = ({
           <div className="absolute inset-0 bg-gray-900 shadow-[0_-2px_10px_rgba(0,0,0,0.2)]" />
           <div className="absolute inset-0 bg-gray-950/95 border-t border-gray-800 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
             {navItems.map((item, index) => {
-              const active = location.pathname === item.route;
+              // On mobile, check active based on current tab when on home page
+              const active = location.pathname === "/" 
+                ? activeTab === item.tab 
+                : location.pathname === item.route;
               const Icon = item.icon;
               const isMiddle = index === 1;
 

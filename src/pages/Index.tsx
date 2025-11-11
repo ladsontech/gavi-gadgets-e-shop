@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
-import { ProductSidebar } from "@/components/ProductSidebar";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
@@ -11,6 +10,9 @@ import SEOHead from "@/components/SEOHead";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useSearch } from "@/contexts/SearchContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CategoriesPage from "./Categories";
+import Offers from "./Offers";
 const Index = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -20,6 +22,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState("all");
+  const [activeTab, setActiveTab] = useState<"home" | "categories" | "offers">("home");
 
   // Listen for category changes from mobile nav
   useEffect(() => {
@@ -31,6 +34,35 @@ const Index = () => {
       window.removeEventListener('categoryChanged', handleCategoryChange as EventListener);
     };
   }, []);
+
+  // Listen for tab switches from mobile nav
+  useEffect(() => {
+    const handleTabSwitch = (event: CustomEvent) => {
+      setActiveTab(event.detail);
+      // Notify MobileMainNav of tab change
+      window.dispatchEvent(new CustomEvent("mobileTabChanged", { detail: event.detail }));
+    };
+    window.addEventListener('switchMobileTab', handleTabSwitch as EventListener);
+    return () => {
+      window.removeEventListener('switchMobileTab', handleTabSwitch as EventListener);
+    };
+  }, []);
+
+  // Notify MobileMainNav when tab changes
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("mobileTabChanged", { detail: activeTab }));
+  }, [activeTab]);
+
+  // Sync active tab with URL on mount
+  useEffect(() => {
+    if (location.pathname === "/categories") {
+      setActiveTab("categories");
+    } else if (location.pathname === "/offers") {
+      setActiveTab("offers");
+    } else {
+      setActiveTab("home");
+    }
+  }, [location.pathname]);
 
   // Background-fetched all products (prefetched in App) for instant client-side filtering
   const { data: allProducts, isLoading: productsLoading } = useQuery({
@@ -144,7 +176,72 @@ const Index = () => {
   return <>
       <SEOHead title="Gavi Gadgets - Premium Smartphones in Uganda" description="Shop the latest smartphones including iPhone, Samsung, Huawei and more. Best prices on new and UK used phones in Uganda with warranty." keywords="smartphones, iPhone, Samsung, Huawei, Uganda, phones, mobile" />
       
-      <div className="min-h-screen bg-white">
+      {/* Mobile Tabs View */}
+      <div className="md:hidden min-h-screen bg-white">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "home" | "categories" | "offers")} className="w-full">
+          <TabsList className="w-full grid grid-cols-3 h-12 rounded-none border-b border-gray-200 bg-white sticky top-16 z-40">
+            <TabsTrigger value="home" className="text-xs sm:text-sm">Home</TabsTrigger>
+            <TabsTrigger value="categories" className="text-xs sm:text-sm">Categories</TabsTrigger>
+            <TabsTrigger value="offers" className="text-xs sm:text-sm">Offers</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="home" className="mt-0">
+            <div className="min-h-screen bg-white">
+              {/* Only show carousel sections when not searching */}
+              {!searchQuery && (
+                <>
+                  <UpdatesCarousel />
+                  <div data-offers-section>
+                    <WeeklyOffers />
+                  </div>
+                  <TuzisazePromo />
+                </>
+              )}
+              
+              <div className="w-full">
+                {!searchQuery && selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
+                
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+                  <div className="w-full" data-products-section>
+                    <div className="mb-6">
+                      <h2 className="text-2xl sm:text-3xl font-normal text-black mb-1">
+                        {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
+                      </h2>
+                      {searchQuery && (
+                        <p className="text-sm text-gray-500">
+                          {filteredProducts?.length || 0} {filteredProducts?.length === 1 ? 'product' : 'products'} found
+                        </p>
+                      )}
+                    </div>
+                    {productsLoading ? (
+                      <div className="text-center py-12">
+                        <p className="text-gray-400 text-sm">Loading products...</p>
+                      </div>
+                    ) : (
+                      <div className="mb-12">
+                        <ProductGrid products={filteredProducts || []} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <HeroSection />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="categories" className="mt-0">
+            <CategoriesPage />
+          </TabsContent>
+          
+          <TabsContent value="offers" className="mt-0">
+            <Offers />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Desktop View */}
+      <div className="hidden md:block min-h-screen bg-white">
         {/* Only show carousel sections when not searching */}
         {!searchQuery && (
           <>
@@ -164,15 +261,10 @@ const Index = () => {
           {/* Only show FeaturedProducts if not viewing offers and not searching */}
           {!searchQuery && selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
           
-          {/* Desktop Layout with Sidebar */}
-          <div className="flex gap-4 max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
-            {/* Sidebar - Desktop Only, hidden when searching */}
-            {!searchQuery && (
-              <ProductSidebar categories={categories || []} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} sortBy={sortBy} onSortChange={setSortBy} priceRange={priceRange} onPriceRangeChange={setPriceRange} />
-            )}
-            
+          {/* Desktop Layout */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
             {/* Main Content */}
-            <div className={`flex-1 ${searchQuery ? 'max-w-full' : ''}`} data-products-section>
+            <div className="w-full" data-products-section>
               <div className="mb-6">
                 <h2 className="text-2xl sm:text-3xl font-normal text-black mb-1">
                   {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
