@@ -1,5 +1,5 @@
 
-import { Home, Tag, Package, Smartphone, Tv } from "lucide-react";
+import { Home, Tag, LayoutGrid } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface MobileMainNavProps {
@@ -19,25 +19,8 @@ export const MobileMainNav = ({
   // Map nav labels to actual category slugs/ids for filtering
   const navItems = [
     { label: "Home", icon: Home, value: null, route: "/" },
-    {
-      label: "Phones",
-      icon: Smartphone,
-      value: null,
-      route: "/category/phones",
-    },
-    {
-      label: "Offers",
-      icon: Tag,
-      value: "featured",
-      route: "/",
-    },
-    {
-      label: "TVs",
-      icon: Tv,
-      value: null,
-      route: "/category/tvs",
-    },
-    { label: "Accessories", icon: Package, value: null, route: "/category/accessories" },
+    { label: "Categories", icon: LayoutGrid, value: null, route: "/categories" },
+    { label: "Offers", icon: Tag, value: "featured", route: "/" },
   ];
 
   const handleNavClick = (item: typeof navItems[0]) => {
@@ -54,9 +37,7 @@ export const MobileMainNav = ({
   return (
     <nav className="fixed bottom-0 left-0 right-0 w-full bg-white shadow-lg border-t flex z-20 md:hidden">
       {navItems.map((item) => {
-        const active =
-          location.pathname === item.route && 
-          ((item.value === null && !selectedCategory) || item.value === selectedCategory);
+        const active = location.pathname === item.route;
         const Icon = item.icon;
         return (
           <button

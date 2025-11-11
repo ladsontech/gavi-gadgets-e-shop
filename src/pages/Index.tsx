@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductGrid } from "@/components/ProductGrid";
-import { CategoryFilter } from "@/components/CategoryFilter";
 import { ProductSidebar } from "@/components/ProductSidebar";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
@@ -157,11 +156,6 @@ const Index = () => {
         <div className="w-full">
           <FeaturedProducts products={allProducts || []} />
           
-          {/* Mobile Category Filter */}
-          <div className="lg:hidden mb-4">
-            <CategoryFilter categories={categories || []} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
-          </div>
-
           {/* Desktop Layout with Sidebar */}
           <div className="flex gap-4 max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
             {/* Sidebar - Desktop Only */}

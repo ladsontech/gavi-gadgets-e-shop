@@ -20,6 +20,7 @@ import Admin from "./pages/Admin";
 import Warranty from "./pages/Warranty";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
+import CategoriesPage from "./pages/Categories";
 import CategoryPage from "./pages/CategoryPage";
 const queryClient = new QueryClient();
 function App() {
@@ -115,6 +116,7 @@ function App() {
                 <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/categories" element={<CategoriesPage />} />
                   <Route path="/category/:slug" element={<CategoryPage />} />
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
