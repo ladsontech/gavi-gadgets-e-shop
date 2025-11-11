@@ -18,8 +18,13 @@ interface Product {
   storage_capacity?: string | null;
 }
 
-export const TuzisazePromo = () => {
+interface TuzisazePromoProps {
+  variant?: "compact" | "full";
+}
+
+export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
   const navigate = useNavigate();
+  const isCompact = variant === "compact";
 
   const { data: promoProducts, isLoading } = useQuery({
     queryKey: ["tuzisaze-promo"],
@@ -65,123 +70,187 @@ export const TuzisazePromo = () => {
           </p>
         </div>
 
-        {/* Products Horizontal Scroll Grid - 2 columns visible */}
-        <div className="mb-8">
-          <div className="overflow-x-auto scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
-            <div className="inline-flex gap-6" style={{ display: 'inline-flex' }}>
-              {promoProducts.map((product) => {
-            const originalPrice = product.original_price || product.price;
-            const discountedPrice = product.price;
-            const discount = getDiscountAmount(originalPrice, discountedPrice);
-            const discountPercent = getDiscountPercentage(originalPrice, discountedPrice);
-            const mainImage = product.images && product.images.length > 0 
-              ? product.images[0] 
-              : "/placeholder.svg";
+        {/* Products Grid - Compact (horizontal scroll) or Full (grid) */}
+        {isCompact ? (
+          /* Compact: Horizontal scroll, 2 per row on mobile */
+          <div className="mb-8">
+            <div className="overflow-x-auto scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
+              <div className="inline-flex gap-3 sm:gap-4" style={{ display: 'inline-flex' }}>
+                {promoProducts.map((product) => {
+                  const originalPrice = product.original_price || product.price;
+                  const discountedPrice = product.price;
+                  const discount = getDiscountAmount(originalPrice, discountedPrice);
+                  const discountPercent = getDiscountPercentage(originalPrice, discountedPrice);
+                  const mainImage = product.images && product.images.length > 0 
+                    ? product.images[0] 
+                    : "/placeholder.svg";
 
-            return (
-              <div
-                key={product.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 border-pink-100 flex-shrink-0"
-                style={{ width: 'calc(50vw - 2rem)', minWidth: '280px', maxWidth: '400px' }}
-              >
-                {/* Product Image - Square */}
-                <div className="relative aspect-square bg-gray-100 overflow-hidden">
-                  <img
-                    src={mainImage}
-                    alt={product.name}
-                    className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/placeholder.svg";
-                    }}
-                  />
-                  {/* Discount Badge */}
-                  {discountPercent > 0 && (
-                    <div className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                      -{discountPercent}%
+                  return (
+                    <div
+                      key={product.id}
+                      className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all duration-200 cursor-pointer group border border-gray-200 h-full flex flex-col flex-shrink-0"
+                      style={{ width: 'calc(50vw - 1rem)', minWidth: '160px', maxWidth: '200px' }}
+                      onClick={() => navigate(`/product/${product.slug}`)}
+                    >
+                      {/* Product Image - Square */}
+                      <div className="aspect-square relative overflow-hidden bg-gray-50">
+                        <img
+                          src={mainImage}
+                          alt={product.name}
+                          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/placeholder.svg";
+                          }}
+                        />
+                        {/* Discount Badge */}
+                        {discountPercent > 0 && (
+                          <div className="absolute top-1 right-1 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold">
+                            -{discountPercent}%
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Product Info - Compact */}
+                      <div className="p-2 flex-1 flex flex-col">
+                        <h3 className="font-medium text-xs text-gray-900 line-clamp-2 mb-1 group-hover:text-pink-600 transition-colors">
+                          {product.name}
+                        </h3>
+                        
+                        <div className="flex items-baseline gap-1 mb-1">
+                          <span className="text-xs text-gray-400 line-through">
+                            UGX {Number(originalPrice).toLocaleString()}
+                          </span>
+                          <span className="text-sm font-bold text-pink-600">
+                            UGX {Number(discountedPrice).toLocaleString()}
+                          </span>
+                        </div>
+
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/product/${product.slug}`);
+                          }}
+                          className="w-full text-xs h-6 bg-pink-600 hover:bg-pink-700 text-white mt-auto"
+                        >
+                          View
+                        </Button>
+                      </div>
                     </div>
-                  )}
-                </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Full: Normal grid layout */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {promoProducts.map((product) => {
+              const originalPrice = product.original_price || product.price;
+              const discountedPrice = product.price;
+              const discount = getDiscountAmount(originalPrice, discountedPrice);
+              const discountPercent = getDiscountPercentage(originalPrice, discountedPrice);
+              const mainImage = product.images && product.images.length > 0 
+                ? product.images[0] 
+                : "/placeholder.svg";
 
-                {/* Product Info */}
-                <div className="p-4 sm:p-6">
-                  {/* Product Name */}
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-                    {product.name}
-                  </h3>
-
-                  {/* Description */}
-                  {product.description && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                      {product.description}
-                    </p>
-                  )}
-
-                  {/* Storage/Model Info */}
-                  {(product.storage_capacity || product.model) && (
-                    <div className="flex items-center gap-2 mb-4">
-                      {product.storage_capacity && (
-                        <span className="bg-pink-100 text-pink-700 px-2 py-1 rounded text-xs font-medium">
-                          {product.storage_capacity}
-                        </span>
-                      )}
-                      {product.model && (
-                        <span className="text-xs text-gray-500">{product.model}</span>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Pricing */}
-                  <div className="mb-4">
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-gray-400 text-sm line-through">
-                        UGX {Number(originalPrice).toLocaleString()}
-                      </span>
-                      <span className="text-2xl sm:text-3xl font-bold text-pink-600">
-                        {Number(discountedPrice).toLocaleString()}shs
-                      </span>
-                    </div>
-                    {discount > 0 && (
-                      <p className="text-sm text-green-600 font-medium">
-                        Save UGX {Number(discount).toLocaleString()}
-                      </p>
+              return (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 border-pink-100"
+                >
+                  {/* Product Image - Square */}
+                  <div className="relative aspect-square bg-gray-100 overflow-hidden">
+                    <img
+                      src={mainImage}
+                      alt={product.name}
+                      className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/placeholder.svg";
+                      }}
+                    />
+                    {/* Discount Badge */}
+                    {discountPercent > 0 && (
+                      <div className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        -{discountPercent}%
+                      </div>
                     )}
                   </div>
 
-                  {/* View Product Button */}
-                  <Button
-                    onClick={() => navigate(`/product/${product.slug}`)}
-                    className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold py-2"
-                  >
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    View Product
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-            </div>
-          </div>
-        </div>
+                  {/* Product Info */}
+                  <div className="p-4 sm:p-6">
+                    {/* Product Name */}
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                      {product.name}
+                    </h3>
 
-        {/* View All Offers Link */}
-        <div className="text-center">
-          <Button
-            variant="outline"
-            onClick={() => {
-              navigate("/");
-              // Scroll to featured section
-              setTimeout(() => {
-                const element = document.querySelector('[data-offers-section]');
-                if (element) {
-                  element.scrollIntoView({ behavior: "smooth" });
-                }
-              }, 100);
-            }}
-            className="border-pink-300 text-pink-600 hover:bg-pink-50"
-          >
-            View All Offers
-          </Button>
-        </div>
+                    {/* Description */}
+                    {product.description && (
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        {product.description}
+                      </p>
+                    )}
+
+                    {/* Storage/Model Info */}
+                    {(product.storage_capacity || product.model) && (
+                      <div className="flex items-center gap-2 mb-4">
+                        {product.storage_capacity && (
+                          <span className="bg-pink-100 text-pink-700 px-2 py-1 rounded text-xs font-medium">
+                            {product.storage_capacity}
+                          </span>
+                        )}
+                        {product.model && (
+                          <span className="text-xs text-gray-500">{product.model}</span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Pricing */}
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-gray-400 text-sm line-through">
+                          UGX {Number(originalPrice).toLocaleString()}
+                        </span>
+                        <span className="text-2xl sm:text-3xl font-bold text-pink-600">
+                          {Number(discountedPrice).toLocaleString()}shs
+                        </span>
+                      </div>
+                      {discount > 0 && (
+                        <p className="text-sm text-green-600 font-medium">
+                          Save UGX {Number(discount).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* View Product Button */}
+                    <Button
+                      onClick={() => navigate(`/product/${product.slug}`)}
+                      className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold py-2"
+                    >
+                      <ShoppingBag className="w-4 h-4 mr-2" />
+                      View Product
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* View All Offers Link - Only show on compact variant (home page) */}
+        {isCompact && (
+          <div className="text-center">
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigate("/offers");
+              }}
+              className="border-pink-300 text-pink-600 hover:bg-pink-50"
+            >
+              View All Offers
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -116,7 +116,7 @@ const Offers = () => {
         </div>
         
         {/* Tuzisaze Ebeeyi Promo Section */}
-        <TuzisazePromo />
+        <TuzisazePromo variant="full" />
         
         <div className="w-full">
           {/* Desktop Layout with Sidebar */}
