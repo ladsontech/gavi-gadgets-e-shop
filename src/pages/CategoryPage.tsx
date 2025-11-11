@@ -295,7 +295,17 @@ export default function CategoryPage() {
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
               {pageTitle}
             </h1>
-            <div className="hidden md:flex">
+            <div className="hidden md:flex items-center gap-3">
+              {slug !== "gaming" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/category/gaming")}
+                  className="text-pink-600 border-pink-200 hover:bg-pink-50"
+                >
+                  Gaming
+                </Button>
+              )}
               {PriceSortControls}
             </div>
           </div>
@@ -303,6 +313,16 @@ export default function CategoryPage() {
           {/* Mobile: sticky filters/sort bar */}
           <div className="md:hidden sticky top-16 z-30 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b shadow-sm">
             <div className="py-2 flex items-center gap-2">
+              {slug !== "gaming" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/category/gaming")}
+                  className="text-pink-600 border-pink-200 hover:bg-pink-50"
+                >
+                  Gaming
+                </Button>
+              )}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" className="flex items-center gap-2">
