@@ -6,6 +6,7 @@ import SEOHead from "@/components/SEOHead";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from "@/components/ui/sheet";
 
 type Product = {
   id: string;
@@ -275,11 +276,52 @@ export default function CategoryPage() {
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
               {pageTitle}
             </h1>
-            {PriceSortControls}
+            <div className="hidden md:flex">
+              {PriceSortControls}
+            </div>
           </div>
 
+          {/* Mobile: compact filters sheet trigger */}
+          <div className="md:hidden mb-3">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="w-full">Filters</Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="p-4">
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                </SheetHeader>
+
+                {slug === "phones" && (
+                  <div className="mt-3">
+                    <div className="text-sm font-medium text-gray-700 mb-2">Brand</div>
+                    <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+                      <Button variant={brandFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("all")}>All</Button>
+                      <Button variant={brandFilter === "apple" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("apple")}>Apple</Button>
+                      <Button variant={brandFilter === "samsung" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("samsung")}>Samsung</Button>
+                      <Button variant={brandFilter === "pixel" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("pixel")}>Google Pixel</Button>
+                      <Button variant={brandFilter === "others" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("others")}>Others</Button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <div className="text-sm font-medium text-gray-700 mb-2">Sort By</div>
+                  <div>{PriceSortControls}</div>
+                </div>
+
+                <SheetFooter className="mt-4">
+                  <SheetClose asChild>
+                    <Button className="w-full">Apply</Button>
+                  </SheetClose>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Desktop: brand chips visible only on md+ */}
           {slug === "phones" && (
-            <div className="mb-4 flex flex-wrap gap-2">
+            <div className="hidden md:flex mb-4 flex-wrap gap-2">
               <Button
                 variant={brandFilter === "all" ? "default" : "outline"}
                 size="sm"
