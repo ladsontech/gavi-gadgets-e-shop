@@ -30,10 +30,13 @@ const Offers = () => {
       brand?: string | null;
       description?: string | null;
       price?: number | null;
+      original_price?: number | null;
       created_at?: string | null;
     }>;
 
-    let result = base.filter((p) => p.is_featured);
+    let result = base.filter(
+      (p) => p.is_featured && p.original_price !== null && p.original_price !== undefined
+    );
 
     if (searchQuery && searchQuery.trim().length > 0) {
       const q = searchQuery.trim().toLowerCase();
