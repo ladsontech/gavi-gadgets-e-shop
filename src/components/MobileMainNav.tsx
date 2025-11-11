@@ -17,76 +17,91 @@ export const MobileMainNav = ({
   const location = useLocation();
   const clickTimeoutRef = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
-  // Map nav labels to routes - each is an independent page
   const navItems = [
     { label: "Home", icon: Home, route: "/" },
     { label: "Categories", icon: LayoutGrid, route: "/categories" },
     { label: "Offers", icon: Tag, route: "/offers" },
   ];
 
-  const handleNavClick = useCallback((item: typeof navItems[0]) => {
-    // Prevent double clicks and freezing
-    const itemKey = item.route;
-    if (clickTimeoutRef.current[itemKey]) {
-      return; // Already processing
-    }
+  const handleNavClick = useCallback(
+    (item: typeof navItems[number]) => {
+      const itemKey = item.route;
+      if (clickTimeoutRef.current[itemKey]) {
+        return;
+      }
 
-    // Set timeout to prevent rapid clicks
-    clickTimeoutRef.current[itemKey] = setTimeout(() => {
-      delete clickTimeoutRef.current[itemKey];
-    }, 500);
+      clickTimeoutRef.current[itemKey] = setTimeout(() => {
+        delete clickTimeoutRef.current[itemKey];
+      }, 450);
 
-    // Navigate to the route if not already there
-    if (location.pathname !== item.route) {
-      navigate(item.route, { replace: false });
-    }
-  }, [location.pathname, navigate]);
+      if (location.pathname !== item.route) {
+        navigate(item.route, { replace: false });
+      }
+    },
+    [location.pathname, navigate]
+  );
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl z-50 md:hidden">
-      <div className="flex items-center justify-around h-16 px-2">
-        {navItems.map((item) => {
-          const active = location.pathname === item.route;
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.label}
-              type="button"
-              onClick={() => handleNavClick(item)}
-              disabled={!!clickTimeoutRef.current[item.route]}
-              className={`
-                relative flex flex-col items-center justify-center gap-1 
-                flex-1 h-full rounded-xl transition-all duration-200
-                ${active
-                  ? "text-pink-600 bg-pink-50 scale-105"
-                  : "text-gray-500 active:scale-95"}
-                disabled:opacity-50 disabled:cursor-not-allowed
-                focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-offset-2
-              `}
-              aria-current={active ? "page" : undefined}
-              aria-label={item.label}
-            >
-              <div className={`
-                relative p-2 rounded-lg transition-all duration-200
-                ${active ? "bg-pink-100" : "bg-transparent"}
-              `}>
-                <Icon className={`w-5 h-5 transition-transform duration-200 ${active ? "scale-110" : ""}`} />
-                {active && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-pink-600 rounded-full animate-pulse" />
-                )}
-              </div>
-              <span className={`
-                text-[10px] sm:text-xs font-medium leading-tight transition-all duration-200
-                ${active ? "font-bold" : "font-normal"}
-              `}>
-                {item.label}
-              </span>
-              {active && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-pink-600 rounded-t-full" />
-              )}
-            </button>
-          );
-        })}
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden pointer-events-none">
+      <div className="mx-auto max-w-md px-4 pb-4">
+        <div className="relative h-20">
+          <div className="absolute inset-0 top-4 rounded-t-3xl bg-gray-900 shadow-[0_-8px_24px_rgba(0,0,0,0.35)]" />
+          <div className="absolute inset-x-4 bottom-2 top-6 rounded-3xl bg-gray-950/70 border border-gray-800/80 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
+            {navItems.map((item, index) => {
+              const active = location.pathname === item.route;
+              const Icon = item.icon;
+              const isMiddle = index === 1;
+
+              if (isMiddle) {
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    aria-current={active ? "page" : undefined}
+                    aria-label={item.label}
+                    disabled={!!clickTimeoutRef.current[item.route]}
+                    onClick={() => handleNavClick(item)}
+                    className="absolute left-1/2 -translate-x-1/2 -top-7 flex flex-col items-center gap-2"
+                  >
+                    <div
+                      className={`w-16 h-16 rounded-full border-4 border-gray-900 flex items-center justify-center transition-all duration-200 shadow-[0_12px_24px_rgba(236,72,153,0.35)] ${
+                        active ? "bg-pink-500" : "bg-gradient-to-br from-pink-500 to-pink-600"
+                      }`}
+                    >
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="block text-center text-[11px] font-semibold text-white/90">
+                      {item.label}
+                    </span>
+                  </button>
+                );
+              }
+
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  aria-current={active ? "page" : undefined}
+                  aria-label={item.label}
+                  disabled={!!clickTimeoutRef.current[item.route]}
+                  onClick={() => handleNavClick(item)}
+                  className={`flex flex-col items-center justify-center gap-1 transition-all duration-200 ${
+                    active ? "text-pink-400" : "text-white/70"
+                  }`}
+                >
+                  <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-all duration-200 ${
+                      active ? "bg-white/10" : "bg-transparent"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span className="text-[11px] font-medium">{item.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </nav>
   );
