@@ -56,8 +56,27 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     return Math.round(((original - discounted) / original) * 100);
   };
 
+  const scrollToOffersGrid = () => {
+    const element = document.querySelector("[data-offers-grid]");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const heroProduct = promoProducts?.[0];
+  const heroImage =
+    heroProduct?.images && heroProduct.images.length > 0
+      ? heroProduct.images[0]
+      : null;
+
   return (
-    <section className={isCompact ? "bg-gradient-to-br from-pink-50 via-white to-purple-50 py-8 sm:py-12 px-4 sm:px-6" : "relative"}>
+    <section
+      className={
+        isCompact
+          ? "bg-gradient-to-br from-pink-50 via-white to-purple-50 py-8 sm:py-12 px-4 sm:px-6"
+          : "relative bg-gradient-to-b from-white via-pink-50/40 to-white"
+      }
+    >
       {isCompact ? (
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -255,63 +274,107 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
           )}
         </div>
       ) : (
-        /* Full: Banner-style promotional design */
-        <div className="relative w-full min-h-[600px] sm:min-h-[700px] flex flex-col">
-          {/* Black top border */}
-          <div className="bg-black h-12 sm:h-16"></div>
-          
-          {/* White textured center with promo content */}
-          <div className="flex-1 bg-white relative overflow-hidden" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")`,
-            backgroundSize: '200px 200px'
-          }}>
-            {/* Diagonal Promo Text - Large, bold, pink, diagonal */}
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div 
-                className="text-pink-600 font-black leading-tight"
-                style={{
-                  transform: 'rotate(-12deg)',
-                  fontSize: 'clamp(4rem, 12vw, 10rem)',
-                  textShadow: '3px 3px 6px rgba(0,0,0,0.15)',
-                  letterSpacing: '0.02em',
-                  fontWeight: 900
-                }}
-              >
-                <div className="whitespace-nowrap text-center">
-                  <span className="block" style={{ color: '#ec4899' }}>Tuzisaze Ebeeyi</span>
-                  <span className="block" style={{ color: '#ec4899', fontSize: '0.85em' }}>Promo!</span>
+        /* Full: Clean hero banner for offers page */
+        <div className="relative isolate overflow-hidden">
+          <div className="absolute -top-24 -left-24 w-72 h-72 bg-pink-200/40 rounded-full blur-3xl" />
+          <div className="absolute -bottom-28 -right-32 w-96 h-96 bg-pink-300/35 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-pink-100/60 rounded-full blur-2xl" />
+
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-16 lg:py-20">
+            <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
+              <div className="relative flex justify-center lg:justify-start">
+                <div className="absolute -inset-6 bg-gradient-to-br from-pink-200/40 via-white to-purple-100/30 rounded-[2.75rem] blur-2xl" />
+                <div className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-[2.5rem] border-4 border-pink-500/60 bg-white/80 shadow-2xl overflow-hidden backdrop-blur">
+                  {heroImage ? (
+                    <img
+                      src={heroImage}
+                      alt={heroProduct?.name || "Promo highlight"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/placeholder.svg";
+                      }}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-pink-100 text-pink-600 text-xl font-semibold">
+                      Promo
+                    </div>
+                  )}
+                </div>
+                <div className="absolute -bottom-6 -right-6 bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg text-sm font-semibold uppercase tracking-wider">
+                  Special Offer
+                </div>
+              </div>
+
+              <div className="space-y-6 text-center lg:text-left">
+                <div className="inline-flex items-center justify-center lg:justify-start gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
+                  Limited Time Promo
+                </div>
+
+                <div className="leading-none">
+                  <span className="block text-pink-600 text-4xl sm:text-5xl lg:text-6xl font-black drop-shadow-md transform -rotate-6 origin-left">
+                    Tuzisaze Ebeeyi
+                  </span>
+                  <span className="block text-pink-500 text-4xl sm:text-5xl lg:text-6xl font-black drop-shadow-md transform -rotate-6 origin-left">
+                    Promo!
+                  </span>
+                </div>
+
+                <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
+                  Discover unbeatable discounts on premium gadgets. Carefully curated deals to keep you ahead with the latest tech and accessories.
+                </p>
+
+                {heroProduct && (
+                  <div className="bg-white/85 border border-pink-200 rounded-2xl shadow-md px-5 py-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="text-left">
+                      <h3 className="text-lg sm:text-xl font-semibold text-pink-700">
+                        {heroProduct.name}
+                      </h3>
+                      <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-500 mt-1">
+                        {heroProduct.storage_capacity && (
+                          <span className="bg-pink-50 px-2 py-1 rounded-full">
+                            {heroProduct.storage_capacity}
+                          </span>
+                        )}
+                        {heroProduct.model && (
+                          <span className="bg-pink-50 px-2 py-1 rounded-full">
+                            {heroProduct.model}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-pink-600 text-3xl sm:text-4xl font-black">
+                        UGX {Number(heroProduct.price).toLocaleString()}
+                      </div>
+                      {heroProduct.original_price && (
+                        <div className="text-gray-400 text-sm line-through">
+                          UGX {Number(heroProduct.original_price).toLocaleString()}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+                  <Button
+                    onClick={scrollToOffersGrid}
+                    className="bg-pink-600 hover:bg-pink-700 text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow-lg shadow-pink-600/30"
+                  >
+                    Shop Offers
+                  </Button>
+                  {heroProduct && (
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate(`/product/${heroProduct.slug}`)}
+                      className="border-pink-300 text-pink-600 hover:bg-pink-50 rounded-full px-6 sm:px-8 py-2 sm:py-3"
+                    >
+                      View Featured Deal
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
-            
-            {/* Product images overlay (if any) */}
-            {promoProducts && promoProducts.length > 0 && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                <div className="flex gap-4">
-                  {promoProducts.slice(0, 4).map((product) => {
-                    const mainImage = product.images && product.images.length > 0 
-                      ? product.images[0] 
-                      : null;
-                    if (!mainImage) return null;
-                    return (
-                      <img
-                        key={product.id}
-                        src={mainImage}
-                        alt={product.name}
-                        className="w-32 h-32 sm:w-40 sm:h-40 object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
-          
-          {/* Black bottom border */}
-          <div className="bg-black h-12 sm:h-16"></div>
         </div>
       )}
     </section>
