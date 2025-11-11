@@ -285,9 +285,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                   WebkitTextStroke: '3px #ec4899',
                   WebkitTextFillColor: 'transparent',
                   color: 'transparent',
-                  textStroke: '3px #ec4899',
-                  textFillColor: 'transparent'
-                }}
+                } as React.CSSProperties}
               >
                 EBEEYI
               </h2>
