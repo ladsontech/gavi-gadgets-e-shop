@@ -55,7 +55,7 @@ export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
             <p className="text-xs text-gray-600">Browse categories</p>
           </div>
         </div>
-        <nav className="space-y-3">
+        <nav className="grid grid-cols-2 gap-3">
           {categoryData.map((item) => {
             const active = isActive(item.route);
             return (
@@ -88,7 +88,7 @@ const CategoryTile: React.FC<{
   return (
     <button
       onClick={onClick}
-      className={`group w-full focus:outline-none text-left ${
+      className={`group w-full focus:outline-none ${
         active ? "ring-2 ring-pink-500" : ""
       }`}
     >
