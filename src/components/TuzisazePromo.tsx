@@ -274,105 +274,34 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
           )}
         </div>
       ) : (
-        /* Full: Clean hero banner for offers page */
-        <div className="relative isolate overflow-hidden">
-          <div className="absolute -top-24 -left-24 w-72 h-72 bg-pink-200/40 rounded-full blur-3xl" />
-          <div className="absolute -bottom-28 -right-32 w-96 h-96 bg-pink-300/35 rounded-full blur-3xl" />
-          <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-pink-100/60 rounded-full blur-2xl" />
-
-          <div className="relative max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-16 lg:py-20">
-            <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
-              <div className="relative flex justify-center lg:justify-start">
-                <div className="absolute -inset-6 bg-gradient-to-br from-pink-200/40 via-white to-purple-100/30 rounded-[2.75rem] blur-2xl" />
-                <div className="relative w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-[2.5rem] border-4 border-pink-500/60 bg-white/80 shadow-2xl overflow-hidden backdrop-blur">
-                  {heroImage ? (
-                    <img
-                      src={heroImage}
-                      alt={heroProduct?.name || "Promo highlight"}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/placeholder.svg";
-                      }}
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-pink-100 text-pink-600 text-xl font-semibold">
-                      Promo
-                    </div>
-                  )}
-                </div>
-                <div className="absolute -bottom-6 -right-6 bg-pink-600 text-white px-4 py-2 rounded-full shadow-lg text-sm font-semibold uppercase tracking-wider">
-                  Special Offer
-                </div>
-              </div>
-
-              <div className="space-y-6 text-center lg:text-left">
-                <div className="inline-flex items-center justify-center lg:justify-start gap-2 px-4 py-2 rounded-full bg-pink-100 text-pink-700 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
-                  Limited Time Promo
-                </div>
-
-                <div className="leading-none">
-                  <span className="block text-pink-600 text-4xl sm:text-5xl lg:text-6xl font-black drop-shadow-md transform -rotate-6 origin-left">
-                    Tuzisaze Ebeeyi
-                  </span>
-                  <span className="block text-pink-500 text-4xl sm:text-5xl lg:text-6xl font-black drop-shadow-md transform -rotate-6 origin-left">
-                    Promo!
-                  </span>
-                </div>
-
-                <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
-                  Discover unbeatable discounts on premium gadgets. Carefully curated deals to keep you ahead with the latest tech and accessories.
-                </p>
-
-                {heroProduct && (
-                  <div className="bg-white/85 border border-pink-200 rounded-2xl shadow-md px-5 py-4 sm:px-6 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div className="text-left">
-                      <h3 className="text-lg sm:text-xl font-semibold text-pink-700">
-                        {heroProduct.name}
-                      </h3>
-                      <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-500 mt-1">
-                        {heroProduct.storage_capacity && (
-                          <span className="bg-pink-50 px-2 py-1 rounded-full">
-                            {heroProduct.storage_capacity}
-                          </span>
-                        )}
-                        {heroProduct.model && (
-                          <span className="bg-pink-50 px-2 py-1 rounded-full">
-                            {heroProduct.model}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-pink-600 text-3xl sm:text-4xl font-black">
-                        UGX {Number(heroProduct.price).toLocaleString()}
-                      </div>
-                      {heroProduct.original_price && (
-                        <div className="text-gray-400 text-sm line-through">
-                          UGX {Number(heroProduct.original_price).toLocaleString()}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex flex-wrap justify-center lg:justify-start gap-3">
-                  <Button
-                    onClick={scrollToOffersGrid}
-                    className="bg-pink-600 hover:bg-pink-700 text-white font-semibold px-6 sm:px-8 py-2 sm:py-3 rounded-full shadow-lg shadow-pink-600/30"
-                  >
-                    Shop Offers
-                  </Button>
-                  {heroProduct && (
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate(`/product/${heroProduct.slug}`)}
-                      className="border-pink-300 text-pink-600 hover:bg-pink-50 rounded-full px-6 sm:px-8 py-2 sm:py-3"
-                    >
-                      View Featured Deal
-                    </Button>
-                  )}
-                </div>
-              </div>
+        /* Full: Simple themed header for offers page */
+        <div className="bg-white border-b border-pink-200/60">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center space-y-3">
+            <p className="text-xs sm:text-sm uppercase tracking-[0.35em] text-pink-500 font-semibold">
+              Special Promo
+            </p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-pink-600 drop-shadow-sm">
+              Tuzisaze Ebeeyi Promo!
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+              Discover discounted prices on select gadgets and accessories. The
+              offers below are updated regularly, so grab your favourite deals
+              while they last.
+            </p>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <Button
+                onClick={scrollToOffersGrid}
+                className="bg-pink-600 hover:bg-pink-700 text-white font-semibold px-5 sm:px-7 py-2 sm:py-3 rounded-full"
+              >
+                View Offers
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/")}
+                className="border-pink-200 text-pink-600 hover:bg-pink-50 rounded-full px-5 sm:px-7 py-2 sm:py-3"
+              >
+                Back Home
+              </Button>
             </div>
           </div>
         </div>
