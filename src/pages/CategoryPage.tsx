@@ -282,7 +282,7 @@ export default function CategoryPage() {
           </div>
 
           {/* Mobile: sticky filters/sort bar */}
-          <div className="md:hidden sticky top-16 z-30 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b">
+          <div className="md:hidden sticky top-16 z-30 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b shadow-sm">
             <div className="py-2 flex items-center gap-2">
               <Sheet>
                 <SheetTrigger asChild>
