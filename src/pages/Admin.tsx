@@ -8,6 +8,7 @@ import { BatchProductForm } from "@/components/admin/ProductForm";
 import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { OthersManager } from "@/components/admin/OthersManager";
+import { PromoManager } from "@/components/admin/PromoManager";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { AdminLoginModal } from "@/components/AdminLoginModal";
 import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
@@ -138,9 +139,10 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="products">Products ({products?.length || 0})</TabsTrigger>
             <TabsTrigger value="categories">Categories ({categories?.length || 0})</TabsTrigger>
+            <TabsTrigger value="promo">Promo</TabsTrigger>
             <TabsTrigger value="updates">Updates</TabsTrigger>
             <TabsTrigger value="others">Others</TabsTrigger>
           </TabsList>
@@ -224,6 +226,10 @@ const Admin = () => {
                 ))}
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="promo">
+            <PromoManager />
           </TabsContent>
 
           <TabsContent value="updates">

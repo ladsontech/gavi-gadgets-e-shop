@@ -6,6 +6,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { UpdatesCarousel } from "@/components/UpdatesCarousel";
 import { WeeklyOffers } from "@/components/WeeklyOffers";
+import { TuzisazePromo } from "@/components/TuzisazePromo";
 import SEOHead from "@/components/SEOHead";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
@@ -152,6 +153,9 @@ const Index = () => {
         <div data-offers-section>
           <WeeklyOffers />
         </div>
+        
+        {/* Tuzisaze Ebeeyi Promo Section */}
+        {isHomePage && <TuzisazePromo />}
         
         <div className="w-full">
           <FeaturedProducts products={allProducts || []} />
