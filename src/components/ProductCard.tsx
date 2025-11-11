@@ -75,11 +75,11 @@ export const ProductCard = ({
       className="bg-white cursor-pointer group h-full flex flex-col"
     >
       {/* Image Container - Clean minimal */}
-      <div className="aspect-square relative overflow-hidden bg-white mb-3">
+      <div className="aspect-square relative overflow-hidden bg-white mb-2">
         <img 
           src={product.images[0] || "/placeholder.svg"} 
           alt={product.name} 
-          className="w-full h-full object-contain p-4 group-hover:opacity-80 transition-opacity duration-300" 
+          className="w-full h-full object-contain group-hover:opacity-80 transition-opacity duration-300" 
         />
         
         {/* Badges - Minimal, top right */}
