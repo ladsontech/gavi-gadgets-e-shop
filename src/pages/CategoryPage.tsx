@@ -281,42 +281,62 @@ export default function CategoryPage() {
             </div>
           </div>
 
-          {/* Mobile: compact filters sheet trigger */}
-          <div className="md:hidden mb-3">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="w-full">Filters</Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="p-4">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
+          {/* Mobile: sticky filters/sort bar */}
+          <div className="md:hidden sticky top-16 z-30 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b">
+            <div className="py-2 flex items-center gap-2">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="p-4">
+                  <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
 
-                {slug === "phones" && (
-                  <div className="mt-3">
-                    <div className="text-sm font-medium text-gray-700 mb-2">Brand</div>
-                    <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-                      <Button variant={brandFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("all")}>All</Button>
-                      <Button variant={brandFilter === "apple" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("apple")}>Apple</Button>
-                      <Button variant={brandFilter === "samsung" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("samsung")}>Samsung</Button>
-                      <Button variant={brandFilter === "pixel" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("pixel")}>Google Pixel</Button>
-                      <Button variant={brandFilter === "others" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("others")}>Others</Button>
+                  {slug === "phones" && (
+                    <div className="mt-3">
+                      <div className="text-sm font-medium text-gray-700 mb-2">Brand</div>
+                      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+                        <Button variant={brandFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("all")}>All</Button>
+                        <Button variant={brandFilter === "apple" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("apple")}>Apple</Button>
+                        <Button variant={brandFilter === "samsung" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("samsung")}>Samsung</Button>
+                        <Button variant={brandFilter === "pixel" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("pixel")}>Google Pixel</Button>
+                        <Button variant={brandFilter === "others" ? "default" : "outline"} size="sm" onClick={() => setBrandFilter("others")}>Others</Button>
+                      </div>
                     </div>
+                  )}
+
+                  <div className="mt-4">
+                    <div className="text-sm font-medium text-gray-700 mb-2">Sort & Price</div>
+                    <div>{PriceSortControls}</div>
                   </div>
-                )}
 
-                <div className="mt-4">
-                  <div className="text-sm font-medium text-gray-700 mb-2">Sort By</div>
-                  <div>{PriceSortControls}</div>
-                </div>
+                  <SheetFooter className="mt-4">
+                    <SheetClose asChild>
+                      <Button className="w-full">Apply</Button>
+                    </SheetClose>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
 
-                <SheetFooter className="mt-4">
-                  <SheetClose asChild>
-                    <Button className="w-full">Apply</Button>
-                  </SheetClose>
-                </SheetFooter>
-              </SheetContent>
-            </Sheet>
+              <div className="flex items-center gap-2 ml-auto">
+                <ArrowUpDown className="w-4 h-4 text-pink-600" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="h-9 border rounded-md px-2 text-sm bg-white"
+                >
+                  <option value="newest">Newest</option>
+                  <option value="price-low">Price: Low</option>
+                  <option value="price-high">Price: High</option>
+                  <option value="name-asc">Name: A-Z</option>
+                  <option value="name-desc">Name: Z-A</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           {/* Desktop: brand chips visible only on md+ */}
