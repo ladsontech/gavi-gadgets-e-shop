@@ -33,7 +33,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         <div className="mb-8">
           <div className="w-24 h-24 mx-auto mb-6 relative">
             <img 
-              src="/images/gavi_gadgets_logo.png" 
+              src="/images/gavi_icon.png" 
               alt="Gavi Gadgets Logo" 
               className="w-full h-full rounded-full object-contain shadow-lg animate-fade-in"
             />

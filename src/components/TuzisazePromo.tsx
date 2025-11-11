@@ -74,7 +74,7 @@ export const TuzisazePromo = () => {
             const discountPercent = getDiscountPercentage(originalPrice, discountedPrice);
             const mainImage = product.images && product.images.length > 0 
               ? product.images[0] 
-              : "/images/placeholder.png";
+              : "/placeholder.svg";
 
             return (
               <div
@@ -88,7 +88,7 @@ export const TuzisazePromo = () => {
                     alt={product.name}
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/images/placeholder.png";
+                      (e.target as HTMLImageElement).src = "/placeholder.svg";
                     }}
                   />
                   {/* Discount Badge */}

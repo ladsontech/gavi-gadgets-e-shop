@@ -308,7 +308,7 @@ export const PromoManager = () => {
           const discountPercent = getDiscountPercentage(original, discounted);
           const mainImage = product.images && product.images.length > 0 
             ? product.images[0] 
-            : "/images/placeholder.png";
+            : "/placeholder.svg";
 
           return (
             <Card key={product.id}>
@@ -322,7 +322,7 @@ export const PromoManager = () => {
                         alt={product.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = "/images/placeholder.png";
+                          (e.target as HTMLImageElement).src = "/placeholder.svg";
                         }}
                       />
                     </div>

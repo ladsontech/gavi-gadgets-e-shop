@@ -27,7 +27,7 @@ export const generateSitemapXML = async (): Promise<string> => {
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>${baseUrl}/images/gavi_gadgets_logo.png</image:loc>
+      <image:loc>${baseUrl}/images/gavi_icon.png</image:loc>
       <image:title>Gavi Gadgets Uganda - Best Electronics Store</image:title>
       <image:caption>Buy iPhone, Samsung, Google Pixel, Huawei smartphones in Uganda. Better prices than Jumia and Jiji.</image:caption>
     </image:image>

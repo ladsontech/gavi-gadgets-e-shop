@@ -7,7 +7,7 @@ const DYNAMIC_CACHE = 'gavi-dynamic-v3';
 const staticAssets = [
   '/',
   '/images/gavi_icon.png',
-  '/images/gavi_gadgets_logo.png',
+  '/images/appbar_logo.png',
   '/manifest.json'
 ];
 
