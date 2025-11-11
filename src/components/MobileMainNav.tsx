@@ -43,10 +43,10 @@ export const MobileMainNav = ({
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden pointer-events-none">
-      <div className="mx-auto max-w-md px-4 pb-4">
+      <div className="mx-auto max-w-md px-4 pb-2">
         <div className="relative h-20">
-          <div className="absolute inset-0 top-4 rounded-t-3xl bg-gray-900 shadow-[0_-8px_24px_rgba(0,0,0,0.35)]" />
-          <div className="absolute inset-x-4 bottom-2 top-6 rounded-3xl bg-gray-950/70 border border-gray-800/80 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
+          <div className="absolute inset-0 top-6 rounded-t-3xl bg-gray-900 shadow-[0_-6px_20px_rgba(0,0,0,0.35)]" />
+          <div className="absolute inset-x-4 bottom-0 top-6 rounded-3xl bg-gray-950/80 border border-gray-800/80 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
             {navItems.map((item, index) => {
               const active = location.pathname === item.route;
               const Icon = item.icon;
@@ -61,7 +61,7 @@ export const MobileMainNav = ({
                     aria-label={item.label}
                     disabled={!!clickTimeoutRef.current[item.route]}
                     onClick={() => handleNavClick(item)}
-                    className="absolute left-1/2 -translate-x-1/2 -top-7 flex flex-col items-center gap-2"
+                    className="absolute left-1/2 -translate-x-1/2 -top-7 flex flex-col items-center gap-1"
                   >
                     <div
                       className={`w-16 h-16 rounded-full border-4 border-gray-900 flex items-center justify-center transition-all duration-200 shadow-[0_12px_24px_rgba(236,72,153,0.35)] ${
@@ -70,7 +70,7 @@ export const MobileMainNav = ({
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <span className="block text-center text-[11px] font-semibold text-white/90">
+                    <span className="block max-w-[72px] truncate text-center text-[10px] font-semibold text-white/90">
                       {item.label}
                     </span>
                   </button>
@@ -96,7 +96,9 @@ export const MobileMainNav = ({
                   >
                     <Icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[11px] font-medium">{item.label}</span>
+                  <span className="text-[10px] sm:text-[11px] font-medium leading-none">
+                    {item.label}
+                  </span>
                 </button>
               );
             })}
