@@ -5,15 +5,26 @@ const ADMIN_PASS = "gavi2025";
 const ADMIN_KEY = "__gavi_admin__";
 
 export function useAdminAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Initialize with synchronous check to avoid race conditions
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !!window.localStorage.getItem(ADMIN_KEY);
+    }
+    return false;
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Check authentication status on mount and when storage changes
   useEffect(() => {
     const checkAuth = () => {
-      const isAdmin = !!window.localStorage.getItem(ADMIN_KEY);
-      setIsAuthenticated(isAdmin);
+      if (typeof window !== "undefined") {
+        const isAdmin = !!window.localStorage.getItem(ADMIN_KEY);
+        setIsAuthenticated(isAdmin);
+      }
+      setIsLoading(false);
     };
 
+    // Initial check
     checkAuth();
 
     // Listen for storage changes (including from other tabs)
@@ -46,6 +57,7 @@ export function useAdminAuth() {
   return { 
     isAuthenticated, 
     isAdmin: isAuthenticated,
+    isLoading,
     loginAdmin, 
     logout,
     logoutAdmin: logout 

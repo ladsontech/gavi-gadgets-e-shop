@@ -23,7 +23,10 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ open, onOpenCh
       setPassword("");
       setError(null);
       onOpenChange(false);
-      navigate("/admin"); // Redirect to admin dashboard
+      // Force a page reload to ensure auth state is properly set
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } else {
       setError("Incorrect password. Please try again.");
     }

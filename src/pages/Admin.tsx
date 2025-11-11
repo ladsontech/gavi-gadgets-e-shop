@@ -52,18 +52,20 @@ interface Category {
 }
 
 const Admin = () => {
-  const { isAdmin, logoutAdmin } = useAdminAuth();
+  const { isAdmin, logoutAdmin, isLoading } = useAdminAuth();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showSimpleForm, setShowSimpleForm] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    if (!isAdmin) {
-      setShowLoginModal(true);
-    } else {
-      setShowLoginModal(false);
+    if (!isLoading) {
+      if (!isAdmin) {
+        setShowLoginModal(true);
+      } else {
+        setShowLoginModal(false);
+      }
     }
-  }, [isAdmin]);
+  }, [isAdmin, isLoading]);
 
   const {
     data: products,
@@ -89,6 +91,7 @@ const Admin = () => {
       }
       return data;
     },
+    enabled: isAdmin && !isLoading, // Only fetch when authenticated
   });
 
   const { data: categories } = useQuery({
@@ -103,6 +106,7 @@ const Admin = () => {
       }
       return data;
     },
+    enabled: isAdmin && !isLoading, // Only fetch when authenticated
   });
 
   const handleEdit = (product: Product) => {
@@ -127,6 +131,18 @@ const Admin = () => {
     }
   };
 
+  // Show loading state while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-400 text-sm">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login modal if not authenticated
   if (!isAdmin) {
     return (
       <AdminLoginModal 
