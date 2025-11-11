@@ -179,12 +179,6 @@ const Index = () => {
       {/* Mobile Tabs View */}
       <div className="md:hidden min-h-screen bg-white">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "home" | "categories" | "offers")} className="w-full">
-          <TabsList className="w-full grid grid-cols-3 h-12 rounded-none border-b border-gray-200 bg-white sticky top-16 z-40">
-            <TabsTrigger value="home" className="text-xs sm:text-sm">Home</TabsTrigger>
-            <TabsTrigger value="categories" className="text-xs sm:text-sm">Categories</TabsTrigger>
-            <TabsTrigger value="offers" className="text-xs sm:text-sm">Offers</TabsTrigger>
-          </TabsList>
-          
           <TabsContent value="home" className="mt-0">
             <div className="min-h-screen bg-white">
               {/* Only show carousel sections when not searching */}
