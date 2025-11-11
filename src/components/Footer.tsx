@@ -1,9 +1,42 @@
 import React from "react";
-import { ShoppingBag, Phone, MapPin, CreditCard } from "lucide-react";
+import { ShoppingBag, Phone, MapPin, CreditCard, Facebook, Instagram } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 export const Footer = () => {
   const navigate = useNavigate();
+
+  const socialLinks = [
+    { 
+      icon: Facebook, 
+      url: "https://www.facebook.com/p/GAVI-Gadgets-UG-100083303156382/", 
+      label: "Facebook"
+    },
+    { 
+      icon: ({ className }: { className?: string }) => (
+        <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      ), 
+      url: "https://x.com/gavigadgetsug", 
+      label: "X (Twitter)"
+    },
+    { 
+      icon: Instagram, 
+      url: "https://www.instagram.com/gavi_gadgets_0740799577/?hl=en", 
+      label: "Instagram"
+    },
+    { 
+      icon: ({ className }: { className?: string }) => (
+        <img 
+          src="/images/tiktok-logo.png" 
+          alt="TikTok" 
+          className={`${className} rounded-full object-cover`}
+        />
+      ), 
+      url: "https://www.tiktok.com/discover/gavi-gadgets?lang=en", 
+      label: "TikTok"
+    },
+  ];
   return <footer className="text-white pt-10 pb-5 px-4 mt-8 bg-pink-700 mb-16 md:mb-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-4 md:flex-row justify-between items-center">
         <div className="flex flex-col items-start text-left">
@@ -42,7 +75,23 @@ export const Footer = () => {
           <Button variant="outline" size="sm" onClick={() => navigate("/warranty")} className="border-white hover:bg-white text-purple-950">
             Warranty Policy
           </Button>
-          
+        </div>
+        <div className="flex justify-center gap-2">
+          {socialLinks.map((social, index) => {
+            const Icon = social.icon;
+            return (
+              <Button
+                key={index}
+                variant="ghost"
+                size="sm"
+                onClick={() => window.open(social.url, '_blank')}
+                className="w-8 h-8 p-0 text-white hover:bg-white/10"
+                title={social.label}
+              >
+                <Icon className="w-4 h-4" />
+              </Button>
+            );
+          })}
         </div>
       </div>
       
