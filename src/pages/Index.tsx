@@ -81,16 +81,7 @@ const Index = () => {
 
     let result = base;
 
-    // Category filter
-    if (selectedCategory === "featured") {
-      result = result.filter(p => p.is_featured);
-    } else if (selectedCategory === "accessories" && accessoriesCategoryId) {
-      result = result.filter(p => p.category_id === accessoriesCategoryId);
-    } else if (selectedCategory) {
-      result = result.filter(p => p.category_id === selectedCategory);
-    }
-
-    // Search filter
+    // If searching, only show search results (ignore category filters)
     if (searchQuery && searchQuery.trim().length > 0) {
       const q = searchQuery.trim().toLowerCase();
       result = result.filter(p => {
@@ -99,6 +90,15 @@ const Index = () => {
         const desc = (p.description || "").toLowerCase?.() || "";
         return name.includes(q) || brand.includes(q) || desc.includes(q);
       });
+    } else {
+      // Category filter (only when not searching)
+      if (selectedCategory === "featured") {
+        result = result.filter(p => p.is_featured);
+      } else if (selectedCategory === "accessories" && accessoriesCategoryId) {
+        result = result.filter(p => p.category_id === accessoriesCategoryId);
+      } else if (selectedCategory) {
+        result = result.filter(p => p.category_id === selectedCategory);
+      }
     }
 
     // Price filter
@@ -145,27 +145,34 @@ const Index = () => {
       <SEOHead title="Gavi Gadgets - Premium Smartphones in Uganda" description="Shop the latest smartphones including iPhone, Samsung, Huawei and more. Best prices on new and UK used phones in Uganda with warranty." keywords="smartphones, iPhone, Samsung, Huawei, Uganda, phones, mobile" />
       
       <div className="min-h-screen bg-white">
-        {isHomePage && <UpdatesCarousel />}
-        
-        {/* Weekly offers section with data attribute for smooth scrolling */}
-        <div data-offers-section>
-          <WeeklyOffers />
-        </div>
-        
-        {/* Tuzisaze Ebeeyi Promo Section */}
-        {isHomePage && <TuzisazePromo />}
+        {/* Only show carousel sections when not searching */}
+        {!searchQuery && (
+          <>
+            {isHomePage && <UpdatesCarousel />}
+            
+            {/* Weekly offers section with data attribute for smooth scrolling */}
+            <div data-offers-section>
+              <WeeklyOffers />
+            </div>
+            
+            {/* Tuzisaze Ebeeyi Promo Section */}
+            {isHomePage && <TuzisazePromo />}
+          </>
+        )}
         
         <div className="w-full">
-          {/* Only show FeaturedProducts if not viewing offers */}
-          {selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
+          {/* Only show FeaturedProducts if not viewing offers and not searching */}
+          {!searchQuery && selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
           
           {/* Desktop Layout with Sidebar */}
           <div className="flex gap-4 max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
-            {/* Sidebar - Desktop Only */}
-            <ProductSidebar categories={categories || []} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} sortBy={sortBy} onSortChange={setSortBy} priceRange={priceRange} onPriceRangeChange={setPriceRange} />
+            {/* Sidebar - Desktop Only, hidden when searching */}
+            {!searchQuery && (
+              <ProductSidebar categories={categories || []} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} sortBy={sortBy} onSortChange={setSortBy} priceRange={priceRange} onPriceRangeChange={setPriceRange} />
+            )}
             
             {/* Main Content */}
-            <div className="flex-1" data-products-section>
+            <div className={`flex-1 ${searchQuery ? 'max-w-full' : ''}`} data-products-section>
               <div className="mb-6">
                 <h2 className="text-2xl sm:text-3xl font-normal text-black mb-1">
                   {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
