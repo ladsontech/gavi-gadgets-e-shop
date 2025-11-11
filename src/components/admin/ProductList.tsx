@@ -41,10 +41,10 @@ export const ProductList: React.FC<ProductListProps> = ({
 
   if (products.length === 0) {
     return (
-      <div className="text-center py-8 sm:py-12">
-        <Package className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No products yet</h3>
-        <p className="text-gray-500 text-sm sm:text-base">Add your first smartphone to get started.</p>
+      <div className="text-center py-4 sm:py-6 md:py-8">
+        <Package className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-gray-300 mx-auto mb-2 sm:mb-4" />
+        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">No products yet</h3>
+        <p className="text-gray-500 text-xs sm:text-sm md:text-base">Add your first smartphone to get started.</p>
       </div>
     );
   }
@@ -104,8 +104,8 @@ export const ProductList: React.FC<ProductListProps> = ({
     const discount = getDiscountPercentage(product.price, product.original_price);
     
     return (
-      <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow bg-white">
-        <div className="flex gap-3 sm:gap-4">
+      <div className="border border-gray-200 rounded-lg p-2 sm:p-3 md:p-4 hover:shadow-md transition-shadow bg-white">
+        <div className="flex gap-2 sm:gap-3 md:gap-4">
           {/* Product Image */}
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
             {product.images[0] ? (

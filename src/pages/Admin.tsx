@@ -129,39 +129,45 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-screen bg-white p-2 sm:p-4">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <Button onClick={logoutAdmin} variant="outline">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <Button onClick={logoutAdmin} variant="outline" size="sm" className="w-full sm:w-auto">
             Logout
           </Button>
         </div>
 
-        <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="products">Products ({products?.length || 0})</TabsTrigger>
-            <TabsTrigger value="categories">Categories ({categories?.length || 0})</TabsTrigger>
-            <TabsTrigger value="promo">Promo</TabsTrigger>
-            <TabsTrigger value="updates">Updates</TabsTrigger>
-            <TabsTrigger value="others">Others</TabsTrigger>
+        <Tabs defaultValue="products" className="space-y-3 sm:space-y-4 md:space-y-6">
+          <TabsList className="grid w-full grid-cols-5 h-auto p-1">
+            <TabsTrigger value="products" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
+              Products ({products?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="categories" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
+              Categories ({categories?.length || 0})
+            </TabsTrigger>
+            <TabsTrigger value="promo" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Promo</TabsTrigger>
+            <TabsTrigger value="updates" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Updates</TabsTrigger>
+            <TabsTrigger value="others" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Others</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="products" className="space-y-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-semibold">Product Management</h2>
+          <TabsContent value="products" className="space-y-3 sm:space-y-4 md:space-y-6">
+            <div className="bg-white rounded-lg shadow p-3 sm:p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold">Product Management</h2>
                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Button 
                     onClick={() => setShowSimpleForm(true)}
-                    className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto"
+                    className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto text-sm"
+                    size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Quick Add
                   </Button>
                   <Button 
                     onClick={() => setShowAddForm(true)}
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto text-sm"
+                    size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Product
@@ -170,8 +176,8 @@ const Admin = () => {
               </div>
 
               {showSimpleForm && (
-                <div className="mb-6 p-4 border rounded-lg bg-purple-50">
-                  <h3 className="text-lg font-medium mb-4">Quick Add Item</h3>
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg bg-purple-50">
+                  <h3 className="text-base sm:text-lg font-medium mb-3 sm:mb-4">Quick Add Item</h3>
                   <SimpleProductForm
                     onSave={() => {
                       setShowSimpleForm(false);
@@ -183,8 +189,8 @@ const Admin = () => {
               )}
 
               {showAddForm && (
-                <div className="mb-6 p-4 border rounded-lg bg-gray-50">
-                  <h3 className="text-lg font-medium mb-4">Add New Product</h3>
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg bg-gray-50">
+                  <h3 className="text-base sm:text-lg font-medium mb-3 sm:mb-4">Add New Product</h3>
                   <BatchProductForm
                     categories={categories || []}
                     onSave={() => {
@@ -205,15 +211,15 @@ const Admin = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="categories" className="space-y-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">Categories</h2>
-              <div className="space-y-4">
+          <TabsContent value="categories" className="space-y-3 sm:space-y-4 md:space-y-6">
+            <div className="bg-white rounded-lg shadow p-3 sm:p-4 md:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Categories</h2>
+              <div className="space-y-2 sm:space-y-3 md:space-y-4">
                 {categories?.map((category) => (
-                  <div key={category.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={category.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 p-2 sm:p-3 md:p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">{category.name}</h3>
-                      <p className="text-sm text-gray-500">Slug: {category.slug}</p>
+                      <h3 className="font-medium text-sm sm:text-base">{category.name}</h3>
+                      <p className="text-xs sm:text-sm text-gray-500">Slug: {category.slug}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`px-2 py-1 rounded-full text-xs ${

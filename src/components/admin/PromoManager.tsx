@@ -177,7 +177,7 @@ export const PromoManager = () => {
   ) || [];
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
+    <div className="space-y-3 sm:space-y-4 md:space-y-6 p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -205,7 +205,7 @@ export const PromoManager = () => {
             <CardTitle className="text-lg sm:text-xl">Add Product to Promo</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-6">
               <div>
                 <Label htmlFor="product" className="text-sm font-medium">
                   Select Product *
@@ -312,7 +312,7 @@ export const PromoManager = () => {
 
           return (
             <Card key={product.id}>
-              <CardContent className="p-3 sm:p-4">
+              <CardContent className="p-2 sm:p-3 md:p-4">
                 {/* Mobile Layout */}
                 <div className="block sm:hidden space-y-3">
                   <div className="flex items-start gap-3">

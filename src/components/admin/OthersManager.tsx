@@ -92,7 +92,7 @@ export const OthersManager = () => {
 
   if (showForm) {
     return (
-      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="space-y-3 sm:space-y-4 md:space-y-6 p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Button
             variant="ghost"
@@ -107,7 +107,7 @@ export const OthersManager = () => {
           </h2>
         </div>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-3 sm:p-4 md:p-6">
             <SimpleProductForm
               editProduct={editProduct}
               onSave={handleFormSave}
@@ -131,7 +131,7 @@ export const OthersManager = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6 max-w-7xl mx-auto">
+    <div className="space-y-3 sm:space-y-4 md:space-y-6 p-2 sm:p-4 md:p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -157,7 +157,7 @@ export const OthersManager = () => {
       <div className="space-y-3 sm:space-y-4">
         {others?.map((item) => (
           <Card key={item.id} className={!item.is_active ? "opacity-50" : ""}>
-            <CardContent className="p-3 sm:p-4">
+            <CardContent className="p-2 sm:p-3 md:p-4">
               {/* Mobile Layout */}
               <div className="block sm:hidden space-y-3">
                 <div className="flex items-start gap-3">
