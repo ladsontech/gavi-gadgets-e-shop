@@ -72,7 +72,7 @@ export const Footer = () => {
       
       <div className="text-center mt-6 pt-4 border-t border-gray-700">
         <div className="flex justify-center gap-4 mb-4">
-          <Button variant="outline" size="sm" onClick={() => navigate("/warranty")} className="border-gray-600 hover:bg-white hover:text-black text-white">
+          <Button variant="outline" size="sm" onClick={() => navigate("/warranty")} className="border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white bg-transparent">
             Warranty Policy
           </Button>
         </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,15 @@ const Admin = () => {
   const { isAdmin, logoutAdmin } = useAdminAuth();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showSimpleForm, setShowSimpleForm] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(!isAdmin);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      setShowLoginModal(true);
+    } else {
+      setShowLoginModal(false);
+    }
+  }, [isAdmin]);
 
   const {
     data: products,
