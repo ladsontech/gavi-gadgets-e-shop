@@ -43,10 +43,10 @@ export const MobileMainNav = ({
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden pointer-events-none">
-      <div className="mx-auto max-w-md px-4 pb-2">
+      <div className="w-full">
         <div className="relative h-20">
-          <div className="absolute inset-0 top-6 rounded-t-3xl bg-gray-900 shadow-[0_-6px_20px_rgba(0,0,0,0.35)]" />
-          <div className="absolute inset-x-4 bottom-0 top-6 rounded-3xl bg-gray-950/80 border border-gray-800/80 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
+          <div className="absolute inset-0 bg-gray-900 shadow-[0_-2px_10px_rgba(0,0,0,0.2)]" />
+          <div className="absolute inset-0 bg-gray-950/95 border-t border-gray-800 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
             {navItems.map((item, index) => {
               const active = location.pathname === item.route;
               const Icon = item.icon;
