@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Smartphone, Package, Home, Laptop, Tv, Speaker } from "lucide-react";
+import { Menu, Smartphone, Package, Home, Laptop, Tv, Speaker, Gamepad2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface DesktopNavProps {
@@ -29,6 +29,7 @@ export const DesktopNav = ({
     { label: "Speakers", icon: Speaker, route: "/category/speakers" },
     { label: "TVs", icon: Tv, route: "/category/tvs" },
     { label: "Accessories", icon: Package, route: "/category/accessories" },
+    { label: "Gaming", icon: Gamepad2, route: "/category/gaming" },
   ] as const;
 
   return (

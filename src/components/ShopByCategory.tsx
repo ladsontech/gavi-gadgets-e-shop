@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Smartphone, Laptop, Tv, Speaker, Package } from "lucide-react";
+import { Smartphone, Laptop, Tv, Speaker, Package, Gamepad2 } from "lucide-react";
 
 export const ShopByCategory: React.FC = () => {
   const items = [
@@ -9,6 +9,7 @@ export const ShopByCategory: React.FC = () => {
     { label: "Speakers", icon: Speaker, route: "/category/speakers", bg: "bg-emerald-50", fg: "text-emerald-700", ring: "ring-emerald-200" },
     { label: "TVs", icon: Tv, route: "/category/tvs", bg: "bg-amber-50", fg: "text-amber-700", ring: "ring-amber-200" },
     { label: "Accessories", icon: Package, route: "/category/accessories", bg: "bg-sky-50", fg: "text-sky-700", ring: "ring-sky-200" },
+    { label: "Gaming", icon: Gamepad2, route: "/category/gaming", bg: "bg-purple-50", fg: "text-purple-700", ring: "ring-purple-200" },
   ] as const;
 
   return (

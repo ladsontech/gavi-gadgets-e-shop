@@ -30,6 +30,7 @@ const titleMap: Record<string, string> = {
   "speakers": "Speakers",
   "accessories": "Accessories",
   "tvs": "TVs",
+  "gaming": "Gaming",
 };
 
 export default function CategoryPage() {
@@ -133,6 +134,24 @@ export default function CategoryPage() {
           name.includes("television") ||
           name.includes("oled") ||
           name.includes("qled")
+        );
+      });
+    }
+    if (slug === "gaming") {
+      return list.filter((p) => {
+        const name = (p.name || "").toLowerCase();
+        return (
+          name.includes("ps5") ||
+          name.includes("ps4") ||
+          name.includes("playstation") ||
+          name.includes("xbox") ||
+          name.includes("nintendo") ||
+          name.includes("switch") ||
+          name.includes("console") ||
+          name.includes("controller") ||
+          name.includes("dualshock") ||
+          name.includes("dualsense") ||
+          name.includes("gaming")
         );
       });
     }

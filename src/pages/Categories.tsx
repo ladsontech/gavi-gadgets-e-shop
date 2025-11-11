@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
-import { Smartphone, Laptop, Tv, Speaker, Package, LayoutGrid } from "lucide-react";
+import { Smartphone, Laptop, Tv, Speaker, Package, LayoutGrid, Gamepad2 } from "lucide-react";
 
 type CategoryCard = {
   label: string;
@@ -20,6 +20,7 @@ const categories: CategoryCard[] = [
   { label: "Speakers", slug: "speakers", route: "/category/speakers", imageSrc: "/images/categories/speakers.jpg", icon: Speaker, bg: "bg-emerald-50", fg: "text-emerald-700", ring: "ring-emerald-200" },
   { label: "TVs", slug: "tvs", route: "/category/tvs", imageSrc: "/images/categories/tvs.jpg", icon: Tv, bg: "bg-amber-50", fg: "text-amber-700", ring: "ring-amber-200" },
   { label: "Accessories", slug: "accessories", route: "/category/accessories", imageSrc: "/images/categories/accessories.jpg", icon: Package, bg: "bg-sky-50", fg: "text-sky-700", ring: "ring-sky-200" },
+  { label: "Gaming", slug: "gaming", route: "/category/gaming", imageSrc: "/images/categories/gaming.jpg", icon: Gamepad2, bg: "bg-purple-50", fg: "text-purple-700", ring: "ring-purple-200" },
 ];
 
 const CategoriesPage: React.FC = () => {
