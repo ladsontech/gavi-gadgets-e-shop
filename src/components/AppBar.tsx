@@ -12,8 +12,9 @@ export const AppBar = () => {
   const location = useLocation();
   const { searchQuery, setSearchQuery } = useSearch();
   
-  // Hide search bar on categories page
+  // Hide search bar on categories and offers pages
   const isCategoriesPage = location.pathname === "/categories";
+  const isOffersPage = location.pathname === "/offers";
 
   const handleContactClick = () => {
     const phoneNumber = "+256740799577";
@@ -48,7 +49,7 @@ export const AppBar = () => {
           </div>
 
           {/* Desktop Search Bar - Only show on home page */}
-          {!isCategoriesPage && (
+          {!isCategoriesPage && !isOffersPage && (
             <div className="hidden md:flex flex-1 max-w-2xl mx-8">
               <form onSubmit={handleSearchSubmit} className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -82,7 +83,7 @@ export const AppBar = () => {
         </div>
         
         {/* Mobile Search Bar - Only show on home page */}
-        {!isCategoriesPage && (
+        {!isCategoriesPage && !isOffersPage && (
           <div className="md:hidden">
             {/* Mobile Search Bar */}
             <div className="px-4 py-3 border-t border-gray-100">

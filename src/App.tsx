@@ -10,7 +10,7 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MobileMainNav } from "@/components/MobileMainNav";
-import { DesktopNav } from "@/components/DesktopNav";
+import { CategoriesSidebar } from "@/components/CategoriesSidebar";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
@@ -140,21 +140,23 @@ function App() {
             <BrowserRouter>
               <div className="min-h-screen flex flex-col">
                 <AppBar />
-                <DesktopNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
-                <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/categories" element={<CategoriesPage />} />
-                  <Route path="/offers" element={<Offers />} />
-                  <Route path="/category/:slug" element={<CategoryPage />} />
-                  <Route path="/product/:slug" element={<ProductDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/warranty" element={<Warranty />} />
-                  <Route path="/sitemap" element={<SitemapPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
+                <div className="flex flex-1">
+                  <CategoriesSidebar categories={categories} />
+                  <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/categories" element={<CategoriesPage />} />
+                      <Route path="/offers" element={<Offers />} />
+                      <Route path="/category/:slug" element={<CategoryPage />} />
+                      <Route path="/product/:slug" element={<ProductDetail />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/admin" element={<Admin />} />
+                      <Route path="/warranty" element={<Warranty />} />
+                      <Route path="/sitemap" element={<SitemapPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </main>
+                </div>
               <Footer />
               <WhatsAppButton />
               <MobileMainNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
