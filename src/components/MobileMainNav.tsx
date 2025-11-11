@@ -3,9 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useRef, useCallback } from "react";
 
 interface MobileMainNavProps {
-  selectedCategory: string | null;
-  onCategoryChange: (categoryId: string | null) => void;
-  categories: { id: string; name: string; slug: string }[];
+  selectedCategory?: string | null;
+  onCategoryChange?: (categoryId: string | null) => void;
+  categories?: { id: string; name: string; slug: string }[];
 }
 
 export const MobileMainNav = ({
@@ -17,11 +17,11 @@ export const MobileMainNav = ({
   const location = useLocation();
   const clickTimeoutRef = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
-  // Map nav labels to actual category slugs/ids for filtering
+  // Map nav labels to routes - each is an independent page
   const navItems = [
-    { label: "Home", icon: Home, value: null, route: "/" },
-    { label: "Categories", icon: LayoutGrid, value: null, route: "/categories" },
-    { label: "Offers", icon: Tag, value: "featured", route: "/" },
+    { label: "Home", icon: Home, route: "/" },
+    { label: "Categories", icon: LayoutGrid, route: "/categories" },
+    { label: "Offers", icon: Tag, route: "/offers" },
   ];
 
   const handleNavClick = useCallback((item: typeof navItems[0]) => {
@@ -36,33 +36,17 @@ export const MobileMainNav = ({
       delete clickTimeoutRef.current[itemKey];
     }, 500);
 
-    // Immediately update category for faster response when staying on same page
-    if (item.route === "/") {
-      onCategoryChange(item.value);
-    }
-
-    // Navigate if needed
+    // Navigate to the route if not already there
     if (location.pathname !== item.route) {
       navigate(item.route, { replace: false });
-    } else if (item.route === "/" && item.value) {
-      // If already on home and clicking offers, just update category
-      onCategoryChange(item.value);
-      // Scroll to offers section
-      setTimeout(() => {
-        const element = document.querySelector('[data-offers-section]');
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 100);
     }
-  }, [location.pathname, navigate, onCategoryChange]);
+  }, [location.pathname, navigate]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl z-50 md:hidden">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
-          const active = location.pathname === item.route && 
-            ((item.value === null && !selectedCategory) || item.value === selectedCategory);
+          const active = location.pathname === item.route;
           const Icon = item.icon;
           return (
             <button

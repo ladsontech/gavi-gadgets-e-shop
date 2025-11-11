@@ -22,6 +22,7 @@ import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
 import CategoriesPage from "./pages/Categories";
 import CategoryPage from "./pages/CategoryPage";
+import Offers from "./pages/Offers";
 const queryClient = new QueryClient();
 function App() {
   const [showSplash, setShowSplash] = useState(() => {
@@ -117,6 +118,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/categories" element={<CategoriesPage />} />
+                  <Route path="/offers" element={<Offers />} />
                   <Route path="/category/:slug" element={<CategoryPage />} />
                   <Route path="/product/:slug" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
