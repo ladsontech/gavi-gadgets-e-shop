@@ -261,13 +261,54 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
           )}
         </div>
       ) : (
-        /* Full: Minimal header for offers page */
-        <div className="bg-white border-b border-pink-200/60">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center space-y-2">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-pink-600 drop-shadow-sm">
-              Tuzisaze Ebeeyi Promo!
-            </h1>
+        /* Full: Promotional header with lightning effect for offers page */
+        <div className="relative bg-gradient-to-b from-pink-50 to-white border-b border-pink-200/60 overflow-hidden">
+          {/* Lightning strike animation - continuous */}
+          <div className="absolute inset-0 pointer-events-none">
+            <svg className="absolute top-0 left-1/4 w-32 h-full opacity-30" style={{ animation: 'lightning 2s infinite' }}>
+              <path d="M20 0 L15 30 L25 35 L18 60 L28 65 L15 100" stroke="#ec4899" strokeWidth="3" fill="none" strokeLinecap="round" />
+            </svg>
+            <svg className="absolute top-0 right-1/3 w-28 h-full opacity-25" style={{ animation: 'lightning 2.3s infinite 0.5s' }}>
+              <path d="M15 0 L10 25 L20 30 L12 55 L22 60 L10 100" stroke="#ec4899" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            </svg>
+            <svg className="absolute top-0 left-2/3 w-24 h-full opacity-20" style={{ animation: 'lightning 1.8s infinite 1s' }}>
+              <path d="M12 0 L8 20 L16 25 L10 45 L18 50 L8 100" stroke="#ec4899" strokeWidth="2" fill="none" strokeLinecap="round" />
+            </svg>
           </div>
+          
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
+            <div className="relative inline-block">
+              {/* Glow effect behind text */}
+              <div className="absolute inset-0 bg-pink-600 blur-2xl opacity-20 animate-pulse"></div>
+              
+              {/* Main promo text */}
+              <h1 className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-pink-600 tracking-tight">
+                <span className="inline-block relative">
+                  <span className="absolute inset-0 text-pink-400 blur-sm opacity-50">Tuzisaze Ebeeyi</span>
+                  <span className="relative">Tuzisaze Ebeeyi</span>
+                </span>
+                <span className="block mt-2 text-3xl sm:text-4xl md:text-5xl">
+                  <span className="inline-block relative">
+                    <span className="absolute inset-0 text-pink-400 blur-sm opacity-50">Promo!</span>
+                    <span className="relative animate-pulse">Promo!</span>
+                  </span>
+                </span>
+              </h1>
+              
+              {/* Lightning bolt icon - animated */}
+              <div className="absolute -top-4 -right-8 sm:-right-12 md:-right-16 opacity-80" style={{ animation: 'strike 1.5s infinite' }}>
+                <svg width="40" height="60" viewBox="0 0 24 24" fill="none" className="text-pink-600">
+                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="currentColor" strokeWidth="2.5" fill="currentColor" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg" />
+                </svg>
+              </div>
+              <div className="absolute -bottom-2 -left-6 sm:-left-10 md:-left-14 opacity-70" style={{ animation: 'strike 1.8s infinite 0.7s' }}>
+                <svg width="32" height="48" viewBox="0 0 24 24" fill="none" className="text-pink-500">
+                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="currentColor" strokeWidth="2" fill="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          
         </div>
       )}
     </section>

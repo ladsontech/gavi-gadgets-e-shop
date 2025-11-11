@@ -104,3 +104,47 @@
     display: none;
   }
 }
+
+/* Lightning strike animations for promo header */
+@keyframes lightning {
+  0%, 100% { 
+    opacity: 0; 
+    transform: translateY(-10px); 
+  }
+  10% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+  15% { 
+    opacity: 0.3; 
+  }
+  20% { 
+    opacity: 1; 
+  }
+  25% { 
+    opacity: 0; 
+  }
+}
+
+@keyframes strike {
+  0%, 100% { 
+    opacity: 0; 
+    transform: scale(0.8) rotate(-10deg); 
+  }
+  5% { 
+    opacity: 1; 
+    transform: scale(1.2) rotate(5deg); 
+  }
+  10% { 
+    opacity: 0.8; 
+    transform: scale(1) rotate(-5deg); 
+  }
+  15% { 
+    opacity: 1; 
+    transform: scale(1.1) rotate(3deg); 
+  }
+  20% { 
+    opacity: 0; 
+    transform: scale(0.9) rotate(-8deg); 
+  }
+}
