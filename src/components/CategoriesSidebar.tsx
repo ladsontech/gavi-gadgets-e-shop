@@ -92,15 +92,15 @@ const CategoryTile: React.FC<{
         active ? "ring-2 ring-pink-500" : ""
       }`}
     >
-      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white aspect-square">
+      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-20">
         {/* Circular background - pink */}
-        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full transition-colors ${
+        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full transition-colors ${
           active ? "bg-pink-200" : "bg-pink-100 group-hover:bg-pink-200"
         }`} />
         
         {/* Image layer - overflowing from top */}
         {imageSrc && imgOk && (
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-24 h-24">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-16 h-16">
             <img
               src={imageSrc}
               alt={label}
@@ -111,17 +111,17 @@ const CategoryTile: React.FC<{
           </div>
         )}
         {(!imageSrc || !imgOk) && (
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-24 h-24 flex items-center justify-center">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-16 h-16 flex items-center justify-center">
             {isAll ? (
-              <Grid3x3 className="w-12 h-12 text-pink-600" />
+              <Grid3x3 className="w-8 h-8 text-pink-600" />
             ) : (
-              <div className="w-12 h-12 bg-pink-200 rounded-full" />
+              <div className="w-8 h-8 bg-pink-200 rounded-full" />
             )}
           </div>
         )}
         
         {/* Content at bottom - just text */}
-        <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center justify-center">
+        <div className="absolute bottom-0 left-0 right-0 p-1.5 flex items-center justify-center">
           <div className={`text-xs font-semibold ${active ? "text-pink-600" : "text-gray-800"}`}>
             {label}
           </div>
