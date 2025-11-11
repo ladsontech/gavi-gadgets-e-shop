@@ -110,43 +110,8 @@ const Offers = () => {
       />
       
       <div className="min-h-screen bg-gray-50">
-        {/* Weekly offers section */}
-        <div data-offers-section>
-          <WeeklyOffers />
-        </div>
-        
-        {/* Tuzisaze Ebeeyi Promo Section */}
+        {/* Tuzisaze Ebeeyi Promo Banner - Only this design on offers page */}
         <TuzisazePromo variant="full" />
-        
-        <div className="w-full">
-          {/* Desktop Layout with Sidebar */}
-          <div className="flex gap-4 max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
-            {/* Sidebar - Desktop Only */}
-            <ProductSidebar 
-              categories={categories || []} 
-              selectedCategory={null} 
-              onCategoryChange={() => {}} 
-              sortBy={sortBy} 
-              onSortChange={setSortBy} 
-              priceRange={priceRange} 
-              onPriceRangeChange={setPriceRange} 
-            />
-            
-            {/* Main Content */}
-            <div className="flex-1" data-products-section>
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                {searchQuery ? `Search Results for "${searchQuery}"` : "Featured Offers"}
-              </h2>
-              {productsLoading ? (
-                <div className="text-center py-6 lg:py-8">
-                  <p className="text-gray-500">Loading products...</p>
-                </div>
-              ) : (
-                <ProductGrid products={filteredProducts || []} />
-              )}
-            </div>
-          </div>
-        </div>
       </div>
     </>
   );

@@ -57,18 +57,19 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
   };
 
   return (
-    <section className="bg-gradient-to-br from-pink-50 via-white to-purple-50 py-8 sm:py-12 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-block bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-2 rounded-full mb-4">
-            <span className="text-2xl sm:text-3xl font-bold">Tuzisaze Ebeeyi</span>
-            <span className="ml-2 text-xl sm:text-2xl">Promo!</span>
+    <section className={isCompact ? "bg-gradient-to-br from-pink-50 via-white to-purple-50 py-8 sm:py-12 px-4 sm:px-6" : "relative"}>
+      {isCompact ? (
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-block bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-2 rounded-full mb-4">
+              <span className="text-2xl sm:text-3xl font-bold">Tuzisaze Ebeeyi</span>
+              <span className="ml-2 text-xl sm:text-2xl">Promo!</span>
+            </div>
+            <p className="text-gray-600 text-sm sm:text-base mt-2">
+              Special discounted prices on selected products
+            </p>
           </div>
-          <p className="text-gray-600 text-sm sm:text-base mt-2">
-            Special discounted prices on selected products
-          </p>
-        </div>
 
         {/* Products Grid - Compact (horizontal scroll) or Full (grid) */}
         {isCompact ? (
@@ -238,21 +239,81 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
           </div>
         )}
 
-        {/* View All Offers Link - Only show on compact variant (home page) */}
-        {isCompact && (
-          <div className="text-center">
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigate("/offers");
-              }}
-              className="border-pink-300 text-pink-600 hover:bg-pink-50"
-            >
-              View All Offers
-            </Button>
+          {/* View All Offers Link - Only show on compact variant (home page) */}
+          {isCompact && (
+            <div className="text-center">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigate("/offers");
+                }}
+                className="border-pink-300 text-pink-600 hover:bg-pink-50"
+              >
+                View All Offers
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Full: Banner-style promotional design */
+        <div className="relative w-full min-h-[600px] sm:min-h-[700px] flex flex-col">
+          {/* Black top border */}
+          <div className="bg-black h-12 sm:h-16"></div>
+          
+          {/* White textured center with promo content */}
+          <div className="flex-1 bg-white relative overflow-hidden" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")`,
+            backgroundSize: '200px 200px'
+          }}>
+            {/* Diagonal Promo Text - Large, bold, pink, diagonal */}
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div 
+                className="text-pink-600 font-black leading-tight"
+                style={{
+                  transform: 'rotate(-12deg)',
+                  fontSize: 'clamp(4rem, 12vw, 10rem)',
+                  textShadow: '3px 3px 6px rgba(0,0,0,0.15)',
+                  letterSpacing: '0.02em',
+                  fontWeight: 900
+                }}
+              >
+                <div className="whitespace-nowrap text-center">
+                  <span className="block" style={{ color: '#ec4899' }}>Tuzisaze Ebeeyi</span>
+                  <span className="block" style={{ color: '#ec4899', fontSize: '0.85em' }}>Promo!</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Product images overlay (if any) */}
+            {promoProducts && promoProducts.length > 0 && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                <div className="flex gap-4">
+                  {promoProducts.slice(0, 4).map((product) => {
+                    const mainImage = product.images && product.images.length > 0 
+                      ? product.images[0] 
+                      : null;
+                    if (!mainImage) return null;
+                    return (
+                      <img
+                        key={product.id}
+                        src={mainImage}
+                        alt={product.name}
+                        className="w-32 h-32 sm:w-40 sm:h-40 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+          
+          {/* Black bottom border */}
+          <div className="bg-black h-12 sm:h-16"></div>
+        </div>
+      )}
     </section>
   );
 };
