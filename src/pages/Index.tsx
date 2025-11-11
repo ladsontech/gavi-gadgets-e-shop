@@ -188,7 +188,9 @@ const Index = () => {
                   <p className="text-gray-400 text-sm">Loading products...</p>
                 </div>
               ) : (
-                <ProductGrid products={filteredProducts || []} />
+                <div className="mb-12 sm:mb-16 md:mb-20">
+                  <ProductGrid products={filteredProducts || []} />
+                </div>
               )}
             </div>
           </div>
