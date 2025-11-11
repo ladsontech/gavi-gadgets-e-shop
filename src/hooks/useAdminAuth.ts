@@ -10,11 +10,12 @@ export function useAdminAuth() {
 
   useEffect(() => {
     let cancelled = false;
-    let initialCheckComplete = false;
 
     const checkAuth = async () => {
       try {
         console.log("Starting auth check...");
+        setIsLoading(true);
+        
         // Get current session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
@@ -64,14 +65,15 @@ export function useAdminAuth() {
             setIsAuthenticated(false);
             setIsLoading(false);
           }
-        } else {
-          const isAdmin = !!adminData;
-          console.log("Admin check result:", { email: session.user.email, isAdmin });
-          if (!cancelled) {
-            setIsAuthenticated(isAdmin);
-            setIsLoading(false);
-            initialCheckComplete = true;
-          }
+          return;
+        }
+
+        const isAdmin = !!adminData;
+        console.log("Admin check result:", { email: session.user.email, isAdmin, adminData });
+        
+        if (!cancelled) {
+          setIsAuthenticated(isAdmin);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Auth check error:", error);
@@ -84,27 +86,25 @@ export function useAdminAuth() {
 
     checkAuth();
 
-    // Listen for auth changes (only handle sign out to prevent state resets)
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log("Auth state change event:", event);
+      async (event, currentSession) => {
+        console.log("Auth state change event:", event, currentSession?.user?.email);
         
-        // Only handle sign out events to prevent interfering with initial check
-        if (event === 'SIGNED_OUT' || (!session?.user && initialCheckComplete)) {
-          console.log("User signed out or session lost");
-          if (!cancelled) {
-            setIsAuthenticated(false);
-            setIsLoading(false);
-            setSession(null);
-            setUser(null);
-          }
+        if (cancelled) return;
+
+        if (event === 'SIGNED_OUT') {
+          console.log("User signed out");
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          setSession(null);
+          setUser(null);
           return;
         }
 
-        // Ignore other events if initial check is complete to prevent state resets
-        if (initialCheckComplete) {
-          console.log("Initial check complete, ignoring auth state change");
-          return;
+        if (event === 'SIGNED_IN' && currentSession?.user) {
+          console.log("User signed in, rechecking admin status");
+          checkAuth();
         }
       }
     );

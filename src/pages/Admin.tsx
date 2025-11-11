@@ -62,14 +62,10 @@ const Admin = () => {
   }, [isAdmin, isLoading]);
 
   useEffect(() => {
-    // Only redirect if we're sure the user is not an admin
-    // Add a small delay to prevent flickering
+    // Only redirect if we're sure the user is not an admin after loading is complete
     if (!isLoading && !isAdmin) {
       console.log("Redirecting to auth - user is not admin");
-      const timer = setTimeout(() => {
-        navigate("/auth");
-      }, 100);
-      return () => clearTimeout(timer);
+      navigate("/auth", { replace: true });
     }
   }, [isAdmin, isLoading, navigate]);
 
