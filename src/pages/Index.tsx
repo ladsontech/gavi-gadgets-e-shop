@@ -144,7 +144,7 @@ const Index = () => {
   return <>
       <SEOHead title="Gavi Gadgets - Premium Smartphones in Uganda" description="Shop the latest smartphones including iPhone, Samsung, Huawei and more. Best prices on new and UK used phones in Uganda with warranty." keywords="smartphones, iPhone, Samsung, Huawei, Uganda, phones, mobile" />
       
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         {isHomePage && <UpdatesCarousel />}
         
         {/* Weekly offers section with data attribute for smooth scrolling */}

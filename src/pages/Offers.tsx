@@ -69,7 +69,7 @@ const Offers = () => {
         keywords="offers, promotions, deals, featured products, discounts, Gavi Gadgets"
       />
 
-      <div className="min-h-screen bg-gradient-to-b from-white via-pink-50/25 to-white">
+      <div className="min-h-screen bg-white">
         <TuzisazePromo variant="full" />
 
         <section className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 pb-14 sm:pb-20">

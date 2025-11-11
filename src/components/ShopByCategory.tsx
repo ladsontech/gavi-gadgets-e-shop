@@ -16,7 +16,7 @@ export const ShopByCategory: React.FC = () => {
   return (
     <section aria-label="Shop by category" className="w-full py-4">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-3 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl shadow-lg">
+        <div className="p-3 bg-pink-600 rounded-xl shadow-lg">
           <Smartphone className="w-6 h-6 text-white" />
         </div>
         <div>

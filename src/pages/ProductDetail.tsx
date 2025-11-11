@@ -161,13 +161,13 @@ const ProductDetail: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+    return <div className="min-h-screen bg-white">
         <LoadingSpinner />
       </div>;
   }
 
   if (!product) {
-    return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+    return <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <p>Product not found</p>
         </div>
@@ -216,7 +216,7 @@ const ProductDetail: React.FC = () => {
         breadcrumbs={breadcrumbs}
       />
       
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+      <div className="min-h-screen bg-white">
         <main className="container mx-auto px-3 sm:px-4 py-3 md:py-4 lg:py-6">
           {/* Back Button and Share - Mobile and Desktop */}
           <div className="flex items-center justify-between mb-4">

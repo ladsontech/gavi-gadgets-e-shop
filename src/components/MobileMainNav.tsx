@@ -65,7 +65,7 @@ export const MobileMainNav = ({
                   >
                     <div
                       className={`w-16 h-16 rounded-full border-4 border-gray-900 flex items-center justify-center transition-all duration-200 shadow-[0_12px_24px_rgba(236,72,153,0.35)] ${
-                        active ? "bg-pink-500" : "bg-gradient-to-br from-pink-500 to-pink-600"
+                        active ? "bg-pink-500" : "bg-pink-500"
                       }`}
                     >
                       <Icon className="w-6 h-6 text-white" />

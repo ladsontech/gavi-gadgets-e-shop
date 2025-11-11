@@ -24,7 +24,7 @@ export const CategoryFilter = ({
   };
   return <div className="mb-8 w-full">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl shadow-lg">
+        <div className="p-3 bg-pink-600 rounded-xl shadow-lg">
           <Smartphone className="w-6 h-6 text-white" />
         </div>
         <div>

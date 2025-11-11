@@ -16,7 +16,7 @@ const Warranty = () => {
         keywords="warranty policy Uganda, smartphone warranty, Gavi Gadgets warranty, return policy Uganda, mobile phone warranty Kampala"
       />
       
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-6 max-w-4xl">
           {/* Header */}
           <div className="flex items-center gap-4 mb-6">

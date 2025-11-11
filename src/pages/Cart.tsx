@@ -101,7 +101,7 @@ Thank you for choosing Gavi Gadgets UG! 🙏`;
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-16">
             <div className="bg-white rounded-3xl shadow-xl p-12 max-w-md mx-auto">
@@ -122,7 +122,7 @@ Thank you for choosing Gavi Gadgets UG! 🙏`;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50">
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-6 sm:py-8">
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Shopping Cart</h1>

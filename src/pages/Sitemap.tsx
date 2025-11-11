@@ -11,7 +11,7 @@ const SitemapPage = () => {
         description="XML sitemap for Gavi Gadgets Uganda website containing all product pages and main navigation."
       />
       
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 py-8">
+      <div className="min-h-screen bg-white py-8">
         <div className="container mx-auto px-4">
           <SitemapComponent />
         </div>

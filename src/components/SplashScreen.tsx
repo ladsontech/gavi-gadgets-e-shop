@@ -42,7 +42,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
         {/* Brand name */}
         <div className="mb-6">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent animate-fade-in">
+          <h1 className="text-4xl font-bold text-pink-600 animate-fade-in">
             GAVI GADGETS
           </h1>
           <p className="text-lg text-gray-600 mt-2 animate-fade-in" style={{ animationDelay: '0.3s' }}>

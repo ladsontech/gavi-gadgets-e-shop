@@ -60,15 +60,15 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     <section
       className={
         isCompact
-          ? "bg-gradient-to-br from-pink-50 via-white to-purple-50 py-8 sm:py-12 px-4 sm:px-6"
-          : "relative bg-gradient-to-b from-white via-pink-50/40 to-white"
+          ? "bg-gradient-to-br from-pink-50 via-white to-white py-8 sm:py-12 px-4 sm:px-6"
+          : "relative bg-white"
       }
     >
       {isCompact ? (
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-block bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 py-2 rounded-full mb-4">
+            <div className="inline-block bg-pink-600 text-white px-6 py-2 rounded-full mb-4">
               <span className="text-2xl sm:text-3xl font-bold">Tuzisaze Ebeeyi</span>
               <span className="ml-2 text-xl sm:text-2xl">Promo!</span>
             </div>
@@ -179,7 +179,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                     />
                     {/* Discount Badge */}
                     {discountPercent > 0 && (
-                      <div className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                      <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                         -{discountPercent}%
                       </div>
                     )}
@@ -233,7 +233,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                     {/* View Product Button */}
                     <Button
                       onClick={() => navigate(`/product/${product.slug}`)}
-                      className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold py-2"
+                      className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2"
                     >
                       <ShoppingBag className="w-4 h-4 mr-2" />
                       View Product

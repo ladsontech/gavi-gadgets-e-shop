@@ -87,7 +87,7 @@ export const WeeklyOffers = () => {
   }
 
   return (
-    <section className="bg-gradient-to-r from-pink-50 to-purple-50 py-4 sm:py-6 px-2 sm:px-4">
+    <section className="bg-white py-4 sm:py-6 px-2 sm:px-4">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
           <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-current" />

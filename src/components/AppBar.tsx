@@ -30,7 +30,7 @@ export const AppBar = () => {
   };
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+    <header className="w-full bg-white border-b border-gray-100 shadow-sm sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto px-4 lg:px-16 xl:px-20">
         <div className="flex items-center justify-between h-16">
           
@@ -70,7 +70,7 @@ export const AppBar = () => {
             <Button
               variant="outline"
               onClick={handleContactClick}
-              className="hidden md:flex items-center gap-2 text-pink-600 border-pink-200 hover:bg-pink-50 bg-pink-50/50 px-3 py-2 h-10 text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200"
+              className="hidden md:flex items-center gap-2 text-pink-600 border-pink-300 hover:bg-pink-50 bg-white px-3 py-2 h-10 text-sm font-medium transition-all duration-200"
             >
               <Phone className="w-4 h-4" />
               <span className="font-medium">+256 740799577</span>

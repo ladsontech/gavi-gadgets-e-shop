@@ -309,7 +309,7 @@ export default function CategoryPage() {
         description={`Browse ${pageTitle} at Gavi Gadgets Uganda.`}
         keywords={`${pageTitle}, Gavi Gadgets Uganda`}
       />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 py-4">
           <div className="flex items-center justify-between mb-4 bg-white/90 supports-[backdrop-filter]:bg-white/60 border-b shadow-sm md:sticky md:top-16 md:z-30">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">

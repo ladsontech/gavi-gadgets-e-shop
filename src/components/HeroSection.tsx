@@ -44,7 +44,7 @@ export const HeroSection = () => {
       });
     }
   };
-  return <div className="relative bg-gradient-to-r from-pink-600 to-purple-700 text-white">
+  return <div className="relative bg-pink-600 text-white">
       <div className="absolute inset-0 bg-black/20"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24 bg-fuchsia-700">
