@@ -72,8 +72,16 @@ const Offers = () => {
       <div className="min-h-screen bg-white">
         <TuzisazePromo variant="full" />
 
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 pb-14 sm:pb-20">
-          <div className="mt-8 sm:mt-12" data-offers-grid>
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 py-6 sm:py-8">
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-normal text-black mb-1">
+              Special Offers
+            </h1>
+            <p className="text-sm text-gray-500">
+              {filteredProducts?.length || 0} {filteredProducts?.length === 1 ? 'product' : 'products'} available
+            </p>
+          </div>
+          <div data-offers-grid>
             {productsLoading ? (
               <div className="text-center py-12">
                 <p className="text-pink-600 font-semibold">

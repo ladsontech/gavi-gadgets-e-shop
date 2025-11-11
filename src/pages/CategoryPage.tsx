@@ -310,11 +310,16 @@ export default function CategoryPage() {
         keywords={`${pageTitle}, Gavi Gadgets Uganda`}
       />
       <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 py-4">
-          <div className="flex items-center justify-between mb-4 bg-white/90 supports-[backdrop-filter]:bg-white/60 border-b shadow-sm md:sticky md:top-16 md:z-30">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-              {pageTitle}
-            </h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 py-6 sm:py-8">
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-normal text-black mb-1">
+                {pageTitle}
+              </h1>
+              <p className="text-sm text-gray-500">
+                {filteredSorted.length} {filteredSorted.length === 1 ? 'product' : 'products'}
+              </p>
+            </div>
             <div className="hidden md:flex items-center gap-3">
               {slug !== "gaming" && (
                 <Button
@@ -331,7 +336,7 @@ export default function CategoryPage() {
           </div>
 
           {/* Mobile: sticky filters/sort bar */}
-          <div className="md:hidden sticky top-16 z-30 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b shadow-sm">
+          <div className="md:hidden sticky top-16 z-30 bg-white border-b border-gray-100">
             <div className="py-2 flex items-center gap-2">
               {slug !== "gaming" && (
                 <Button

@@ -166,12 +166,23 @@ const Index = () => {
             
             {/* Main Content */}
             <div className="flex-1" data-products-section>
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4">
-                {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
-              </h2>
-              {productsLoading ? <div className="text-center py-6 lg:py-8">
-                  <p className="text-gray-500">Loading products...</p>
-                </div> : <ProductGrid products={filteredProducts || []} />}
+              <div className="mb-6">
+                <h2 className="text-2xl sm:text-3xl font-normal text-black mb-1">
+                  {searchQuery ? `Search Results for "${searchQuery}"` : getCategoryDisplayName()}
+                </h2>
+                {searchQuery && (
+                  <p className="text-sm text-gray-500">
+                    {filteredProducts?.length || 0} {filteredProducts?.length === 1 ? 'product' : 'products'} found
+                  </p>
+                )}
+              </div>
+              {productsLoading ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-400 text-sm">Loading products...</p>
+                </div>
+              ) : (
+                <ProductGrid products={filteredProducts || []} />
+              )}
             </div>
           </div>
         </div>
