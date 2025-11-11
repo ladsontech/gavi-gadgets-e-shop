@@ -56,19 +56,6 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     return Math.round(((original - discounted) / original) * 100);
   };
 
-  const scrollToOffersGrid = () => {
-    const element = document.querySelector("[data-offers-grid]");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
-  const heroProduct = promoProducts?.[0];
-  const heroImage =
-    heroProduct?.images && heroProduct.images.length > 0
-      ? heroProduct.images[0]
-      : null;
-
   return (
     <section
       className={
@@ -274,35 +261,12 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
           )}
         </div>
       ) : (
-        /* Full: Simple themed header for offers page */
+        /* Full: Minimal header for offers page */
         <div className="bg-white border-b border-pink-200/60">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-12 text-center space-y-3">
-            <p className="text-xs sm:text-sm uppercase tracking-[0.35em] text-pink-500 font-semibold">
-              Special Promo
-            </p>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center space-y-2">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-pink-600 drop-shadow-sm">
               Tuzisaze Ebeeyi Promo!
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
-              Discover discounted prices on select gadgets and accessories. The
-              offers below are updated regularly, so grab your favourite deals
-              while they last.
-            </p>
-            <div className="flex items-center justify-center gap-3 pt-2">
-              <Button
-                onClick={scrollToOffersGrid}
-                className="bg-pink-600 hover:bg-pink-700 text-white font-semibold px-5 sm:px-7 py-2 sm:py-3 rounded-full"
-              >
-                View Offers
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/")}
-                className="border-pink-200 text-pink-600 hover:bg-pink-50 rounded-full px-5 sm:px-7 py-2 sm:py-3"
-              >
-                Back Home
-              </Button>
-            </div>
           </div>
         </div>
       )}
