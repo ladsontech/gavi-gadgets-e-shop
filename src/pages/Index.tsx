@@ -32,95 +32,25 @@ const Index = () => {
     };
   }, []);
 
-  // Memoize query key to prevent unnecessary refetches
-  const queryKey = useMemo(() => ["products", selectedCategory, searchQuery, sortBy, priceRange], [selectedCategory, searchQuery, sortBy, priceRange]);
-  const {
-    data: products,
-    isLoading: productsLoading
-  } = useQuery({
-    queryKey,
+  // Background-fetched all products (prefetched in App) for instant client-side filtering
+  const { data: allProducts, isLoading: productsLoading } = useQuery({
+    queryKey: ["productsAll"],
     queryFn: async () => {
-      let query = supabase.from("products").select(`
-          *,
-          categories (
-            id,
-            name,
-            slug
-          )
-        `).eq("is_active", true);
-
-      // Handle different category filtering
-      if (selectedCategory === "featured") {
-        // Filter for featured products (offers)
-        query = query.eq("is_featured", true);
-      } else if (selectedCategory && selectedCategory !== "accessories") {
-        query = query.eq("category_id", selectedCategory);
-      } else if (selectedCategory === "accessories") {
-        // Filter for accessories category
-        const accessoriesCategory = await supabase.from("categories").select("id").ilike("name", "%accessories%").single();
-        if (accessoriesCategory.data) {
-          query = query.eq("category_id", accessoriesCategory.data.id);
-        }
-      }
-      if (searchQuery) {
-        query = query.ilike("name", `%${searchQuery}%`);
-      }
-
-      // Handle price range filtering
-      if (priceRange !== "all") {
-        if (priceRange === "5000000+") {
-          query = query.gte("price", 5000000);
-        } else if (priceRange.includes("-")) {
-          const [min, max] = priceRange.split("-").map(Number);
-          query = query.gte("price", min).lte("price", max);
-        } else if (priceRange.startsWith("0-")) {
-          const max = Number(priceRange.split("-")[1]);
-          query = query.lte("price", max);
-        }
-      }
-
-      // Handle sorting
-      if (sortBy === "newest") {
-        query = query.order("created_at", {
-          ascending: false
-        });
-      } else if (sortBy === "oldest") {
-        query = query.order("created_at", {
-          ascending: true
-        });
-      } else if (sortBy === "price-low") {
-        query = query.order("price", {
-          ascending: true
-        });
-      } else if (sortBy === "price-high") {
-        query = query.order("price", {
-          ascending: false
-        });
-      } else if (sortBy === "name-asc") {
-        query = query.order("name", {
-          ascending: true
-        });
-      } else if (sortBy === "name-desc") {
-        query = query.order("name", {
-          ascending: false
-        });
-      } else {
-        query = query.order("created_at", {
-          ascending: false
-        });
-      }
-      const {
-        data,
-        error
-      } = await query;
+      const { data, error } = await supabase.from("products").select(`
+        *,
+        categories (
+          id,
+          name,
+          slug
+        )
+      `).eq("is_active", true);
       if (error) {
         throw error;
       }
       return data;
     },
-    staleTime: 5 * 60 * 1000,
-    // Keep data fresh for 5 minutes
-    gcTime: 10 * 60 * 1000 // Keep in cache for 10 minutes
+    staleTime: 10 * 60 * 1000,
+    gcTime: 15 * 60 * 1000
   });
   const {
     data: categories
@@ -140,6 +70,70 @@ const Index = () => {
     },
     staleTime: 10 * 60 * 1000 // Categories don't change often
   });
+
+  // Compute filtered/sorted products locally for instant search
+  const filteredProducts = useMemo(() => {
+    const base = allProducts || [];
+
+    // Resolve accessories category id if needed
+    const accessoriesCategory = categories?.find(c => typeof c.name === "string" && c.name.toLowerCase().includes("accessories"));
+    const accessoriesCategoryId = accessoriesCategory?.id;
+
+    let result = base;
+
+    // Category filter
+    if (selectedCategory === "featured") {
+      result = result.filter(p => p.is_featured);
+    } else if (selectedCategory === "accessories" && accessoriesCategoryId) {
+      result = result.filter(p => p.category_id === accessoriesCategoryId);
+    } else if (selectedCategory) {
+      result = result.filter(p => p.category_id === selectedCategory);
+    }
+
+    // Search filter
+    if (searchQuery && searchQuery.trim().length > 0) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(p => {
+        const name = (p.name || "").toLowerCase();
+        const brand = (p.brand || "").toLowerCase?.() || "";
+        const desc = (p.description || "").toLowerCase?.() || "";
+        return name.includes(q) || brand.includes(q) || desc.includes(q);
+      });
+    }
+
+    // Price filter
+    if (priceRange !== "all") {
+      if (priceRange === "5000000+") {
+        result = result.filter(p => (p.price ?? 0) >= 5000000);
+      } else if (priceRange.includes("-")) {
+        const [min, max] = priceRange.split("-").map(Number);
+        result = result.filter(p => (p.price ?? 0) >= min && (p.price ?? 0) <= max);
+      } else if (priceRange.startsWith("0-")) {
+        const max = Number(priceRange.split("-")[1]);
+        result = result.filter(p => (p.price ?? 0) <= max);
+      }
+    }
+
+    // Sorting
+    const sorted = [...result];
+    if (sortBy === "newest") {
+      sorted.sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+    } else if (sortBy === "oldest") {
+      sorted.sort((a, b) => (new Date(a.created_at).getTime() - new Date(b.created_at).getTime()));
+    } else if (sortBy === "price-low") {
+      sorted.sort((a, b) => ((a.price ?? 0) - (b.price ?? 0)));
+    } else if (sortBy === "price-high") {
+      sorted.sort((a, b) => ((b.price ?? 0) - (a.price ?? 0)));
+    } else if (sortBy === "name-asc") {
+      sorted.sort((a, b) => (String(a.name || "").localeCompare(String(b.name || ""))));
+    } else if (sortBy === "name-desc") {
+      sorted.sort((a, b) => (String(b.name || "").localeCompare(String(a.name || ""))));
+    } else {
+      sorted.sort((a, b) => (new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+    }
+
+    return sorted;
+  }, [allProducts, categories, selectedCategory, searchQuery, priceRange, sortBy]);
   const getCategoryDisplayName = () => {
     if (!selectedCategory) return "All Products";
     if (selectedCategory === "featured") return "Featured Offers";
@@ -159,7 +153,7 @@ const Index = () => {
         </div>
         
         <div className="w-full">
-          <FeaturedProducts products={products || []} />
+          <FeaturedProducts products={allProducts || []} />
           
           {/* Mobile Category Filter */}
           <div className="lg:hidden mb-4">
@@ -178,7 +172,7 @@ const Index = () => {
               </h2>
               {productsLoading ? <div className="text-center py-6 lg:py-8">
                   <p className="text-gray-500">Loading products...</p>
-                </div> : <ProductGrid products={products || []} />}
+                </div> : <ProductGrid products={filteredProducts || []} />}
             </div>
           </div>
         </div>
