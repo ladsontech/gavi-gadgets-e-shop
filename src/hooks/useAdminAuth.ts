@@ -9,29 +9,76 @@ export function useAdminAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    // Set a timeout to prevent infinite loading
+    timeoutId = setTimeout(() => {
+      if (isMounted) {
+        console.warn("Auth check timeout - setting loading to false");
+        setIsLoading(false);
+      }
+    }, 5000); // 5 second timeout
+
     // Check for existing session first
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        try {
-          const { data: adminData } = await supabase
-            .from("admin_users")
-            .select("email")
-            .eq("email", session.user.email)
-            .maybeSingle();
-          
-          setIsAuthenticated(!!adminData);
-        } catch (error) {
-          console.error("Error checking admin status:", error);
-          setIsAuthenticated(false);
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          if (isMounted) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+          }
+          return;
         }
-      } else {
-        setIsAuthenticated(false);
+
+        if (isMounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+        }
+        
+        if (session?.user) {
+          try {
+            const { data: adminData, error: adminError } = await supabase
+              .from("admin_users")
+              .select("email")
+              .eq("email", session.user.email)
+              .maybeSingle();
+            
+            if (adminError) {
+              console.error("Error checking admin status:", adminError);
+            }
+            
+            if (isMounted) {
+              setIsAuthenticated(!!adminData && !adminError);
+              setIsLoading(false);
+              clearTimeout(timeoutId);
+            }
+          } catch (error) {
+            console.error("Error checking admin status:", error);
+            if (isMounted) {
+              setIsAuthenticated(false);
+              setIsLoading(false);
+              clearTimeout(timeoutId);
+            }
+          }
+        } else {
+          if (isMounted) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            clearTimeout(timeoutId);
+          }
+        }
+      } catch (error) {
+        console.error("Error in checkSession:", error);
+        if (isMounted) {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          clearTimeout(timeoutId);
+        }
       }
-      setIsLoading(false);
     };
 
     checkSession();
@@ -39,32 +86,47 @@ export function useAdminAuth() {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!isMounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
           try {
-            const { data: adminData } = await supabase
+            const { data: adminData, error: adminError } = await supabase
               .from("admin_users")
               .select("email")
               .eq("email", session.user.email)
               .maybeSingle();
             
-            setIsAuthenticated(!!adminData);
-            setIsLoading(false);
+            if (isMounted) {
+              setIsAuthenticated(!!adminData && !adminError);
+              setIsLoading(false);
+              clearTimeout(timeoutId);
+            }
           } catch (error) {
             console.error("Error checking admin status:", error);
-            setIsAuthenticated(false);
-            setIsLoading(false);
+            if (isMounted) {
+              setIsAuthenticated(false);
+              setIsLoading(false);
+              clearTimeout(timeoutId);
+            }
           }
         } else {
-          setIsAuthenticated(false);
-          setIsLoading(false);
+          if (isMounted) {
+            setIsAuthenticated(false);
+            setIsLoading(false);
+            clearTimeout(timeoutId);
+          }
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const logout = useCallback(async () => {

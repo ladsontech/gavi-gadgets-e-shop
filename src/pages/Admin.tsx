@@ -131,7 +131,9 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mx-auto mb-4"></div>
           <p className="text-gray-400 text-sm">Loading...</p>
+          <p className="text-gray-300 text-xs mt-2">If this takes too long, please refresh the page</p>
         </div>
       </div>
     );
@@ -139,7 +141,13 @@ const Admin = () => {
 
   // Redirect happens in useEffect, just show nothing while redirecting
   if (!isAdmin) {
-    return null;
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-400 text-sm">Redirecting to login...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
