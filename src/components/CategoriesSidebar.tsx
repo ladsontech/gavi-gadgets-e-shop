@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Smartphone, Package, Laptop, Tv, Speaker, Gamepad2, Watch, Home } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 
 interface CategoriesSidebarProps {
   categories: { id: string; name: string; slug: string }[];
 }
+
+type CategoryCard = {
+  label: string;
+  slug: string;
+  route: string;
+  imageSrc: string;
+};
+
+const categoryData: CategoryCard[] = [
+  { label: "Phones", slug: "phones", route: "/category/phones", imageSrc: "/images/gavi_accessories/phones.png" },
+  { label: "Wearables", slug: "wearables", route: "/category/wearables", imageSrc: "/images/gavi_accessories/wearables.png" },
+  { label: "PCs & Laptops", slug: "pcs-laptops", route: "/category/pcs-laptops", imageSrc: "/images/gavi_accessories/PCs.png" },
+  { label: "Speakers", slug: "speakers", route: "/category/speakers", imageSrc: "/images/gavi_accessories/speakers.png" },
+  { label: "TVs", slug: "tvs", route: "/category/tvs", imageSrc: "/images/gavi_accessories/TVS.png" },
+  { label: "Accessories", slug: "accessories", route: "/category/accessories", imageSrc: "/images/gavi_accessories/accessories.png" },
+  { label: "Gaming", slug: "gaming", route: "/category/gaming", imageSrc: "/images/gavi_accessories/gaming.png" },
+];
 
 export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
   const navigate = useNavigate();
@@ -19,17 +35,6 @@ export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
     return null;
   }
 
-  const navItems = [
-    { label: "All Products", icon: Home, route: "/" },
-    { label: "Phones", icon: Smartphone, route: "/category/phones" },
-    { label: "Wearables", icon: Watch, route: "/category/wearables" },
-    { label: "PCs & Laptops", icon: Laptop, route: "/category/pcs-laptops" },
-    { label: "Speakers", icon: Speaker, route: "/category/speakers" },
-    { label: "TVs", icon: Tv, route: "/category/tvs" },
-    { label: "Accessories", icon: Package, route: "/category/accessories" },
-    { label: "Gaming", icon: Gamepad2, route: "/category/gaming" },
-  ] as const;
-
   const isActive = (route: string) => {
     if (route === "/") {
       return location.pathname === "/";
@@ -38,32 +43,84 @@ export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
   };
 
   return (
-    <aside className="hidden md:block w-64 flex-shrink-0 border-r border-gray-200 bg-white">
+    <aside className="hidden md:block w-72 flex-shrink-0 border-r border-gray-200 bg-white">
       <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto py-6 px-4">
-        <h2 className="text-lg font-semibold text-black mb-4 px-2">Categories</h2>
-        <nav className="space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-pink-600 rounded-lg">
+            <LayoutGrid className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-black">Gavi Gadgets Shelves</h2>
+            <p className="text-xs text-gray-600">Browse categories</p>
+          </div>
+        </div>
+        <nav className="space-y-3">
+          {categoryData.map((item) => {
             const active = isActive(item.route);
             return (
-              <Button
+              <CategoryTile
                 key={item.label}
-                variant="ghost"
+                label={item.label}
+                route={item.route}
+                imageSrc={item.imageSrc}
+                active={active}
                 onClick={() => navigate(item.route)}
-                className={`w-full justify-start gap-3 px-3 py-2 h-auto ${
-                  active
-                    ? "bg-pink-50 text-pink-600 hover:bg-pink-100"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="text-sm font-medium">{item.label}</span>
-              </Button>
+              />
             );
           })}
         </nav>
       </div>
     </aside>
+  );
+};
+
+const CategoryTile: React.FC<{
+  label: string;
+  route: string;
+  imageSrc: string;
+  active: boolean;
+  onClick: () => void;
+}> = ({ label, route, imageSrc, active, onClick }) => {
+  const [imgOk, setImgOk] = useState(true);
+  return (
+    <button
+      onClick={onClick}
+      className={`group w-full focus:outline-none text-left ${
+        active ? "ring-2 ring-pink-500" : ""
+      }`}
+    >
+      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-28">
+        {/* Circular background - pink */}
+        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full transition-colors ${
+          active ? "bg-pink-200" : "bg-pink-100 group-hover:bg-pink-200"
+        }`} />
+        
+        {/* Image layer - overflowing from top */}
+        {imgOk && (
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-24 h-24">
+            <img
+              src={imageSrc}
+              alt={label}
+              className="w-full h-full object-contain"
+              onError={() => setImgOk(false)}
+              loading="lazy"
+            />
+          </div>
+        )}
+        {!imgOk && (
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-24 h-24 flex items-center justify-center">
+            <div className="w-12 h-12 bg-pink-200 rounded-full" />
+          </div>
+        )}
+        
+        {/* Content at bottom - just text */}
+        <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center justify-center">
+          <div className={`text-xs font-semibold ${active ? "text-pink-600" : "text-gray-800"}`}>
+            {label}
+          </div>
+        </div>
+      </div>
+    </button>
   );
 };
 
