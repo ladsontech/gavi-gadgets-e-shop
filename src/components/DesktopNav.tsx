@@ -7,7 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Smartphone, Package, Home } from "lucide-react";
+import { Menu, Smartphone, Package, Home, Laptop, Tv, Speaker } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface DesktopNavProps {
   categories: { id: string; name: string; slug: string }[];
@@ -20,36 +21,15 @@ export const DesktopNav = ({
   selectedCategory,
   onCategoryChange,
 }: DesktopNavProps) => {
+  const navigate = useNavigate();
   const navItems = [
-    { label: "All Products", icon: Home, value: null },
-    {
-      label: "iPhones",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("iphone") || c.name?.toLowerCase().includes("iphone")
-      )?.id || null,
-    },
-    {
-      label: "Samsung",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("samsung") || c.name?.toLowerCase().includes("samsung")
-      )?.id || null,
-    },
-    {
-      label: "Pixel",
-      icon: Smartphone,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("pixel") ||
-        c.name?.toLowerCase().includes("pixel")
-      )?.id || null,
-    },
-    {
-      label: "Accessories",
-      icon: Package,
-      value: "accessories",
-    },
-  ];
+    { label: "All Products", icon: Home, route: "/" },
+    { label: "Phones", icon: Smartphone, route: "/category/phones" },
+    { label: "PCs & Laptops", icon: Laptop, route: "/category/pcs-laptops" },
+    { label: "Speakers", icon: Speaker, route: "/category/speakers" },
+    { label: "TVs", icon: Tv, route: "/category/tvs" },
+    { label: "Accessories", icon: Package, route: "/category/accessories" },
+  ] as const;
 
   return (
     <div className="hidden md:flex items-center">
@@ -66,10 +46,11 @@ export const DesktopNav = ({
             return (
               <DropdownMenuItem
                 key={item.label}
-                onClick={() => onCategoryChange(item.value)}
-                className={`gap-2 ${
-                  selectedCategory === item.value ? "bg-pink-50 text-pink-600" : ""
-                }`}
+                onClick={() => {
+                  onCategoryChange(null);
+                  navigate(item.route);
+                }}
+                className={`gap-2`}
               >
                 <Icon className="w-4 h-4" />
                 {item.label}

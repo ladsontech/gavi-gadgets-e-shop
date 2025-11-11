@@ -1,5 +1,5 @@
 
-import { Home, Tag, Package, Headphones } from "lucide-react";
+import { Home, Tag, Package, Smartphone, Tv } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface MobileMainNavProps {
@@ -20,38 +20,32 @@ export const MobileMainNav = ({
   const navItems = [
     { label: "Home", icon: Home, value: null, route: "/" },
     {
+      label: "Phones",
+      icon: Smartphone,
+      value: null,
+      route: "/category/phones",
+    },
+    {
       label: "Offers",
       icon: Tag,
       value: "featured",
       route: "/",
     },
     {
-      label: "Accessories",
-      icon: Package,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("accessories") || c.name?.toLowerCase().includes("accessories")
-      )?.id || null,
-      route: "/",
+      label: "TVs",
+      icon: Tv,
+      value: null,
+      route: "/category/tvs",
     },
-    {
-      label: "Audio",
-      icon: Headphones,
-      value: categories.find((c) =>
-        c.slug?.toLowerCase().includes("audio") || 
-        c.name?.toLowerCase().includes("audio") ||
-        c.slug?.toLowerCase().includes("headphones") ||
-        c.name?.toLowerCase().includes("headphones") ||
-        c.slug?.toLowerCase().includes("speakers") ||
-        c.name?.toLowerCase().includes("speakers")
-      )?.id || null,
-      route: "/",
-    },
+    { label: "Accessories", icon: Package, value: null, route: "/category/accessories" },
   ];
 
   const handleNavClick = (item: typeof navItems[0]) => {
-    // Immediately update category for faster response
-    onCategoryChange(item.value);
-    
+    // Immediately update category for faster response when staying on same page
+    if (item.route === "/") {
+      onCategoryChange(item.value);
+    }
+
     if (location.pathname !== item.route) {
       navigate(item.route);
     }
