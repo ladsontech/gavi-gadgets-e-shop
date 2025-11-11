@@ -158,7 +158,8 @@ const Index = () => {
         {isHomePage && <TuzisazePromo />}
         
         <div className="w-full">
-          <FeaturedProducts products={allProducts || []} />
+          {/* Only show FeaturedProducts if not viewing offers */}
+          {selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
           
           {/* Desktop Layout with Sidebar */}
           <div className="flex gap-4 max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
