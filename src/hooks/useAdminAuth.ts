@@ -1,64 +1,84 @@
-
 import { useCallback, useState, useEffect } from "react";
-
-const ADMIN_PASS = "gavi2025";
-const ADMIN_KEY = "__gavi_admin__";
+import { supabase } from "@/integrations/supabase/client";
+import { User, Session } from "@supabase/supabase-js";
 
 export function useAdminAuth() {
-  // Initialize with synchronous check to avoid race conditions
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    if (typeof window !== "undefined") {
-      return !!window.localStorage.getItem(ADMIN_KEY);
-    }
-    return false;
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check authentication status on mount and when storage changes
   useEffect(() => {
-    const checkAuth = () => {
-      if (typeof window !== "undefined") {
-        const isAdmin = !!window.localStorage.getItem(ADMIN_KEY);
-        setIsAuthenticated(isAdmin);
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Check if user is admin
+          setTimeout(async () => {
+            try {
+              const { data: adminData } = await supabase
+                .from("admin_users")
+                .select("email")
+                .eq("email", session.user.email)
+                .maybeSingle();
+              
+              setIsAuthenticated(!!adminData);
+              setIsLoading(false);
+            } catch (error) {
+              console.error("Error checking admin status:", error);
+              setIsAuthenticated(false);
+              setIsLoading(false);
+            }
+          }, 0);
+        } else {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        try {
+          const { data: adminData } = await supabase
+            .from("admin_users")
+            .select("email")
+            .eq("email", session.user.email)
+            .maybeSingle();
+          
+          setIsAuthenticated(!!adminData);
+        } catch (error) {
+          console.error("Error checking admin status:", error);
+          setIsAuthenticated(false);
+        }
       }
       setIsLoading(false);
-    };
+    });
 
-    // Initial check
-    checkAuth();
-
-    // Listen for storage changes (including from other tabs)
-    const handleStorageChange = () => {
-      checkAuth();
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    return () => subscription.unsubscribe();
   }, []);
 
-  const loginAdmin = useCallback((pass: string) => {
-    if (pass === ADMIN_PASS) {
-      window.localStorage.setItem(ADMIN_KEY, "true");
-      setIsAuthenticated(true);
-      window.dispatchEvent(new Event("storage")); // trigger reactivity in other tabs
-      return true;
-    }
-    return false;
-  }, []);
-
-  const logout = useCallback(() => {
-    window.localStorage.removeItem(ADMIN_KEY);
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
     setIsAuthenticated(false);
-    window.dispatchEvent(new Event("storage"));
-    window.location.href = "/"; // redirect to home/logout
+    window.location.href = "/";
   }, []);
 
-  // Provide both naming conventions for compatibility
   return { 
     isAuthenticated, 
     isAdmin: isAuthenticated,
     isLoading,
-    loginAdmin, 
+    user,
+    session,
     logout,
     logoutAdmin: logout 
   };

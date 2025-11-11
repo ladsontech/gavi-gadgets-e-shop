@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,6 @@ import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { OthersManager } from "@/components/admin/OthersManager";
 import { PromoManager } from "@/components/admin/PromoManager";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { AdminLoginModal } from "@/components/AdminLoginModal";
 import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
 import { Plus } from "lucide-react";
 
@@ -55,17 +54,13 @@ const Admin = () => {
   const { isAdmin, logoutAdmin, isLoading } = useAdminAuth();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showSimpleForm, setShowSimpleForm] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!isAdmin) {
-        setShowLoginModal(true);
-      } else {
-        setShowLoginModal(false);
-      }
+    if (!isLoading && !isAdmin) {
+      navigate("/auth");
     }
-  }, [isAdmin, isLoading]);
+  }, [isAdmin, isLoading, navigate]);
 
   const {
     data: products,
@@ -142,14 +137,9 @@ const Admin = () => {
     );
   }
 
-  // Show login modal if not authenticated
+  // Redirect happens in useEffect, just show nothing while redirecting
   if (!isAdmin) {
-    return (
-      <AdminLoginModal 
-        open={showLoginModal} 
-        onOpenChange={setShowLoginModal}
-      />
-    );
+    return null;
   }
 
   return (
