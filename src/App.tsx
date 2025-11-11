@@ -95,6 +95,33 @@ function App() {
       })
       .catch(() => {});
   }, []);
+
+  // Prefetch category images for faster loading
+  useEffect(() => {
+    const categoryImages = [
+      "/images/gavi_accessories/phones.png",
+      "/images/gavi_accessories/wearables.png",
+      "/images/gavi_accessories/PCs.png",
+      "/images/gavi_accessories/speakers.png",
+      "/images/gavi_accessories/TVS.png",
+      "/images/gavi_accessories/accessories.png",
+      "/images/gavi_accessories/gaming.png",
+    ];
+
+    // Prefetch images using Image API
+    categoryImages.forEach((imageSrc) => {
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.as = "image";
+      link.href = imageSrc;
+      document.head.appendChild(link);
+
+      // Also preload using Image object for better browser support
+      const img = new Image();
+      img.src = imageSrc;
+    });
+  }, []);
+
   const handleCategoryChange = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
     window.dispatchEvent(new CustomEvent('categoryChanged', {

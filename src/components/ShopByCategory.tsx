@@ -42,7 +42,8 @@ export const ShopByCategory: React.FC = () => {
                       alt={label}
                       className="w-full h-full object-contain"
                       onError={() => setImgOk(false)}
-                      loading="lazy"
+                      loading="eager"
+                      fetchPriority="high"
                     />
                   </div>
                 )}
