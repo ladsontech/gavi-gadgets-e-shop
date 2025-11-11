@@ -261,54 +261,64 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
           )}
         </div>
       ) : (
-        /* Full: Promotional header with lightning effect for offers page */
-        <div className="relative bg-gradient-to-b from-pink-50 to-white border-b border-pink-200/60 overflow-hidden">
-          {/* Lightning strike animation - continuous */}
-          <div className="absolute inset-0 pointer-events-none">
-            <svg className="absolute top-0 left-1/4 w-32 h-full opacity-30" style={{ animation: 'lightning 2s infinite' }}>
-              <path d="M20 0 L15 30 L25 35 L18 60 L28 65 L15 100" stroke="#ec4899" strokeWidth="3" fill="none" strokeLinecap="round" />
-            </svg>
-            <svg className="absolute top-0 right-1/3 w-28 h-full opacity-25" style={{ animation: 'lightning 2.3s infinite 0.5s' }}>
-              <path d="M15 0 L10 25 L20 30 L12 55 L22 60 L10 100" stroke="#ec4899" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            </svg>
-            <svg className="absolute top-0 left-2/3 w-24 h-full opacity-20" style={{ animation: 'lightning 1.8s infinite 1s' }}>
-              <path d="M12 0 L8 20 L16 25 L10 45 L18 50 L8 100" stroke="#ec4899" strokeWidth="2" fill="none" strokeLinecap="round" />
-            </svg>
-          </div>
-          
-          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
-            <div className="relative inline-block">
-              {/* Glow effect behind text */}
-              <div className="absolute inset-0 bg-pink-600 blur-2xl opacity-20 animate-pulse"></div>
-              
-              {/* Main promo text */}
-              <h1 className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-pink-600 tracking-tight">
-                <span className="inline-block relative">
-                  <span className="absolute inset-0 text-pink-400 blur-sm opacity-50">Tuzisaze Ebeeyi</span>
-                  <span className="relative">Tuzisaze Ebeeyi</span>
-                </span>
-                <span className="block mt-2 text-3xl sm:text-4xl md:text-5xl">
-                  <span className="inline-block relative">
-                    <span className="absolute inset-0 text-pink-400 blur-sm opacity-50">Promo!</span>
-                    <span className="relative animate-pulse">Promo!</span>
-                  </span>
-                </span>
+        /* Full: Promotional header - Black November style for offers page */
+        <div className="relative bg-black overflow-hidden">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
+            {/* Top left - "COMING SOON" equivalent */}
+            <div className="absolute top-6 left-4 sm:left-6 lg:left-8">
+              <p className="text-white text-xs sm:text-sm uppercase tracking-wider font-medium">
+                Special Offers
+              </p>
+            </div>
+            
+            {/* Main promo text - centered */}
+            <div className="text-center mt-8 sm:mt-12">
+              {/* TUZISAZE - Solid pink */}
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black text-pink-600 uppercase tracking-tight leading-none">
+                TUZISAZE
               </h1>
               
-              {/* Lightning bolt icon - animated */}
-              <div className="absolute -top-4 -right-8 sm:-right-12 md:-right-16 opacity-80" style={{ animation: 'strike 1.5s infinite' }}>
-                <svg width="40" height="60" viewBox="0 0 24 24" fill="none" className="text-pink-600">
-                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="currentColor" strokeWidth="2.5" fill="currentColor" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg" />
-                </svg>
-              </div>
-              <div className="absolute -bottom-2 -left-6 sm:-left-10 md:-left-14 opacity-70" style={{ animation: 'strike 1.8s infinite 0.7s' }}>
-                <svg width="32" height="48" viewBox="0 0 24 24" fill="none" className="text-pink-500">
-                  <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="currentColor" strokeWidth="2" fill="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+              {/* EBEEYI - Outlined pink */}
+              <h2 
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black uppercase tracking-tight leading-none mt-2"
+                style={{
+                  WebkitTextStroke: '3px #ec4899',
+                  WebkitTextFillColor: 'transparent',
+                  color: 'transparent',
+                  textStroke: '3px #ec4899',
+                  textFillColor: 'transparent'
+                }}
+              >
+                EBEEYI
+              </h2>
+              
+              {/* PROMO! - Smaller pink text */}
+              <div className="mt-4 sm:mt-6">
+                <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-pink-600 font-bold uppercase tracking-wide inline-block">
+                  PROMO!
+                </span>
               </div>
             </div>
+            
+            {/* Decorative grid pattern - top right */}
+            <div className="absolute top-8 right-4 sm:right-6 lg:right-8">
+              <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-pink-600 rounded-full"
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Bottom left - "GET READY!" equivalent */}
+            <div className="absolute bottom-6 left-4 sm:left-6 lg:left-8">
+              <p className="text-white text-xs sm:text-sm uppercase tracking-wider font-medium">
+                Shop Now!
+              </p>
+            </div>
           </div>
-          
         </div>
       )}
     </section>
