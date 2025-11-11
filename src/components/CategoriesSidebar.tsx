@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid, Grid3x3 } from "lucide-react";
 
 interface CategoriesSidebarProps {
   categories: { id: string; name: string; slug: string }[];
@@ -10,10 +10,11 @@ type CategoryCard = {
   label: string;
   slug: string;
   route: string;
-  imageSrc: string;
+  imageSrc?: string;
 };
 
 const categoryData: CategoryCard[] = [
+  { label: "All", slug: "all", route: "/", imageSrc: undefined },
   { label: "Phones", slug: "phones", route: "/category/phones", imageSrc: "/images/gavi_accessories/phones.png" },
   { label: "Wearables", slug: "wearables", route: "/category/wearables", imageSrc: "/images/gavi_accessories/wearables.png" },
   { label: "PCs & Laptops", slug: "pcs-laptops", route: "/category/pcs-laptops", imageSrc: "/images/gavi_accessories/PCs.png" },
@@ -59,7 +60,7 @@ export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
             const active = isActive(item.route);
             return (
               <CategoryTile
-                key={item.label}
+                key={item.slug}
                 label={item.label}
                 route={item.route}
                 imageSrc={item.imageSrc}
@@ -77,11 +78,13 @@ export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
 const CategoryTile: React.FC<{
   label: string;
   route: string;
-  imageSrc: string;
+  imageSrc?: string;
   active: boolean;
   onClick: () => void;
 }> = ({ label, route, imageSrc, active, onClick }) => {
-  const [imgOk, setImgOk] = useState(true);
+  const [imgOk, setImgOk] = useState(!!imageSrc);
+  const isAll = label === "All";
+  
   return (
     <button
       onClick={onClick}
@@ -89,14 +92,14 @@ const CategoryTile: React.FC<{
         active ? "ring-2 ring-pink-500" : ""
       }`}
     >
-      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-28">
+      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white aspect-square">
         {/* Circular background - pink */}
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full transition-colors ${
           active ? "bg-pink-200" : "bg-pink-100 group-hover:bg-pink-200"
         }`} />
         
         {/* Image layer - overflowing from top */}
-        {imgOk && (
+        {imageSrc && imgOk && (
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-24 h-24">
             <img
               src={imageSrc}
@@ -107,9 +110,13 @@ const CategoryTile: React.FC<{
             />
           </div>
         )}
-        {!imgOk && (
+        {(!imageSrc || !imgOk) && (
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-24 h-24 flex items-center justify-center">
-            <div className="w-12 h-12 bg-pink-200 rounded-full" />
+            {isAll ? (
+              <Grid3x3 className="w-12 h-12 text-pink-600" />
+            ) : (
+              <div className="w-12 h-12 bg-pink-200 rounded-full" />
+            )}
           </div>
         )}
         
