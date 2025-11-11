@@ -11,7 +11,8 @@ type CategoryCard = {
 };
 
 const categories: CategoryCard[] = [
-  { label: "Phones", slug: "phones", route: "/category/phones", imageSrc: "/images/gavi_accessories/wearables.png" },
+  { label: "Phones", slug: "phones", route: "/category/phones", imageSrc: "/images/gavi_accessories/phones.png" },
+  { label: "Wearables", slug: "wearables", route: "/category/wearables", imageSrc: "/images/gavi_accessories/wearables.png" },
   { label: "PCs & Laptops", slug: "pcs-laptops", route: "/category/pcs-laptops", imageSrc: "/images/gavi_accessories/PCs.png" },
   { label: "Speakers", slug: "speakers", route: "/category/speakers", imageSrc: "/images/gavi_accessories/speakers.png" },
   { label: "TVs", slug: "tvs", route: "/category/tvs", imageSrc: "/images/gavi_accessories/TVS.png" },

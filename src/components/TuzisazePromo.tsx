@@ -65,9 +65,11 @@ export const TuzisazePromo = () => {
           </p>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {promoProducts.map((product) => {
+        {/* Products Horizontal Scroll Grid - 2 columns visible */}
+        <div className="mb-8">
+          <div className="overflow-x-auto scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
+            <div className="inline-flex gap-6" style={{ display: 'inline-flex' }}>
+              {promoProducts.map((product) => {
             const originalPrice = product.original_price || product.price;
             const discountedPrice = product.price;
             const discount = getDiscountAmount(originalPrice, discountedPrice);
@@ -79,14 +81,15 @@ export const TuzisazePromo = () => {
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 border-pink-100"
+                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 border-pink-100 flex-shrink-0"
+                style={{ width: 'calc(50vw - 2rem)', minWidth: '280px', maxWidth: '400px' }}
               >
                 {/* Product Image - Square */}
                 <div className="relative aspect-square bg-gray-100 overflow-hidden">
                   <img
                     src={mainImage}
                     alt={product.name}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "/placeholder.svg";
                     }}
@@ -156,6 +159,8 @@ export const TuzisazePromo = () => {
               </div>
             );
           })}
+            </div>
+          </div>
         </div>
 
         {/* View All Offers Link */}

@@ -26,6 +26,7 @@ type Category = {
 
 const titleMap: Record<string, string> = {
   "phones": "Phones",
+  "wearables": "Wearables",
   "pcs-laptops": "PCs & Laptops",
   "speakers": "Speakers",
   "accessories": "Accessories",
@@ -152,6 +153,25 @@ export default function CategoryPage() {
           name.includes("dualshock") ||
           name.includes("dualsense") ||
           name.includes("gaming")
+        );
+      });
+    }
+    if (slug === "wearables") {
+      return list.filter((p) => {
+        const name = (p.name || "").toLowerCase();
+        const brand = (p.brand || "").toLowerCase();
+        return (
+          name.includes("watch") ||
+          name.includes("smartwatch") ||
+          name.includes("apple watch") ||
+          name.includes("fitbit") ||
+          name.includes("band") ||
+          name.includes("tracker") ||
+          name.includes("wearable") ||
+          brand.includes("apple watch") ||
+          name.includes("airpods") ||
+          name.includes("earbuds") ||
+          name.includes("wireless earbuds")
         );
       });
     }

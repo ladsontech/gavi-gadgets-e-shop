@@ -4,7 +4,8 @@ import { Smartphone } from "lucide-react";
 
 export const ShopByCategory: React.FC = () => {
   const items = [
-    { label: "Phones", route: "/category/phones", imageSrc: "/images/gavi_accessories/wearables.png" },
+    { label: "Phones", route: "/category/phones", imageSrc: "/images/gavi_accessories/phones.png" },
+    { label: "Wearables", route: "/category/wearables", imageSrc: "/images/gavi_accessories/wearables.png" },
     { label: "PCs & Laptops", route: "/category/pcs-laptops", imageSrc: "/images/gavi_accessories/PCs.png" },
     { label: "Speakers", route: "/category/speakers", imageSrc: "/images/gavi_accessories/speakers.png" },
     { label: "TVs", route: "/category/tvs", imageSrc: "/images/gavi_accessories/TVS.png" },
