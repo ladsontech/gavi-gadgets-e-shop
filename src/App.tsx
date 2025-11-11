@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { SearchProvider } from "@/contexts/SearchContext";
@@ -22,7 +22,6 @@ import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/Sitemap";
 const queryClient = new QueryClient();
 function App() {
-  const queryClientHook = useQueryClient();
   const [showSplash, setShowSplash] = useState(() => {
     return !sessionStorage.getItem('splashShown');
   });
@@ -47,27 +46,52 @@ function App() {
     fetchCategories();
   }, []);
 
-  // Background prefetch of all active products for instant search
+  // Seed products cache from localStorage, then background prefetch and persist
   useEffect(() => {
-    queryClientHook.prefetchQuery({
-      queryKey: ["productsAll"],
-      queryFn: async () => {
-        const { data, error } = await supabase.from("products").select(`
-          *,
-          categories (
-            id,
-            name,
-            slug
-          )
-        `).eq("is_active", true);
-        if (error) {
-          throw error;
+    try {
+      const cachedRaw = localStorage.getItem("productsAllCacheV1");
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw);
+        if (cached && Array.isArray(cached.data)) {
+          queryClient.setQueryData(["productsAll"], cached.data);
         }
-        return data;
-      },
-      staleTime: 10 * 60 * 1000
-    }).catch(() => {});
-  }, [queryClientHook]);
+      }
+    } catch {
+      // ignore cache read errors
+    }
+
+    queryClient
+      .prefetchQuery({
+        queryKey: ["productsAll"],
+        queryFn: async () => {
+          const { data, error } = await supabase
+            .from("products")
+            .select(`
+              *,
+              categories (
+                id,
+                name,
+                slug
+              )
+            `)
+            .eq("is_active", true);
+          if (error) throw error;
+          return data;
+        },
+        staleTime: 10 * 60 * 1000,
+      })
+      .then((data) => {
+        try {
+          localStorage.setItem(
+            "productsAllCacheV1",
+            JSON.stringify({ updatedAt: Date.now(), data })
+          );
+        } catch {
+          // ignore cache write errors
+        }
+      })
+      .catch(() => {});
+  }, []);
   const handleCategoryChange = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
     window.dispatchEvent(new CustomEvent('categoryChanged', {
