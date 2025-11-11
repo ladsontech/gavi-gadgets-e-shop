@@ -24,7 +24,31 @@ import SitemapPage from "./pages/Sitemap";
 import CategoriesPage from "./pages/Categories";
 import CategoryPage from "./pages/CategoryPage";
 import Offers from "./pages/Offers";
+
 const queryClient = new QueryClient();
+
+// Layout wrapper for main app routes
+const MainLayout = ({ children, categories, selectedCategory, onCategoryChange }: { 
+  children: React.ReactNode;
+  categories: any[];
+  selectedCategory: string | null;
+  onCategoryChange: (id: string | null) => void;
+}) => {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <AppBar />
+      <div className="flex flex-1">
+        <CategoriesSidebar categories={categories} />
+        <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
+          {children}
+        </main>
+      </div>
+      <Footer />
+      <WhatsAppButton />
+      <MobileMainNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={onCategoryChange} />
+    </div>
+  );
+};
 function App() {
   const [showSplash, setShowSplash] = useState(() => {
     return !sessionStorage.getItem('splashShown');
@@ -139,30 +163,58 @@ function App() {
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <div className="min-h-screen flex flex-col">
-                <AppBar />
-                <div className="flex flex-1">
-                  <CategoriesSidebar categories={categories} />
-                  <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/categories" element={<CategoriesPage />} />
-                      <Route path="/offers" element={<Offers />} />
-                      <Route path="/category/:slug" element={<CategoryPage />} />
-                      <Route path="/product/:slug" element={<ProductDetail />} />
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/admin" element={<Admin />} />
-                      <Route path="/warranty" element={<Warranty />} />
-                      <Route path="/sitemap" element={<SitemapPage />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </main>
-                </div>
-              <Footer />
-              <WhatsAppButton />
-              <MobileMainNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
-            </div>
+              <Routes>
+                {/* Admin routes - completely independent, no shared layout */}
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/auth" element={<Auth />} />
+                
+                {/* Main app routes with shared layout */}
+                <Route path="/" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <Index />
+                  </MainLayout>
+                } />
+                <Route path="/categories" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <CategoriesPage />
+                  </MainLayout>
+                } />
+                <Route path="/offers" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <Offers />
+                  </MainLayout>
+                } />
+                <Route path="/category/:slug" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <CategoryPage />
+                  </MainLayout>
+                } />
+                <Route path="/product/:slug" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <ProductDetail />
+                  </MainLayout>
+                } />
+                <Route path="/cart" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <Cart />
+                  </MainLayout>
+                } />
+                <Route path="/warranty" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <Warranty />
+                  </MainLayout>
+                } />
+                <Route path="/sitemap" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <SitemapPage />
+                  </MainLayout>
+                } />
+                <Route path="*" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <NotFound />
+                  </MainLayout>
+                } />
+              </Routes>
           </BrowserRouter>
         </TooltipProvider>
         </SearchProvider>

@@ -9,132 +9,101 @@ export function useAdminAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    let timeoutId: ReturnType<typeof setTimeout>;
+    let cancelled = false;
 
-    // Set a timeout to prevent infinite loading
-    timeoutId = setTimeout(() => {
-      if (isMounted) {
-        console.warn("Auth check timeout - setting loading to false");
-        setIsLoading(false);
-      }
-    }, 5000); // 5 second timeout
-
-    // Check for existing session first
-    const checkSession = async () => {
+    const checkAuth = async () => {
       try {
+        // Get current session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          if (isMounted) {
-            setIsAuthenticated(false);
-            setIsLoading(false);
-          }
+        if (cancelled) return;
+
+        if (sessionError || !session?.user) {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          setSession(null);
+          setUser(null);
           return;
         }
 
-        if (isMounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
+        setSession(session);
+        setUser(session.user);
+
+        // Check if user is admin
+        const { data: adminData, error: adminError } = await supabase
+          .from("admin_users")
+          .select("email")
+          .eq("email", session.user.email)
+          .maybeSingle();
+
+        if (cancelled) return;
+
+        if (adminError) {
+          console.error("Admin check error:", adminError);
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(!!adminData);
         }
         
-        if (session?.user) {
-          try {
-            const { data: adminData, error: adminError } = await supabase
-              .from("admin_users")
-              .select("email")
-              .eq("email", session.user.email)
-              .maybeSingle();
-            
-            if (adminError) {
-              console.error("Error checking admin status:", adminError);
-            }
-            
-            if (isMounted) {
-              setIsAuthenticated(!!adminData && !adminError);
-              setIsLoading(false);
-              clearTimeout(timeoutId);
-            }
-          } catch (error) {
-            console.error("Error checking admin status:", error);
-            if (isMounted) {
-              setIsAuthenticated(false);
-              setIsLoading(false);
-              clearTimeout(timeoutId);
-            }
-          }
-        } else {
-          if (isMounted) {
-            setIsAuthenticated(false);
-            setIsLoading(false);
-            clearTimeout(timeoutId);
-          }
-        }
+        setIsLoading(false);
       } catch (error) {
-        console.error("Error in checkSession:", error);
-        if (isMounted) {
+        console.error("Auth check error:", error);
+        if (!cancelled) {
           setIsAuthenticated(false);
           setIsLoading(false);
-          clearTimeout(timeoutId);
         }
       }
     };
 
-    checkSession();
+    checkAuth();
 
-    // Set up auth state listener
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (!isMounted) return;
-        
+        if (cancelled) return;
+
+        if (!session?.user) {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          setSession(null);
+          setUser(null);
+          return;
+        }
+
         setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          try {
-            const { data: adminData, error: adminError } = await supabase
-              .from("admin_users")
-              .select("email")
-              .eq("email", session.user.email)
-              .maybeSingle();
-            
-            if (isMounted) {
-              setIsAuthenticated(!!adminData && !adminError);
-              setIsLoading(false);
-              clearTimeout(timeoutId);
-            }
-          } catch (error) {
-            console.error("Error checking admin status:", error);
-            if (isMounted) {
-              setIsAuthenticated(false);
-              setIsLoading(false);
-              clearTimeout(timeoutId);
-            }
-          }
-        } else {
-          if (isMounted) {
+        setUser(session.user);
+
+        // Check admin status
+        try {
+          const { data: adminData, error: adminError } = await supabase
+            .from("admin_users")
+            .select("email")
+            .eq("email", session.user.email)
+            .maybeSingle();
+
+          if (cancelled) return;
+
+          setIsAuthenticated(!!adminData && !adminError);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Admin check error:", error);
+          if (!cancelled) {
             setIsAuthenticated(false);
             setIsLoading(false);
-            clearTimeout(timeoutId);
           }
         }
       }
     );
 
     return () => {
-      isMounted = false;
-      clearTimeout(timeoutId);
+      cancelled = true;
       subscription.unsubscribe();
     };
   }, []);
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    setIsAuthenticated(false);
-    window.location.href = "/";
+    window.location.href = "/auth";
   }, []);
 
   return { 
