@@ -30,8 +30,8 @@ export const ShopByCategory: React.FC = () => {
           return (
             <Link key={label} to={route} className="group focus:outline-none" aria-label={`Browse ${label}`}>
               <div className="relative overflow-visible rounded-xl ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-28 sm:h-32">
-                {/* Circular background - neutral gray */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors" />
+                {/* Circular background - pink */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-pink-100 group-hover:bg-pink-200 transition-colors" />
                 
                 {/* Image layer - overflowing from top */}
                 {imgOk && imageSrc && (
@@ -47,7 +47,7 @@ export const ShopByCategory: React.FC = () => {
                 )}
                 {(!imgOk || !imageSrc) && (
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 sm:-translate-y-3 w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-200 rounded-full" />
                   </div>
                 )}
                 

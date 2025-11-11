@@ -23,7 +23,7 @@ const CategoriesPage: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="Gavi Gadgets - Shop by Category"
+        title="Gavi Gadgets Shelves - Browse Categories"
         description="Browse major categories: Phones, PCs & Laptops, Speakers, TVs, Accessories."
         keywords="phones, laptops, speakers, tvs, accessories"
       />
@@ -35,10 +35,10 @@ const CategoriesPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                Shop by Category
+                Gavi Gadgets Shelves
               </h1>
               <p className="text-gray-600 text-sm">
-                Pick a category to explore products
+                Browse our product categories
               </p>
             </div>
           </div>
@@ -68,8 +68,8 @@ const CategoryTile: React.FC<{
   return (
     <Link to={route} className="group focus:outline-none">
       <div className="relative overflow-visible rounded-xl ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-32 sm:h-36">
-        {/* Circular background - neutral gray */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors" />
+        {/* Circular background - pink */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-pink-100 group-hover:bg-pink-200 transition-colors" />
         
         {/* Image layer - overflowing from top */}
         {imgOk && (
@@ -85,7 +85,7 @@ const CategoryTile: React.FC<{
         )}
         {!imgOk && (
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 sm:-translate-y-3 w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gray-200 rounded-full" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-pink-200 rounded-full" />
           </div>
         )}
         

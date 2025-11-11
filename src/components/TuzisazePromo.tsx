@@ -81,8 +81,8 @@ export const TuzisazePromo = () => {
                 key={product.id}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 border-pink-100"
               >
-                {/* Product Image */}
-                <div className="relative h-48 sm:h-56 bg-gray-100 overflow-hidden">
+                {/* Product Image - Square */}
+                <div className="relative aspect-square bg-gray-100 overflow-hidden">
                   <img
                     src={mainImage}
                     alt={product.name}

@@ -11,7 +11,6 @@ import SEOHead from "@/components/SEOHead";
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useSearch } from "@/contexts/SearchContext";
-import { ShopByCategory } from "@/components/ShopByCategory";
 const Index = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
@@ -147,7 +146,6 @@ const Index = () => {
       
       <div className="min-h-screen bg-gray-50">
         {isHomePage && <UpdatesCarousel />}
-        {isHomePage && <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 pt-2"><ShopByCategory /></div>}
         
         {/* Weekly offers section with data attribute for smooth scrolling */}
         <div data-offers-section>
