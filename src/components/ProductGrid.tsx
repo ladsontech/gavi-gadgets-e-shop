@@ -29,8 +29,8 @@ interface ProductGridProps {
 export const ProductGrid = ({ products }: ProductGridProps) => {
   if (products.length === 0) {
     return (
-      <div className="text-center py-8 sm:py-12">
-        <p className="text-gray-500 text-sm sm:text-lg">No products found in this category.</p>
+      <div className="text-center py-12">
+        <p className="text-gray-400 text-sm">No products found.</p>
       </div>
     );
   }

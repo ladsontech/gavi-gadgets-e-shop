@@ -84,20 +84,13 @@ const Offers = () => {
           <div data-offers-grid>
             {productsLoading ? (
               <div className="text-center py-12">
-                <p className="text-pink-600 font-semibold">
-                  Loading the latest deals...
-                </p>
+                <p className="text-gray-400 text-sm">Loading products...</p>
               </div>
             ) : filteredProducts.length > 0 ? (
               <ProductGrid products={filteredProducts as any} />
             ) : (
-              <div className="bg-white/80 border border-pink-100 rounded-3xl shadow-sm py-12 px-6 text-center">
-                <h2 className="text-pink-600 text-xl font-semibold mb-2">
-                  No offers found
-                </h2>
-                <p className="text-gray-500 text-sm">
-                  Check back soon for fresh promotions.
-                </p>
+              <div className="text-center py-12">
+                <p className="text-gray-400 text-sm">No products found.</p>
               </div>
             )}
           </div>
