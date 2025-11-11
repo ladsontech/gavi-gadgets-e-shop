@@ -2,14 +2,18 @@
 import React from "react";
 import { Phone, Search } from "lucide-react";
 import { CartIcon } from "./CartIcon";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/contexts/SearchContext";
 
 export const AppBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { searchQuery, setSearchQuery } = useSearch();
+  
+  // Hide search bar on categories page
+  const isCategoriesPage = location.pathname === "/categories";
 
   const handleContactClick = () => {
     const phoneNumber = "+256740799577";
@@ -43,19 +47,21 @@ export const AppBar = () => {
             />
           </div>
 
-          {/* Desktop Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <form onSubmit={handleSearchSubmit} className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                type="text"
-                placeholder="Search for iPhone, Samsung, Pixel..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="pl-10 pr-4 h-10 w-full rounded-lg border-gray-200 focus:border-pink-400 focus:ring-pink-400"
-              />
-            </form>
-          </div>
+          {/* Desktop Search Bar - Only show on home page */}
+          {!isCategoriesPage && (
+            <div className="hidden md:flex flex-1 max-w-md mx-8">
+              <form onSubmit={handleSearchSubmit} className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Search for iPhone, Samsung, Pixel..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="pl-10 pr-4 h-10 w-full rounded-lg border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+                />
+              </form>
+            </div>
+          )}
 
           {/* Actions Section */}
           <div className="flex items-center gap-2">
@@ -75,22 +81,24 @@ export const AppBar = () => {
           </div>
         </div>
         
-        {/* Mobile Search Bar and Social Media Links */}
-        <div className="md:hidden">
-          {/* Mobile Search Bar */}
-          <div className="px-6 py-3 border-t border-gray-100">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                type="text"
-                placeholder="Search for iPhone, Samsung, Pixel..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="pl-10 pr-4 h-10 w-full rounded-lg border-gray-200 focus:border-pink-400 focus:ring-pink-400"
-              />
-            </form>
+        {/* Mobile Search Bar - Only show on home page */}
+        {!isCategoriesPage && (
+          <div className="md:hidden">
+            {/* Mobile Search Bar */}
+            <div className="px-6 py-3 border-t border-gray-100">
+              <form onSubmit={handleSearchSubmit} className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  type="text"
+                  placeholder="Search for iPhone, Samsung, Pixel..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="pl-10 pr-4 h-10 w-full rounded-lg border-gray-200 focus:border-pink-400 focus:ring-pink-400"
+                />
+              </form>
+            </div>
           </div>
-        </div>
+        )}
       </nav>
     </header>
   );

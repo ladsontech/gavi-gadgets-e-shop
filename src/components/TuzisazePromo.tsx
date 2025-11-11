@@ -116,12 +116,13 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                           {product.name}
                         </h3>
                         
-                        <div className="flex items-baseline gap-1 mb-1">
-                          <span className="text-xs text-gray-400 line-through">
-                            UGX {Number(originalPrice).toLocaleString()}
-                          </span>
+                        {/* Pricing - Discounted on top, original below */}
+                        <div className="flex flex-col mb-1">
                           <span className="text-sm font-bold text-pink-600">
                             UGX {Number(discountedPrice).toLocaleString()}
+                          </span>
+                          <span className="text-xs text-gray-400 line-through">
+                            UGX {Number(originalPrice).toLocaleString()}
                           </span>
                         </div>
 
@@ -205,14 +206,14 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                       </div>
                     )}
 
-                    {/* Pricing */}
+                    {/* Pricing - Discounted on top, original below */}
                     <div className="mb-4">
-                      <div className="flex items-baseline gap-2 mb-1">
+                      <div className="flex flex-col mb-1">
+                        <span className="text-2xl sm:text-3xl font-bold text-pink-600">
+                          UGX {Number(discountedPrice).toLocaleString()}
+                        </span>
                         <span className="text-gray-400 text-sm line-through">
                           UGX {Number(originalPrice).toLocaleString()}
-                        </span>
-                        <span className="text-2xl sm:text-3xl font-bold text-pink-600">
-                          {Number(discountedPrice).toLocaleString()}shs
                         </span>
                       </div>
                       {discount > 0 && (
