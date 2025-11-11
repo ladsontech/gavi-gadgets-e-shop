@@ -10,12 +10,30 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 
 type Product = {
   id: string;
-  name?: string;
-  brand?: string;
-  price?: number;
-  created_at?: string;
-  category_id?: string;
+  name: string;
+  brand: string;
+  model: string;
+  price: number;
+  original_price?: number;
   description?: string;
+  images: string[];
+  category_id: string | null;
+  slug: string;
+  is_active: boolean;
+  condition: string;
+  features?: string[];
+  stock_quantity: number;
+  is_featured: boolean;
+  is_weekly_offer: boolean;
+  offer_start_date?: string;
+  offer_end_date?: string;
+  created_at: string;
+  updated_at: string;
+  categories?: {
+    id: string;
+    name: string;
+    slug: string;
+  };
 };
 
 type Category = {
