@@ -9,39 +9,9 @@ export function useAdminAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Check if user is admin
-          setTimeout(async () => {
-            try {
-              const { data: adminData } = await supabase
-                .from("admin_users")
-                .select("email")
-                .eq("email", session.user.email)
-                .maybeSingle();
-              
-              setIsAuthenticated(!!adminData);
-              setIsLoading(false);
-            } catch (error) {
-              console.error("Error checking admin status:", error);
-              setIsAuthenticated(false);
-              setIsLoading(false);
-            }
-          }, 0);
-        } else {
-          setIsAuthenticated(false);
-          setIsLoading(false);
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    // Check for existing session first
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -58,9 +28,41 @@ export function useAdminAuth() {
           console.error("Error checking admin status:", error);
           setIsAuthenticated(false);
         }
+      } else {
+        setIsAuthenticated(false);
       }
       setIsLoading(false);
-    });
+    };
+
+    checkSession();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          try {
+            const { data: adminData } = await supabase
+              .from("admin_users")
+              .select("email")
+              .eq("email", session.user.email)
+              .maybeSingle();
+            
+            setIsAuthenticated(!!adminData);
+            setIsLoading(false);
+          } catch (error) {
+            console.error("Error checking admin status:", error);
+            setIsAuthenticated(false);
+            setIsLoading(false);
+          }
+        } else {
+          setIsAuthenticated(false);
+          setIsLoading(false);
+        }
+      }
+    );
 
     return () => subscription.unsubscribe();
   }, []);
