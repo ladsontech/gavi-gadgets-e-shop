@@ -92,13 +92,14 @@ export function useAdminAuth() {
 
     checkAuth();
 
-    // Listen for auth changes
+    // Listen for auth changes - only handle critical events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
         console.log("Auth state change event:", event, currentSession?.user?.email);
         
         if (cancelled) return;
 
+        // Handle sign out
         if (event === 'SIGNED_OUT') {
           console.log("User signed out");
           setIsAuthenticated(false);
@@ -108,11 +109,25 @@ export function useAdminAuth() {
           return;
         }
 
-        // Only recheck on SIGNED_IN, ignore INITIAL_SESSION to prevent duplicate checks
+        // Handle sign in
         if (event === 'SIGNED_IN' && currentSession?.user) {
           console.log("User signed in, rechecking admin status");
           await checkAuth();
+          return;
         }
+
+        // Handle token refresh - maintain current auth state
+        if (event === 'TOKEN_REFRESHED' && currentSession?.user) {
+          console.log("Token refreshed, maintaining session");
+          if (!cancelled) {
+            setSession(currentSession);
+            setUser(currentSession.user);
+          }
+          return;
+        }
+
+        // Ignore other events to prevent unnecessary state changes
+        console.log("Ignoring auth event:", event);
       }
     );
 
