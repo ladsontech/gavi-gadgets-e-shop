@@ -54,8 +54,8 @@ export const AnalyticsDashboard: React.FC = () => {
 
       return Object.values(grouped || {}) as ProductsByCategory[];
     },
-    refetchOnWindowFocus: true,
-    staleTime: 30000, // Analytics can be slightly less fresh (30s)
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Fetch total products count
@@ -67,8 +67,8 @@ export const AnalyticsDashboard: React.FC = () => {
         .select("*", { count: "exact", head: true });
       return count || 0;
     },
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Fetch order statistics
@@ -88,8 +88,8 @@ export const AnalyticsDashboard: React.FC = () => {
 
       return stats;
     },
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   // Fetch orders by month
@@ -124,8 +124,8 @@ export const AnalyticsDashboard: React.FC = () => {
 
       return Object.values(grouped || {}) as OrdersByMonth[];
     },
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   const currentYear = new Date().getFullYear();

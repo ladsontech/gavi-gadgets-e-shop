@@ -164,27 +164,9 @@ export function useAdminAuth() {
       }
     );
 
-    // Handle page visibility changes - prevent session loss when switching tabs
-    const handleVisibilityChange = () => {
-      if (!document.hidden && latestSession) {
-        console.log("Tab became visible, refreshing session silently");
-        // Silently refresh session when tab becomes visible
-        supabase.auth.getSession().then(({ data: { session: refreshedSession } }) => {
-          if (refreshedSession && !cancelled) {
-            latestSession = refreshedSession;
-            setSession(refreshedSession);
-            setUser(refreshedSession.user);
-          }
-        });
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
     return () => {
       cancelled = true;
       subscription.unsubscribe();
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

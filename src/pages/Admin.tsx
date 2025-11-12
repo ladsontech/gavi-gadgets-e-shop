@@ -76,32 +76,6 @@ const Admin = () => {
     }
   }, [isAdmin, isLoading, navigate]);
 
-  // Handle tab visibility changes - refresh data when tab becomes visible
-  useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (!document.hidden && isAdmin) {
-        console.log("Admin tab became visible - refreshing connection and data");
-        
-        // Refresh Supabase session to ensure connection is active
-        try {
-          await supabase.auth.getSession();
-        } catch (error) {
-          console.error("Error refreshing session:", error);
-        }
-        
-        // Invalidate all queries to ensure fresh data
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-        queryClient.invalidateQueries({ queryKey: ["categories"] });
-        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [isAdmin, queryClient]);
 
   const {
     data: products,
@@ -128,8 +102,8 @@ const Admin = () => {
       return data;
     },
     enabled: isAdmin && !isLoading, // Only fetch when authenticated
-    refetchOnWindowFocus: true, // Refetch when window regains focus
-    staleTime: 0, // Consider data stale immediately to ensure fresh updates
+    refetchOnWindowFocus: false, // Don't auto-refresh on focus
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
   });
 
   const { data: categories } = useQuery({
@@ -145,8 +119,8 @@ const Admin = () => {
       return data;
     },
     enabled: isAdmin && !isLoading, // Only fetch when authenticated
-    refetchOnWindowFocus: true, // Refetch when window regains focus
-    staleTime: 0, // Consider data stale immediately to ensure fresh updates
+    refetchOnWindowFocus: false, // Don't auto-refresh on focus
+    staleTime: 5 * 60 * 1000, // Data stays fresh for 5 minutes
   });
 
   const handleEdit = (product: Product) => {
