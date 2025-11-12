@@ -7,18 +7,25 @@ export function useAdminAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     let isCheckingAuth = false;
+    const adminStatusCache: { [email: string]: boolean } = {};
+    let latestSession: Session | null = null;
 
-    const checkAuth = async () => {
+    const checkAuth = async (showLoading = true) => {
       if (isCheckingAuth || cancelled) return;
       
       try {
         console.log("Starting auth check...");
         isCheckingAuth = true;
-        setIsLoading(true);
+        
+        // Only show loading on initial load
+        if (showLoading && isInitialLoad) {
+          setIsLoading(true);
+        }
         
         // Get current session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -28,8 +35,9 @@ export function useAdminAuth() {
         if (sessionError) {
           console.error("Session error:", sessionError);
           if (!cancelled) {
+            latestSession = null;
             setIsAuthenticated(false);
-            setIsLoading(false);
+            if (showLoading && isInitialLoad) setIsLoading(false);
             setSession(null);
             setUser(null);
           }
@@ -39,8 +47,9 @@ export function useAdminAuth() {
         if (!session?.user) {
           console.log("No session found");
           if (!cancelled) {
+            latestSession = null;
             setIsAuthenticated(false);
-            setIsLoading(false);
+            if (showLoading && isInitialLoad) setIsLoading(false);
             setSession(null);
             setUser(null);
           }
@@ -50,8 +59,20 @@ export function useAdminAuth() {
         console.log("Session found, checking admin status for:", session.user.email);
         
         if (!cancelled) {
+          latestSession = session;
           setSession(session);
           setUser(session.user);
+        }
+
+        // Check cache first
+        if (adminStatusCache[session.user.email] !== undefined) {
+          console.log("Using cached admin status");
+          if (!cancelled) {
+            setIsAuthenticated(adminStatusCache[session.user.email]);
+            if (showLoading && isInitialLoad) setIsLoading(false);
+            if (isInitialLoad) setIsInitialLoad(false);
+          }
+          return;
         }
 
         // Check if user is admin
@@ -67,7 +88,8 @@ export function useAdminAuth() {
           console.error("Admin check error:", adminError);
           if (!cancelled) {
             setIsAuthenticated(false);
-            setIsLoading(false);
+            if (showLoading && isInitialLoad) setIsLoading(false);
+            if (isInitialLoad) setIsInitialLoad(false);
           }
           return;
         }
@@ -75,22 +97,27 @@ export function useAdminAuth() {
         const isAdmin = !!adminData;
         console.log("Admin check result:", { email: session.user.email, isAdmin, adminData });
         
+        // Cache the result
+        adminStatusCache[session.user.email] = isAdmin;
+        
         if (!cancelled) {
           setIsAuthenticated(isAdmin);
-          setIsLoading(false);
+          if (showLoading && isInitialLoad) setIsLoading(false);
+          if (isInitialLoad) setIsInitialLoad(false);
         }
       } catch (error) {
         console.error("Auth check error:", error);
         if (!cancelled) {
           setIsAuthenticated(false);
-          setIsLoading(false);
+          if (showLoading && isInitialLoad) setIsLoading(false);
+          if (isInitialLoad) setIsInitialLoad(false);
         }
       } finally {
         isCheckingAuth = false;
       }
     };
 
-    checkAuth();
+    checkAuth(true);
 
     // Listen for auth changes - only handle critical events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -102,6 +129,7 @@ export function useAdminAuth() {
         // Handle sign out
         if (event === 'SIGNED_OUT') {
           console.log("User signed out");
+          latestSession = null;
           setIsAuthenticated(false);
           setIsLoading(false);
           setSession(null);
@@ -109,19 +137,24 @@ export function useAdminAuth() {
           return;
         }
 
-        // Handle sign in
+        // Handle sign in - don't show loading spinner
         if (event === 'SIGNED_IN' && currentSession?.user) {
           console.log("User signed in, rechecking admin status");
-          await checkAuth();
+          await checkAuth(false);
           return;
         }
 
-        // Handle token refresh - maintain current auth state
+        // Handle token refresh - maintain current auth state, no loading
         if (event === 'TOKEN_REFRESHED' && currentSession?.user) {
           console.log("Token refreshed, maintaining session");
           if (!cancelled) {
+            latestSession = currentSession;
             setSession(currentSession);
             setUser(currentSession.user);
+            // Silently verify admin status in background if cache is empty
+            if (!adminStatusCache[currentSession.user.email]) {
+              await checkAuth(false);
+            }
           }
           return;
         }
@@ -131,9 +164,27 @@ export function useAdminAuth() {
       }
     );
 
+    // Handle page visibility changes - prevent session loss when switching tabs
+    const handleVisibilityChange = () => {
+      if (!document.hidden && latestSession) {
+        console.log("Tab became visible, refreshing session silently");
+        // Silently refresh session when tab becomes visible
+        supabase.auth.getSession().then(({ data: { session: refreshedSession } }) => {
+          if (refreshedSession && !cancelled) {
+            latestSession = refreshedSession;
+            setSession(refreshedSession);
+            setUser(refreshedSession.user);
+          }
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
       cancelled = true;
       subscription.unsubscribe();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
