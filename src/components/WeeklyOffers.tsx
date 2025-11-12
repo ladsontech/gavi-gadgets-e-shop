@@ -151,7 +151,7 @@ export const WeeklyOffers = () => {
 
           {/* Desktop: Grid view */}
           <div className="hidden sm:block">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {offers.map((offer) => (
                 <ProductCard key={offer.id} product={offer} />
               ))}
