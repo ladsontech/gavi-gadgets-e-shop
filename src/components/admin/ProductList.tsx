@@ -39,15 +39,6 @@ export const ProductList: React.FC<ProductListProps> = ({
 }) => {
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
-  if (products.length === 0) {
-    return (
-      <div className="text-center py-4 sm:py-6 md:py-8">
-        <Package className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-gray-300 mx-auto mb-2 sm:mb-4" />
-        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">No products yet</h3>
-        <p className="text-gray-500 text-xs sm:text-sm md:text-base">Add your first smartphone to get started.</p>
-      </div>
-    );
-  }
 
   const getDiscountPercentage = (price: number, originalPrice?: number) => {
     if (!originalPrice || originalPrice <= price) return 0;
@@ -205,6 +196,13 @@ export const ProductList: React.FC<ProductListProps> = ({
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {sortedCategoryIds.length === 0 && (
+        <div className="text-center py-4 sm:py-6 md:py-8">
+          <Package className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-gray-300 mx-auto mb-2 sm:mb-4" />
+          <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">No products yet</h3>
+          <p className="text-gray-500 text-xs sm:text-sm md:text-base">Add your first smartphone to get started.</p>
+        </div>
+      )}
       {sortedCategoryIds.map((categoryId) => {
         const categoryProducts = groupedProducts[categoryId];
         const category = categories.find(c => c.id === categoryId);
