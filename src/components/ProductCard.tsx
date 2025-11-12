@@ -84,72 +84,73 @@ export const ProductCard = ({
         
         {/* Badges - Top corners */}
         <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10">
-          <div className="flex flex-col gap-1.5">
-            {/* Condition Badge */}
-            <Badge 
-              className={`${
-                product.condition === 'new' 
-                  ? 'bg-green-500 hover:bg-green-600' 
-                  : 'bg-blue-500 hover:bg-blue-600'
-              } text-white text-[10px] font-semibold px-2 py-0.5 shadow-md`}
-            >
-              {getConditionDisplay(product.condition)}
-            </Badge>
+          {/* Left side - Condition Badge */}
+          <Badge 
+            className={`${
+              product.condition === 'new' 
+                ? 'bg-pink-600 hover:bg-pink-700' 
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white text-[10px] font-semibold px-2 py-0.5 shadow-md`}
+          >
+            {getConditionDisplay(product.condition)}
+          </Badge>
+          
+          {/* Right side - Featured & Discount */}
+          <div className="flex flex-col gap-1.5 items-end">
             {product.is_featured && (
-              <Badge className="bg-pink-600 hover:bg-pink-700 text-white text-[10px] font-semibold px-2 py-0.5 shadow-md flex items-center gap-1">
-                <Star className="w-2.5 h-2.5 fill-white" />
-                Featured
+              <div className="bg-pink-600 hover:bg-pink-700 rounded-full p-1.5 shadow-md">
+                <Star className="w-3 h-3 text-white fill-white" />
+              </div>
+            )}
+            {discount > 0 && (
+              <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 shadow-md">
+                -{discount}%
               </Badge>
             )}
           </div>
-          {discount > 0 && (
-            <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 shadow-md">
-              -{discount}%
-            </Badge>
-          )}
         </div>
       </div>
       
       {/* Product Info */}
-      <div className="flex-1 flex flex-col p-3">
+      <div className="flex-1 flex flex-col p-2 sm:p-3">
         {/* Product Title - BOLD */}
-        <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-pink-600 transition-colors">
+        <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2 line-clamp-2 leading-tight group-hover:text-pink-600 transition-colors">
           {product.name}
         </h3>
         
         {/* Description */}
         {product.description && (
-          <p className="text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed">
+          <p className="text-[10px] sm:text-xs text-gray-600 mb-1.5 sm:mb-2 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
         )}
         
         {/* Product specs */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 flex-wrap">
           {product.storage_capacity && (
-            <Badge variant="outline" className="text-[10px] px-2 py-0.5 border-gray-300">
+            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 border-gray-300">
               {product.storage_capacity}
             </Badge>
           )}
           {product.color && (
-            <Badge variant="outline" className="text-[10px] px-2 py-0.5 border-gray-300">
+            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 border-gray-300">
               {product.color}
             </Badge>
           )}
         </div>
         
         {/* Price Section - Prominent */}
-        <div className="mb-3">
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="text-lg font-bold text-pink-600">
+        <div className="mb-2 sm:mb-3">
+          <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
+            <span className="text-base sm:text-lg font-bold text-pink-600">
               UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && discount > 0 && (
               <div className="flex flex-col">
-                <span className="text-xs text-gray-400 line-through">
+                <span className="text-[10px] sm:text-xs text-gray-400 line-through">
                   UGX {Number(product.original_price).toLocaleString()}
                 </span>
-                <span className="text-[10px] text-green-600 font-semibold">
+                <span className="text-[9px] sm:text-[10px] text-green-600 font-semibold whitespace-nowrap">
                   Save UGX {Number(product.original_price - product.price).toLocaleString()}
                 </span>
               </div>
@@ -161,14 +162,14 @@ export const ProductCard = ({
         <button
           onClick={addToCart}
           disabled={product.stock_quantity === 0}
-          className={`w-full mt-auto py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+          className={`w-full mt-auto py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap ${
             product.stock_quantity === 0
               ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
               : 'bg-pink-600 text-white hover:bg-pink-700 hover:shadow-md active:scale-95'
           }`}
         >
-          <ShoppingCart className="w-4 h-4" />
-          <span>{product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+          <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+          <span className="truncate">{product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
         </button>
       </div>
     </div>
