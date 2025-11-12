@@ -111,9 +111,26 @@ export const EditProductForm: React.FC<EditProductFormProps> = ({
     setSaving(true);
 
     try {
+      // Only include fields that should be updated
       const updatedProduct = {
-        ...formData,
+        name: formData.name,
         slug: slugify(formData.name),
+        description: formData.description || null,
+        price: formData.price,
+        original_price: formData.original_price || null,
+        brand: formData.brand,
+        model: formData.model,
+        condition: formData.condition,
+        images: formData.images,
+        category_id: formData.category_id || null,
+        stock_quantity: formData.stock_quantity,
+        is_featured: formData.is_featured,
+        storage_capacity: formData.storage_capacity || null,
+        color: formData.color || null,
+        is_weekly_offer: formData.is_weekly_offer || false,
+        offer_start_date: formData.offer_start_date || null,
+        offer_end_date: formData.offer_end_date || null,
+        updated_at: new Date().toISOString(),
       };
 
       const { data, error } = await supabase
@@ -124,14 +141,18 @@ export const EditProductForm: React.FC<EditProductFormProps> = ({
         .single();
 
       if (error) {
+        console.error("Update error:", error);
         alert("Error: " + error.message);
       } else {
+        console.log("Product updated successfully:", data);
         onSave(data);
       }
     } catch (err) {
+      console.error("Unexpected error:", err);
       alert("Unexpected error: " + (err as Error).message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   return (
