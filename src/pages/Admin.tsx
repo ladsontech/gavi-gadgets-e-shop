@@ -9,6 +9,7 @@ import { ProductList } from "@/components/admin/ProductList";
 import { UpdatesManager } from "@/components/admin/UpdatesManager";
 import { OthersManager } from "@/components/admin/OthersManager";
 import { PromoManager } from "@/components/admin/PromoManager";
+import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
 import { EditProductForm } from "@/components/admin/EditProductForm";
@@ -173,8 +174,11 @@ const Admin = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="products" className="space-y-3 sm:space-y-4 md:space-y-6">
-          <TabsList className="grid w-full grid-cols-5 h-auto p-1">
+        <Tabs defaultValue="analytics" className="space-y-3 sm:space-y-4 md:space-y-6">
+          <TabsList className="grid w-full grid-cols-6 h-auto p-1">
+            <TabsTrigger value="analytics" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
+              Analytics
+            </TabsTrigger>
             <TabsTrigger value="products" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
               Products ({products?.length || 0})
             </TabsTrigger>
@@ -185,6 +189,10 @@ const Admin = () => {
             <TabsTrigger value="updates" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Updates</TabsTrigger>
             <TabsTrigger value="others" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Others</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics" className="space-y-3 sm:space-y-4 md:space-y-6">
+            <AnalyticsDashboard />
+          </TabsContent>
 
           <TabsContent value="products" className="space-y-3 sm:space-y-4 md:space-y-6">
             <div className="bg-white rounded-lg shadow p-3 sm:p-4 md:p-6">
