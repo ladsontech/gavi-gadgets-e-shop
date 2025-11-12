@@ -111,10 +111,38 @@ export const EditProductForm: React.FC<EditProductFormProps> = ({
     setSaving(true);
 
     try {
+      // Generate base slug from name
+      let newSlug = slugify(formData.name);
+      
+      // If slug changed from original, check for conflicts
+      if (newSlug !== product.slug) {
+        // Check if slug already exists for a different product
+        const { data: existingProduct } = await supabase
+          .from("products")
+          .select("id")
+          .eq("slug", newSlug)
+          .neq("id", product.id)
+          .maybeSingle();
+
+        // If slug exists, make it unique by adding color/storage/id
+        if (existingProduct) {
+          const uniqueParts = [];
+          if (formData.storage_capacity) uniqueParts.push(slugify(formData.storage_capacity));
+          if (formData.color) uniqueParts.push(slugify(formData.color));
+          
+          if (uniqueParts.length > 0) {
+            newSlug = `${newSlug}-${uniqueParts.join("-")}`;
+          } else {
+            // Fallback: add part of product ID
+            newSlug = `${newSlug}-${product.id.slice(0, 8)}`;
+          }
+        }
+      }
+
       // Only include fields that should be updated
       const updatedProduct = {
         name: formData.name,
-        slug: slugify(formData.name),
+        slug: newSlug,
         description: formData.description || null,
         price: formData.price,
         original_price: formData.original_price || null,
@@ -142,7 +170,7 @@ export const EditProductForm: React.FC<EditProductFormProps> = ({
 
       if (error) {
         console.error("Update error:", error);
-        alert("Error: " + error.message);
+        alert("Error updating product: " + error.message);
       } else {
         console.log("Product updated successfully:", data);
         onSave(data);
