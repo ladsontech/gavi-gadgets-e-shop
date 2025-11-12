@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CartItem {
   id: string;
@@ -54,7 +55,7 @@ const Cart: React.FC = () => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cartItems.length === 0) {
       toast({
         title: "Empty cart",
@@ -64,20 +65,68 @@ const Cart: React.FC = () => {
       return;
     }
 
-    // Create simplified WhatsApp message with product links
+    const totalAmount = getTotalPrice();
     const baseUrl = window.location.origin;
-    const orderDetails = cartItems.map(item => {
-      const productLink = item.slug ? `${baseUrl}/product/${item.slug}` : "Product link not available";
-      return `📱 ${item.name}
+
+    try {
+      // Generate unique order number
+      const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+      // Save order to database (admin panel)
+      const { data: orderData, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          order_number: orderNumber,
+          customer_name: "Guest Customer",
+          customer_phone: "WhatsApp Order",
+          customer_whatsapp: "256740799577",
+          total_amount: totalAmount,
+          status: "pending",
+          payment_method: "whatsapp",
+          payment_status: "pending",
+          notes: "Order placed via website cart",
+        })
+        .select()
+        .single();
+
+      if (orderError) {
+        console.error("Error saving order:", orderError);
+        // Continue anyway to send WhatsApp message
+      }
+
+      // Save order items if order was created successfully
+      if (orderData) {
+        const orderItems = cartItems.map(item => ({
+          order_id: orderData.id,
+          product_id: item.id,
+          product_name: item.name,
+          product_price: item.price,
+          quantity: item.quantity,
+          total_price: item.price * item.quantity,
+        }));
+
+        const { error: itemsError } = await supabase
+          .from("order_items")
+          .insert(orderItems);
+
+        if (itemsError) {
+          console.error("Error saving order items:", itemsError);
+        }
+      }
+
+      // Create WhatsApp message with product links
+      const orderDetails = cartItems.map(item => {
+        const productLink = item.slug ? `${baseUrl}/product/${item.slug}` : "Product link not available";
+        return `📱 ${item.name}
    Quantity: ${item.quantity}
    Price: UGX ${(item.price * item.quantity).toLocaleString()}
    Link: ${productLink}`;
-    }).join('\n\n');
-    
-    const totalAmount = getTotalPrice();
-    
-    const message = `🛍️ *Order from Gavi Gadgets UG*
+      }).join('\n\n');
+
+      const message = `🛍️ *Order from Gavi Gadgets UG*
 Your Mobile Source
+
+Order #: ${orderNumber}
 
 📦 *Order Details:*
 
@@ -87,16 +136,36 @@ ${orderDetails}
 
 Thank you for choosing Gavi Gadgets UG! 🙏`;
 
-    const whatsappUrl = `https://wa.me/256740799577?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+      // Send to WhatsApp
+      const whatsappUrl = `https://wa.me/256740799577?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
 
-    // Clear cart after checkout
-    updateCart([]);
-    
-    toast({
-      title: "Order sent!",
-      description: "Your order has been sent via WhatsApp. We'll contact you soon.",
-    });
+      // Clear cart after checkout
+      updateCart([]);
+
+      toast({
+        title: "Order placed!",
+        description: "Your order has been saved and sent via WhatsApp. We'll contact you soon.",
+        duration: 5000,
+      });
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast({
+        title: "Order partially completed",
+        description: "Order sent to WhatsApp. Please contact us if you need assistance.",
+        variant: "default",
+      });
+      
+      // Still clear cart and open WhatsApp
+      const orderDetails = cartItems.map(item => {
+        return `📱 ${item.name} - Qty: ${item.quantity} - UGX ${(item.price * item.quantity).toLocaleString()}`;
+      }).join('\n');
+      
+      const message = `Order from Gavi Gadgets:\n\n${orderDetails}\n\nTotal: UGX ${totalAmount.toLocaleString()}`;
+      const whatsappUrl = `https://wa.me/256740799577?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      updateCart([]);
+    }
   };
 
   if (cartItems.length === 0) {
