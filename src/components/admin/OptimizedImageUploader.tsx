@@ -35,6 +35,19 @@ export const OptimizedImageUploader: React.FC<OptimizedImageUploaderProps> = ({
     const baseFileName = `${folderName}/${Date.now()}`;
 
     try {
+      // Refresh session before upload to prevent timeout issues
+      console.log("Refreshing session before upload...");
+      const { error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Session refresh error:", sessionError);
+        toast({
+          title: "Session expired",
+          description: "Please refresh the page and try again",
+          variant: "destructive"
+        });
+        setUploading(false);
+        return;
+      }
       toast({
         title: "Optimizing image...",
         description: "Creating multiple sizes for faster loading"
@@ -120,6 +133,8 @@ export const OptimizedImageUploader: React.FC<OptimizedImageUploaderProps> = ({
     setUploading(true);
     
     try {
+      // Refresh session before delete operation
+      await supabase.auth.getSession();
       // Extract file path and remove all versions
       const urlParts = url.split('/');
       const fileName = urlParts[urlParts.length - 1];
