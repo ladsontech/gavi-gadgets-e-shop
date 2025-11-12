@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Package, ChevronDown, ChevronRight } from "lucide-react";
@@ -69,35 +69,39 @@ export const ProductList: React.FC<ProductListProps> = ({
     }));
   };
 
-  // Group products by category
-  const groupedProducts = products.reduce((acc, product) => {
-    const categoryId = product.category_id || 'uncategorized';
-    if (!acc[categoryId]) {
-      acc[categoryId] = [];
-    }
-    acc[categoryId].push(product);
-    return acc;
-  }, {} as Record<string, Product[]>);
+  // Group products by category - memoized to prevent recalculation
+  const groupedProducts = useMemo(() => {
+    return products.reduce((acc, product) => {
+      const categoryId = product.category_id || 'uncategorized';
+      if (!acc[categoryId]) {
+        acc[categoryId] = [];
+      }
+      acc[categoryId].push(product);
+      return acc;
+    }, {} as Record<string, Product[]>);
+  }, [products]);
 
-  // Sort categories by name and put uncategorized last
-  const sortedCategoryIds = Object.keys(groupedProducts).sort((a, b) => {
-    if (a === 'uncategorized') return 1;
-    if (b === 'uncategorized') return -1;
-    
-    const categoryA = categories.find(c => c.id === a);
-    const categoryB = categories.find(c => c.id === b);
-    
-    return (categoryA?.name || '').localeCompare(categoryB?.name || '');
-  });
+  // Sort categories by name and put uncategorized last - memoized
+  const sortedCategoryIds = useMemo(() => {
+    return Object.keys(groupedProducts).sort((a, b) => {
+      if (a === 'uncategorized') return 1;
+      if (b === 'uncategorized') return -1;
+      
+      const categoryA = categories.find(c => c.id === a);
+      const categoryB = categories.find(c => c.id === b);
+      
+      return (categoryA?.name || '').localeCompare(categoryB?.name || '');
+    });
+  }, [groupedProducts, categories]);
 
   // Initialize all categories as expanded by default
-  React.useEffect(() => {
+  useEffect(() => {
     const initialExpanded = sortedCategoryIds.reduce((acc, categoryId) => {
       acc[categoryId] = true;
       return acc;
     }, {} as Record<string, boolean>);
     setExpandedCategories(initialExpanded);
-  }, [products, categories]);
+  }, [sortedCategoryIds]);
 
   const ProductCard = ({ product }: { product: Product }) => {
     const category = categories.find(c => c.id === product.category_id);
