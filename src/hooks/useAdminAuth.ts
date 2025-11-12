@@ -10,10 +10,14 @@ export function useAdminAuth() {
 
   useEffect(() => {
     let cancelled = false;
+    let isCheckingAuth = false;
 
     const checkAuth = async () => {
+      if (isCheckingAuth || cancelled) return;
+      
       try {
         console.log("Starting auth check...");
+        isCheckingAuth = true;
         setIsLoading(true);
         
         // Get current session
@@ -81,6 +85,8 @@ export function useAdminAuth() {
           setIsAuthenticated(false);
           setIsLoading(false);
         }
+      } finally {
+        isCheckingAuth = false;
       }
     };
 
@@ -102,9 +108,10 @@ export function useAdminAuth() {
           return;
         }
 
+        // Only recheck on SIGNED_IN, ignore INITIAL_SESSION to prevent duplicate checks
         if (event === 'SIGNED_IN' && currentSession?.user) {
           console.log("User signed in, rechecking admin status");
-          checkAuth();
+          await checkAuth();
         }
       }
     );
