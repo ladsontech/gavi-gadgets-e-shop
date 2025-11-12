@@ -11,6 +11,7 @@ import { OthersManager } from "@/components/admin/OthersManager";
 import { PromoManager } from "@/components/admin/PromoManager";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
+import { EditProductForm } from "@/components/admin/EditProductForm";
 import { Plus } from "lucide-react";
 
 interface Product {
@@ -30,8 +31,10 @@ interface Product {
   stock_quantity: number;
   is_featured: boolean;
   is_weekly_offer: boolean;
-  offer_start_date?: string;
-  offer_end_date?: string;
+  offer_start_date?: string | null;
+  offer_end_date?: string | null;
+  storage_capacity?: string;
+  color?: string;
   created_at: string;
   updated_at: string;
   categories?: {
@@ -54,6 +57,7 @@ const Admin = () => {
   const { isAdmin, logoutAdmin, isLoading } = useAdminAuth();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showSimpleForm, setShowSimpleForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const navigate = useNavigate();
 
   // Debug logging
@@ -112,8 +116,9 @@ const Admin = () => {
   });
 
   const handleEdit = (product: Product) => {
-    // Handle product editing
-    console.log("Edit product:", product);
+    setEditingProduct(product);
+    setShowAddForm(false);
+    setShowSimpleForm(false);
   };
 
   const handleDelete = async (productId: string) => {
@@ -232,12 +237,28 @@ const Admin = () => {
                 </div>
               )}
 
-              <ProductList 
-                products={products || []} 
-                categories={categories || []}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
+              {editingProduct && (
+                <div className="mb-4 sm:mb-6">
+                  <EditProductForm
+                    product={editingProduct}
+                    categories={categories || []}
+                    onSave={() => {
+                      setEditingProduct(null);
+                      refetchProducts();
+                    }}
+                    onCancel={() => setEditingProduct(null)}
+                  />
+                </div>
+              )}
+
+              {!editingProduct && (
+                <ProductList 
+                  products={products || []} 
+                  categories={categories || []}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              )}
             </div>
           </TabsContent>
 
