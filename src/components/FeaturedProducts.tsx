@@ -37,7 +37,7 @@ export const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
       <h2 className="text-xl sm:text-2xl font-bold text-pink-700 mb-3 sm:mb-4 px-1">
         <span className="bg-pink-100 rounded px-2 py-1">Featured This Week</span>
       </h2>
-      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
         {featuredProducts.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}

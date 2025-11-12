@@ -44,18 +44,18 @@ export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
   };
 
   return (
-    <aside className="hidden md:block w-72 flex-shrink-0 border-r border-gray-200 bg-white">
-      <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto py-6 px-4">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-pink-600 rounded-lg">
-            <LayoutGrid className="w-5 h-5 text-white" />
+    <aside className="hidden md:block w-56 flex-shrink-0 border-r border-gray-200 bg-white">
+      <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto py-6 px-3">
+        <div className="flex items-center gap-2 mb-5">
+          <div className="p-1.5 bg-pink-600 rounded-lg">
+            <LayoutGrid className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-black">Gavi Gadgets Shelves</h2>
-            <p className="text-xs text-gray-600">Browse categories</p>
+            <h2 className="text-base font-bold text-black">Categories</h2>
+            <p className="text-[10px] text-gray-600">Browse all</p>
           </div>
         </div>
-        <nav className="grid grid-cols-2 gap-3">
+        <nav className="grid grid-cols-2 gap-2">
           {categoryData.map((item) => {
             const active = isActive(item.route);
             return (
@@ -92,15 +92,15 @@ const CategoryTile: React.FC<{
         active ? "ring-2 ring-pink-500" : ""
       }`}
     >
-      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-20">
+      <div className="relative overflow-visible rounded-lg ring-1 ring-gray-200 hover:ring-2 hover:ring-gray-300 transition-all shadow-sm hover:shadow-md bg-white h-[72px]">
         {/* Circular background - pink */}
-        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full transition-colors ${
+        <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full transition-colors ${
           active ? "bg-pink-200" : "bg-pink-100 group-hover:bg-pink-200"
         }`} />
         
         {/* Image layer - overflowing from top */}
         {imageSrc && imgOk && (
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-16 h-16">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-14 h-14">
             <img
               src={imageSrc}
               alt={label}
@@ -111,18 +111,18 @@ const CategoryTile: React.FC<{
           </div>
         )}
         {(!imageSrc || !imgOk) && (
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-16 h-16 flex items-center justify-center">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-14 h-14 flex items-center justify-center">
             {isAll ? (
-              <Grid3x3 className="w-8 h-8 text-pink-600" />
+              <Grid3x3 className="w-7 h-7 text-pink-600" />
             ) : (
-              <div className="w-8 h-8 bg-pink-200 rounded-full" />
+              <div className="w-7 h-7 bg-pink-200 rounded-full" />
             )}
           </div>
         )}
         
         {/* Content at bottom - just text */}
-        <div className="absolute bottom-0 left-0 right-0 p-1.5 flex items-center justify-center">
-          <div className={`text-xs font-semibold ${active ? "text-pink-600" : "text-gray-800"}`}>
+        <div className="absolute bottom-0 left-0 right-0 p-1 flex items-center justify-center">
+          <div className={`text-[10px] font-semibold leading-tight ${active ? "text-pink-600" : "text-gray-800"}`}>
             {label}
           </div>
         </div>

@@ -39,7 +39,7 @@ const MainLayout = ({ children, categories, selectedCategory, onCategoryChange }
       <AppBar />
       <div className="flex flex-1">
         <CategoriesSidebar categories={categories} />
-        <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-12 lg:px-20 xl:px-24 2xl:px-32 px-[5px]">
+        <main className="flex-1 pb-16 md:pb-0 max-w-[1600px] mx-auto w-full md:px-6 lg:px-8 xl:px-12 2xl:px-16 px-[5px]">
           {children}
         </main>
       </div>
