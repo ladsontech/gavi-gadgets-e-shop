@@ -47,6 +47,8 @@ export const OrdersManager = () => {
       if (error) throw error;
       return data as Order[];
     },
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    staleTime: 0, // Consider data stale immediately to ensure fresh updates
   });
 
   const { data: orderItems } = useQuery({

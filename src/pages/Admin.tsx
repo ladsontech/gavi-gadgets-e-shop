@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -61,6 +61,7 @@ const Admin = () => {
   const [showSimpleForm, setShowSimpleForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // Debug logging
   useEffect(() => {
@@ -74,6 +75,33 @@ const Admin = () => {
       navigate("/auth", { replace: true });
     }
   }, [isAdmin, isLoading, navigate]);
+
+  // Handle tab visibility changes - refresh data when tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (!document.hidden && isAdmin) {
+        console.log("Admin tab became visible - refreshing connection and data");
+        
+        // Refresh Supabase session to ensure connection is active
+        try {
+          await supabase.auth.getSession();
+        } catch (error) {
+          console.error("Error refreshing session:", error);
+        }
+        
+        // Invalidate all queries to ensure fresh data
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isAdmin, queryClient]);
 
   const {
     data: products,
@@ -100,6 +128,8 @@ const Admin = () => {
       return data;
     },
     enabled: isAdmin && !isLoading, // Only fetch when authenticated
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    staleTime: 0, // Consider data stale immediately to ensure fresh updates
   });
 
   const { data: categories } = useQuery({
@@ -115,6 +145,8 @@ const Admin = () => {
       return data;
     },
     enabled: isAdmin && !isLoading, // Only fetch when authenticated
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    staleTime: 0, // Consider data stale immediately to ensure fresh updates
   });
 
   const handleEdit = (product: Product) => {
