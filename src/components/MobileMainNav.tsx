@@ -1,4 +1,4 @@
-import { Home, Tag, LayoutGrid } from "lucide-react";
+import { Home, Tag, LayoutGrid, Wrench } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useRef, useCallback, useState, useEffect } from "react";
 
@@ -16,12 +16,13 @@ export const MobileMainNav = ({
   const navigate = useNavigate();
   const location = useLocation();
   const clickTimeoutRef = useRef<{ [key: string]: NodeJS.Timeout }>({});
-  const [activeTab, setActiveTab] = useState<"home" | "categories" | "offers">("home");
+  const [activeTab, setActiveTab] = useState<"home" | "categories" | "offers" | "repair">("home");
 
   const navItems = [
     { label: "Home", icon: Home, route: "/", tab: "home" as const },
     { label: "Categories", icon: LayoutGrid, route: "/categories", tab: "categories" as const },
     { label: "Offers", icon: Tag, route: "/offers", tab: "offers" as const },
+    { label: "Repair", icon: Wrench, route: "/repair", tab: "repair" as const },
   ];
 
   // Listen for tab changes from Index page
@@ -41,6 +42,8 @@ export const MobileMainNav = ({
       setActiveTab("categories");
     } else if (location.pathname === "/offers") {
       setActiveTab("offers");
+    } else if (location.pathname === "/repair") {
+      setActiveTab("repair");
     } else if (location.pathname === "/") {
       setActiveTab("home");
     }
@@ -56,6 +59,12 @@ export const MobileMainNav = ({
       clickTimeoutRef.current[itemKey] = setTimeout(() => {
         delete clickTimeoutRef.current[itemKey];
       }, 450);
+
+      // For repair, navigate directly to the repair page
+      if (item.route === "/repair") {
+        navigate("/repair", { replace: false });
+        return;
+      }
 
       // On mobile, always navigate to home and switch tabs
       const tabMap: Record<string, "home" | "categories" | "offers"> = {
@@ -84,7 +93,7 @@ export const MobileMainNav = ({
       <div className="w-full">
         <div className="relative h-20">
           <div className="absolute inset-0 bg-gray-900 shadow-[0_-2px_10px_rgba(0,0,0,0.2)]" />
-          <div className="absolute inset-0 bg-gray-950/95 border-t border-gray-800 backdrop-blur pointer-events-auto flex items-end justify-between px-6 pb-3">
+          <div className="absolute inset-0 bg-gray-950/95 border-t border-gray-800 backdrop-blur pointer-events-auto flex items-end justify-between px-4 pb-3">
             {navItems.map((item, index) => {
               // On mobile, check active based on current tab when on home page
               const active = location.pathname === "/" 

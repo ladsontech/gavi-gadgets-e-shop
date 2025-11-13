@@ -27,6 +27,7 @@ import CategoriesPage from "./pages/Categories";
 import CategoryPage from "./pages/CategoryPage";
 import Offers from "./pages/Offers";
 import Settings from "./pages/Settings";
+import Repair from "./pages/Repair";
 
 const queryClient = new QueryClient();
 
@@ -207,6 +208,11 @@ function App() {
                 <Route path="/offers" element={
                   <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
                     <Offers />
+                  </MainLayout>
+                } />
+                <Route path="/repair" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <Repair />
                   </MainLayout>
                 } />
                 <Route path="/category/:slug" element={

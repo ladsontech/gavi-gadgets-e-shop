@@ -75,6 +75,9 @@ export const Footer = () => {
           <Button variant="outline" size="sm" onClick={() => navigate("/warranty")} className="border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white bg-transparent">
             Warranty Policy
           </Button>
+          <Button variant="outline" size="sm" onClick={() => navigate("/repair")} className="border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white bg-transparent">
+            Repair Services
+          </Button>
         </div>
         <div className="flex justify-center gap-2">
           {socialLinks.map((social, index) => {
