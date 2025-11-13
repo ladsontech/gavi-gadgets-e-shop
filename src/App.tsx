@@ -11,6 +11,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SplashScreen } from "@/components/SplashScreen";
 import { MobileMainNav } from "@/components/MobileMainNav";
 import { CategoriesSidebar } from "@/components/CategoriesSidebar";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
@@ -163,6 +164,7 @@ function App() {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTop />
               <Routes>
                 {/* Admin routes - completely independent, no shared layout */}
                 <Route path="/admin" element={<Admin />} />
