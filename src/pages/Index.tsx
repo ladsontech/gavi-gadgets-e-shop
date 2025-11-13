@@ -185,10 +185,12 @@ const Index = () => {
               {!searchQuery && (
                 <>
                   <UpdatesCarousel />
+                  {/* Tuzisaze Ebeeyi Promo Section - moved above offers */}
+                  <TuzisazePromo />
+                  {/* Weekly offers section */}
                   <div data-offers-section>
                     <WeeklyOffers />
                   </div>
-                  <TuzisazePromo />
                 </>
               )}
               
@@ -241,13 +243,13 @@ const Index = () => {
           <>
             {isHomePage && <UpdatesCarousel />}
             
+            {/* Tuzisaze Ebeeyi Promo Section - moved above offers */}
+            {isHomePage && <TuzisazePromo />}
+            
             {/* Weekly offers section with data attribute for smooth scrolling */}
             <div data-offers-section>
               <WeeklyOffers />
             </div>
-            
-            {/* Tuzisaze Ebeeyi Promo Section */}
-            {isHomePage && <TuzisazePromo />}
           </>
         )}
         

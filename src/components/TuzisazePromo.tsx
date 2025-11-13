@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,7 @@ interface TuzisazePromoProps {
 export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
   const navigate = useNavigate();
   const isCompact = variant === "compact";
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: promoProducts, isLoading } = useQuery({
     queryKey: ["tuzisaze-promo"],
@@ -56,6 +57,29 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     return Math.round(((original - discounted) / original) * 100);
   };
 
+  // Auto-scroll to the right for promo section
+  useEffect(() => {
+    if (!isCompact || !scrollContainerRef.current || !promoProducts || promoProducts.length === 0) return;
+
+    const scrollContainer = scrollContainerRef.current;
+    let scrollAmount = 0;
+    const scrollSpeed = 1; // pixels per frame
+    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+    const autoScroll = () => {
+      if (scrollAmount >= maxScroll) {
+        scrollAmount = 0; // Reset to start
+      } else {
+        scrollAmount += scrollSpeed;
+      }
+      scrollContainer.scrollLeft = scrollAmount;
+    };
+
+    const intervalId = setInterval(autoScroll, 30); // Smooth 30ms intervals
+
+    return () => clearInterval(intervalId);
+  }, [promoProducts, isCompact]);
+
   return (
     <section
       className={
@@ -81,7 +105,10 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
         {isCompact ? (
           /* Compact: Horizontal scroll, 2 per row on mobile */
           <div className="mb-8">
-            <div className="overflow-x-auto scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2">
+            <div 
+              ref={scrollContainerRef}
+              className="overflow-x-auto scrollbar-hide -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2"
+            >
               <div className="inline-flex gap-3 sm:gap-4" style={{ display: 'inline-flex' }}>
                 {promoProducts.map((product) => {
                   const originalPrice = product.original_price || product.price;

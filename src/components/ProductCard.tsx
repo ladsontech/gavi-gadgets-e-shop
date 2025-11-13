@@ -146,14 +146,9 @@ export const ProductCard = ({
               UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && discount > 0 && (
-              <div className="flex flex-col">
-                <span className="text-[10px] sm:text-xs text-gray-400 line-through">
-                  UGX {Number(product.original_price).toLocaleString()}
-                </span>
-                <span className="text-[9px] sm:text-[10px] text-green-600 font-semibold whitespace-nowrap">
-                  Save UGX {Number(product.original_price - product.price).toLocaleString()}
-                </span>
-              </div>
+              <span className="text-[10px] sm:text-xs text-gray-400 line-through">
+                UGX {Number(product.original_price).toLocaleString()}
+              </span>
             )}
           </div>
         </div>

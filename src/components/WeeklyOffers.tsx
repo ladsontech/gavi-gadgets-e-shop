@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductCard } from "@/components/ProductCard";
@@ -29,6 +29,8 @@ interface Product {
 
 export const WeeklyOffers = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const desktopScrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: offers, isLoading } = useQuery({
     queryKey: ['weekly-offers'],
@@ -82,6 +84,52 @@ export const WeeklyOffers = () => {
     }
   };
 
+  // Auto-scroll to the left for offers section (mobile)
+  useEffect(() => {
+    if (!scrollContainerRef.current || !offers || offers.length === 0) return;
+
+    const scrollContainer = scrollContainerRef.current;
+    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+    let scrollAmount = maxScroll; // Start from the right
+    const scrollSpeed = 1; // pixels per frame
+
+    const autoScroll = () => {
+      if (scrollAmount <= 0) {
+        scrollAmount = maxScroll; // Reset to right
+      } else {
+        scrollAmount -= scrollSpeed;
+      }
+      scrollContainer.scrollLeft = scrollAmount;
+    };
+
+    const intervalId = setInterval(autoScroll, 30); // Smooth 30ms intervals
+
+    return () => clearInterval(intervalId);
+  }, [offers]);
+
+  // Auto-scroll to the left for offers section (desktop)
+  useEffect(() => {
+    if (!desktopScrollContainerRef.current || !offers || offers.length === 0) return;
+
+    const scrollContainer = desktopScrollContainerRef.current;
+    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+    let scrollAmount = maxScroll; // Start from the right
+    const scrollSpeed = 1; // pixels per frame
+
+    const autoScroll = () => {
+      if (scrollAmount <= 0) {
+        scrollAmount = maxScroll; // Reset to right
+      } else {
+        scrollAmount -= scrollSpeed;
+      }
+      scrollContainer.scrollLeft = scrollAmount;
+    };
+
+    const intervalId = setInterval(autoScroll, 30); // Smooth 30ms intervals
+
+    return () => clearInterval(intervalId);
+  }, [offers]);
+
   if (isLoading || !offers || offers.length === 0) {
     return null;
   }
@@ -99,7 +147,10 @@ export const WeeklyOffers = () => {
 
         <div className="relative">
           {/* Mobile: Horizontal scroll with 2 products visible */}
-          <div className="md:hidden overflow-x-auto px-4">
+          <div 
+            ref={scrollContainerRef}
+            className="md:hidden overflow-x-auto px-4"
+          >
             <div className="flex gap-3 pb-2" style={{ width: 'max-content' }}>
               {offers.map((offer) => (
                 <div key={offer.id} className="w-[160px] flex-shrink-0">
@@ -109,12 +160,19 @@ export const WeeklyOffers = () => {
             </div>
           </div>
 
-          {/* Desktop: Grid view */}
-          <div className="hidden md:block">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-              {offers.map((offer) => (
-                <ProductCard key={offer.id} product={offer} />
-              ))}
+          {/* Desktop: Horizontal scroll view */}
+          <div className="hidden md:block overflow-hidden">
+            <div 
+              ref={desktopScrollContainerRef}
+              className="overflow-x-auto scrollbar-hide pb-2"
+            >
+              <div className="inline-flex gap-3 sm:gap-4 px-4">
+                {offers.map((offer) => (
+                  <div key={offer.id} className="w-[200px] flex-shrink-0">
+                    <ProductCard product={offer} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -182,23 +182,59 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="analytics" className="space-y-3 sm:space-y-4 md:space-y-6">
-          <TabsList className="grid w-full grid-cols-7 h-auto p-1">
-            <TabsTrigger value="analytics" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="orders" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
-              Orders
-            </TabsTrigger>
-            <TabsTrigger value="products" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
-              Products ({products?.length || 0})
-            </TabsTrigger>
-            <TabsTrigger value="categories" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">
-              Categories ({categories?.length || 0})
-            </TabsTrigger>
-            <TabsTrigger value="promo" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Promo</TabsTrigger>
-            <TabsTrigger value="updates" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Updates</TabsTrigger>
-            <TabsTrigger value="others" className="text-xs sm:text-sm px-1 sm:px-3 py-1.5 sm:py-2">Others</TabsTrigger>
-          </TabsList>
+          {/* Mobile: Scrollable tabs */}
+          <div className="md:hidden overflow-x-auto scrollbar-hide -mx-2 px-2">
+            <TabsList className="inline-flex w-auto h-auto p-1 gap-1">
+              <TabsTrigger value="analytics" className="text-xs px-3 py-2 whitespace-nowrap">
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="orders" className="text-xs px-3 py-2 whitespace-nowrap">
+                Orders
+              </TabsTrigger>
+              <TabsTrigger value="products" className="text-xs px-3 py-2 whitespace-nowrap">
+                Products
+              </TabsTrigger>
+              <TabsTrigger value="categories" className="text-xs px-3 py-2 whitespace-nowrap">
+                Categories
+              </TabsTrigger>
+              <TabsTrigger value="promo" className="text-xs px-3 py-2 whitespace-nowrap">
+                Promo
+              </TabsTrigger>
+              <TabsTrigger value="updates" className="text-xs px-3 py-2 whitespace-nowrap">
+                Updates
+              </TabsTrigger>
+              <TabsTrigger value="others" className="text-xs px-3 py-2 whitespace-nowrap">
+                Others
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Desktop: Grid tabs */}
+          <div className="hidden md:block">
+            <TabsList className="grid w-full grid-cols-7 h-auto p-1">
+              <TabsTrigger value="analytics" className="text-sm px-3 py-2">
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="orders" className="text-sm px-3 py-2">
+                Orders
+              </TabsTrigger>
+              <TabsTrigger value="products" className="text-sm px-3 py-2">
+                Products ({products?.length || 0})
+              </TabsTrigger>
+              <TabsTrigger value="categories" className="text-sm px-3 py-2">
+                Categories ({categories?.length || 0})
+              </TabsTrigger>
+              <TabsTrigger value="promo" className="text-sm px-3 py-2">
+                Promo
+              </TabsTrigger>
+              <TabsTrigger value="updates" className="text-sm px-3 py-2">
+                Updates
+              </TabsTrigger>
+              <TabsTrigger value="others" className="text-sm px-3 py-2">
+                Others
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="analytics" className="space-y-3 sm:space-y-4 md:space-y-6">
             <AnalyticsDashboard />
