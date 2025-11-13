@@ -174,6 +174,8 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                         <img
                           src={mainImage}
                           alt={product.name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = "/placeholder.svg";
@@ -242,6 +244,8 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
                     <img
                       src={mainImage}
                       alt={product.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-contain p-4 hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/placeholder.svg";
