@@ -81,18 +81,28 @@ function App() {
       const cachedRaw = localStorage.getItem("productsAllCacheV1");
       if (cachedRaw) {
         const cached = JSON.parse(cachedRaw);
-        if (cached && Array.isArray(cached.data)) {
+        // Check if cache is not too old (max 1 hour)
+        const cacheAge = Date.now() - (cached.updatedAt || 0);
+        const maxCacheAge = 60 * 60 * 1000; // 1 hour
+        
+        if (cached && Array.isArray(cached.data) && cacheAge < maxCacheAge) {
+          console.log("Using cached products:", cached.data.length);
           queryClient.setQueryData(["productsAll"], cached.data);
+        } else {
+          console.log("Cache expired, clearing...");
+          localStorage.removeItem("productsAllCacheV1");
         }
       }
-    } catch {
-      // ignore cache read errors
+    } catch (error) {
+      console.error("Cache read error, clearing cache:", error);
+      localStorage.removeItem("productsAllCacheV1");
     }
 
     queryClient
       .prefetchQuery({
         queryKey: ["productsAll"],
         queryFn: async () => {
+          console.log("Prefetching products in App.tsx...");
           const { data, error } = await supabase
             .from("products")
             .select(`
@@ -104,7 +114,11 @@ function App() {
               )
             `)
             .eq("is_active", true);
-          if (error) throw error;
+          if (error) {
+            console.error("Prefetch error:", error);
+            throw error;
+          }
+          console.log("Prefetch successful:", data?.length || 0);
           return data;
         },
         staleTime: 10 * 60 * 1000,
@@ -115,11 +129,14 @@ function App() {
             "productsAllCacheV1",
             JSON.stringify({ updatedAt: Date.now(), data })
           );
-        } catch {
-          // ignore cache write errors
+          console.log("Products cached successfully");
+        } catch (error) {
+          console.error("Cache write error:", error);
         }
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.error("Prefetch failed:", error);
+      });
   }, []);
 
   // Prefetch category images for faster loading

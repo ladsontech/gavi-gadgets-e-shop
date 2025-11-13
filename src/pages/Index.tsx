@@ -65,9 +65,10 @@ const Index = () => {
   }, [location.pathname]);
 
   // Background-fetched all products (prefetched in App) for instant client-side filtering
-  const { data: allProducts, isLoading: productsLoading } = useQuery({
+  const { data: allProducts, isLoading: productsLoading, error: productsError } = useQuery({
     queryKey: ["productsAll"],
     queryFn: async () => {
+      console.log("Fetching products...");
       const { data, error } = await supabase.from("products").select(`
         *,
         categories (
@@ -77,12 +78,16 @@ const Index = () => {
         )
       `).eq("is_active", true);
       if (error) {
+        console.error("Error fetching products:", error);
         throw error;
       }
+      console.log("Products fetched successfully:", data?.length || 0);
       return data;
     },
     staleTime: 10 * 60 * 1000,
-    gcTime: 15 * 60 * 1000
+    gcTime: 15 * 60 * 1000,
+    retry: 3,
+    retryDelay: 1000,
   });
   const {
     data: categories
@@ -211,7 +216,18 @@ const Index = () => {
                     </div>
                     {productsLoading ? (
                       <div className="text-center py-12">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
                         <p className="text-gray-400 text-sm">Loading products...</p>
+                      </div>
+                    ) : productsError ? (
+                      <div className="text-center py-12">
+                        <p className="text-red-500 text-sm mb-4">Error loading products. Please refresh the page.</p>
+                        <button 
+                          onClick={() => window.location.reload()} 
+                          className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
+                        >
+                          Refresh Page
+                        </button>
                       </div>
                     ) : (
                       <div className="mb-12">
@@ -273,7 +289,18 @@ const Index = () => {
               </div>
               {productsLoading ? (
                 <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600 mx-auto mb-4"></div>
                   <p className="text-gray-400 text-sm">Loading products...</p>
+                </div>
+              ) : productsError ? (
+                <div className="text-center py-12">
+                  <p className="text-red-500 text-sm mb-4">Error loading products. Please refresh the page.</p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700"
+                  >
+                    Refresh Page
+                  </button>
                 </div>
               ) : (
                 <div className="mb-12 sm:mb-16 md:mb-20">
