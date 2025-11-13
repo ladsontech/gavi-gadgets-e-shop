@@ -52,14 +52,17 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     const scrollContainer = scrollContainerRef.current;
     let scrollAmount = scrollContainer.scrollLeft || 0;
     let direction = 1; // 1 for right, -1 for left
-    const scrollSpeed = 3; // pixels per frame - faster and smoother
+    const scrollSpeed = 1.5; // pixels per frame - much faster with RAF
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-    let intervalId: NodeJS.Timeout | null = null;
+    let animationId: number | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
 
     const autoScroll = () => {
-      if (isUserScrolling) return;
+      if (isUserScrolling) {
+        animationId = requestAnimationFrame(autoScroll);
+        return;
+      }
 
       scrollAmount += scrollSpeed * direction;
 
@@ -71,6 +74,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
       }
 
       scrollContainer.scrollLeft = scrollAmount;
+      animationId = requestAnimationFrame(autoScroll);
     };
 
     const handleUserInteraction = () => {
@@ -88,8 +92,8 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
       }, 2000);
     };
 
-    // Start auto-scrolling - reduced interval for smoother animation
-    intervalId = setInterval(autoScroll, 20);
+    // Start auto-scrolling with requestAnimationFrame for 60fps
+    animationId = requestAnimationFrame(autoScroll);
 
     // Listen for user interactions
     scrollContainer.addEventListener('touchstart', handleUserInteraction);
@@ -98,7 +102,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     scrollContainer.addEventListener('scroll', handleUserInteraction);
 
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (animationId) cancelAnimationFrame(animationId);
       if (resumeTimeout) clearTimeout(resumeTimeout);
       scrollContainer.removeEventListener('touchstart', handleUserInteraction);
       scrollContainer.removeEventListener('mousedown', handleUserInteraction);

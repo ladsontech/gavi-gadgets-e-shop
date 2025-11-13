@@ -92,13 +92,16 @@ export const WeeklyOffers = () => {
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
-    const scrollSpeed = 3; // pixels per frame - faster and smoother
-    let intervalId: NodeJS.Timeout | null = null;
+    const scrollSpeed = 1.5; // pixels per frame - much faster with RAF
+    let animationId: number | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
 
     const autoScroll = () => {
-      if (isUserScrolling) return;
+      if (isUserScrolling) {
+        animationId = requestAnimationFrame(autoScroll);
+        return;
+      }
 
       scrollAmount += scrollSpeed * direction;
 
@@ -110,6 +113,7 @@ export const WeeklyOffers = () => {
       }
 
       scrollContainer.scrollLeft = scrollAmount;
+      animationId = requestAnimationFrame(autoScroll);
     };
 
     const handleUserInteraction = () => {
@@ -127,8 +131,8 @@ export const WeeklyOffers = () => {
       }, 2000);
     };
 
-    // Start auto-scrolling - reduced interval for smoother animation
-    intervalId = setInterval(autoScroll, 20);
+    // Start auto-scrolling with requestAnimationFrame for 60fps
+    animationId = requestAnimationFrame(autoScroll);
 
     // Listen for user interactions
     scrollContainer.addEventListener('touchstart', handleUserInteraction);
@@ -137,7 +141,7 @@ export const WeeklyOffers = () => {
     scrollContainer.addEventListener('scroll', handleUserInteraction);
 
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (animationId) cancelAnimationFrame(animationId);
       if (resumeTimeout) clearTimeout(resumeTimeout);
       scrollContainer.removeEventListener('touchstart', handleUserInteraction);
       scrollContainer.removeEventListener('mousedown', handleUserInteraction);
@@ -154,13 +158,16 @@ export const WeeklyOffers = () => {
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
-    const scrollSpeed = 3; // pixels per frame - faster and smoother
-    let intervalId: NodeJS.Timeout | null = null;
+    const scrollSpeed = 1.5; // pixels per frame - much faster with RAF
+    let animationId: number | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
 
     const autoScroll = () => {
-      if (isUserScrolling) return;
+      if (isUserScrolling) {
+        animationId = requestAnimationFrame(autoScroll);
+        return;
+      }
 
       scrollAmount += scrollSpeed * direction;
 
@@ -172,6 +179,7 @@ export const WeeklyOffers = () => {
       }
 
       scrollContainer.scrollLeft = scrollAmount;
+      animationId = requestAnimationFrame(autoScroll);
     };
 
     const handleUserInteraction = () => {
@@ -189,8 +197,8 @@ export const WeeklyOffers = () => {
       }, 2000);
     };
 
-    // Start auto-scrolling - reduced interval for smoother animation
-    intervalId = setInterval(autoScroll, 20);
+    // Start auto-scrolling with requestAnimationFrame for 60fps
+    animationId = requestAnimationFrame(autoScroll);
 
     // Listen for user interactions
     scrollContainer.addEventListener('touchstart', handleUserInteraction);
@@ -199,7 +207,7 @@ export const WeeklyOffers = () => {
     scrollContainer.addEventListener('scroll', handleUserInteraction);
 
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (animationId) cancelAnimationFrame(animationId);
       if (resumeTimeout) clearTimeout(resumeTimeout);
       scrollContainer.removeEventListener('touchstart', handleUserInteraction);
       scrollContainer.removeEventListener('mousedown', handleUserInteraction);
