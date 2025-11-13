@@ -75,7 +75,7 @@ const Offers = () => {
       <div className="min-h-screen bg-white">
         <TuzisazePromo variant="full" />
 
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 py-6 sm:py-8">
+        <section className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-6 sm:py-8">
           <div className="mb-6 md:mb-8">
             <h1 className="text-2xl sm:text-3xl font-normal text-black mb-1">
               Special Offers

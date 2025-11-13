@@ -29,7 +29,7 @@ const CategoriesPage: React.FC = () => {
         keywords="phones, laptops, speakers, tvs, accessories"
       />
       <div className="min-h-screen bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 py-6">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20 py-6">
           <div className="flex items-center gap-3 mb-5">
             <div className="p-3 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl shadow-lg">
               <LayoutGrid className="w-6 h-6 text-white" />

@@ -114,41 +114,41 @@ export const ProductCard = ({
       </div>
       
       {/* Product Info */}
-      <div className="flex-1 flex flex-col p-2 sm:p-3">
+      <div className="flex-1 flex flex-col p-2">
         {/* Product Title - BOLD */}
-        <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-1.5 sm:mb-2 line-clamp-2 leading-tight group-hover:text-pink-600 transition-colors">
+        <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-1 line-clamp-2 leading-[1.2] group-hover:text-pink-600 transition-colors">
           {product.name}
         </h3>
         
         {/* Description */}
         {product.description && (
-          <p className="text-[10px] sm:text-xs text-gray-600 mb-1.5 sm:mb-2 line-clamp-2 leading-relaxed">
+          <p className="text-[10px] sm:text-xs text-gray-600 mb-1 line-clamp-2 leading-[1.3]">
             {product.description}
           </p>
         )}
         
         {/* Product specs */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 flex-wrap">
+        <div className="flex items-center gap-1 sm:gap-1.5 mb-1.5 flex-wrap">
           {product.storage_capacity && (
-            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 border-gray-300">
+            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 border-gray-300 leading-none">
               {product.storage_capacity}
             </Badge>
           )}
           {product.color && (
-            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 border-gray-300">
+            <Badge variant="outline" className="text-[9px] sm:text-[10px] px-1.5 py-0.5 border-gray-300 leading-none">
               {product.color}
             </Badge>
           )}
         </div>
         
         {/* Price Section - Prominent */}
-        <div className="mb-2 sm:mb-3">
-          <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
-            <span className="text-base sm:text-lg font-bold text-pink-600">
+        <div className="mb-1.5">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
+            <span className="text-sm sm:text-base font-bold text-pink-600 leading-none">
               UGX {Number(product.price).toLocaleString()}
             </span>
             {product.original_price && discount > 0 && (
-              <span className="text-[10px] sm:text-xs text-gray-400 line-through">
+              <span className="text-[10px] sm:text-xs text-gray-400 line-through leading-none">
                 UGX {Number(product.original_price).toLocaleString()}
               </span>
             )}
@@ -159,7 +159,7 @@ export const ProductCard = ({
         <button
           onClick={addToCart}
           disabled={product.stock_quantity === 0}
-          className={`w-full mt-auto py-2.5 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap ${
+          className={`w-full mt-auto py-2 px-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap ${
             product.stock_quantity === 0
               ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
               : 'bg-pink-600 text-white hover:bg-pink-700 hover:shadow-md active:scale-95'

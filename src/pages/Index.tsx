@@ -203,7 +203,7 @@ const Index = () => {
               <div className="w-full">
                 {!searchQuery && selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
                 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+                <div className="max-w-7xl mx-auto px-4 py-4">
                   <div className="w-full" data-products-section>
                     <div className="mb-6">
                       <h2 className="text-2xl sm:text-3xl font-normal text-black mb-1">
@@ -275,7 +275,7 @@ const Index = () => {
           {!searchQuery && selectedCategory !== "featured" && <FeaturedProducts products={allProducts || []} />}
           
           {/* Desktop Layout */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-20 lg:px-[6px]">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-20">
             {/* Main Content */}
             <div className="w-full" data-products-section>
               <div className="mb-6">
