@@ -52,7 +52,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     const scrollContainer = scrollContainerRef.current;
     let scrollAmount = scrollContainer.scrollLeft || 0;
     let direction = 1; // 1 for right, -1 for left
-    const scrollSpeed = 1; // pixels per frame
+    const scrollSpeed = 2; // pixels per frame - increased for faster scrolling
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let intervalId: NodeJS.Timeout | null = null;
     let isUserScrolling = false;

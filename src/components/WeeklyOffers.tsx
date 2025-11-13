@@ -92,7 +92,7 @@ export const WeeklyOffers = () => {
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
-    const scrollSpeed = 1; // pixels per frame
+    const scrollSpeed = 2; // pixels per frame - increased for faster scrolling
     let intervalId: NodeJS.Timeout | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
@@ -154,7 +154,7 @@ export const WeeklyOffers = () => {
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
-    const scrollSpeed = 1; // pixels per frame
+    const scrollSpeed = 2; // pixels per frame - increased for faster scrolling
     let intervalId: NodeJS.Timeout | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
