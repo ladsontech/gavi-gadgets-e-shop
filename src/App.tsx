@@ -94,45 +94,47 @@ function App() {
       localStorage.removeItem("productsAllCacheV1");
     }
 
-    // Prefetch products in background (non-blocking)
-    const prefetchProducts = async () => {
-      try {
-        console.log("Prefetching products in App.tsx...");
-        const data = await queryClient.fetchQuery({
-          queryKey: ["productsAll"],
-          queryFn: async () => {
-            // Fetch without join for much faster loading
-            const { data, error } = await supabase
-              .from("products")
-              .select("*")
-              .eq("is_active", true)
-              .order("created_at", { ascending: false });
+        // Prefetch products in background (non-blocking)
+        const prefetchProducts = async () => {
+          try {
+            console.log("Prefetching products in App.tsx...");
+            const data = await queryClient.fetchQuery({
+              queryKey: ["productsAll"],
+              queryFn: async () => {
+                // Fetch without join for much faster loading
+                const { data, error } = await supabase
+                  .from("products")
+                  .select("*")
+                  .eq("is_active", true);
+                
+                if (error) {
+                  console.error("Prefetch error:", error);
+                  throw error;
+                }
+                
+                // Shuffle products randomly
+                const shuffledData = data ? [...data].sort(() => Math.random() - 0.5) : [];
+                return shuffledData;
+              },
+              staleTime: 10 * 60 * 1000,
+            });
             
-            if (error) {
-              console.error("Prefetch error:", error);
-              throw error;
+            console.log("Prefetch successful:", data?.length || 0);
+            
+            // Cache in localStorage
+            try {
+              localStorage.setItem(
+                "productsAllCacheV1",
+                JSON.stringify({ updatedAt: Date.now(), data })
+              );
+              console.log("Products cached successfully");
+            } catch (error) {
+              console.error("Cache write error:", error);
             }
-            return data;
-          },
-          staleTime: 10 * 60 * 1000,
-        });
-        
-        console.log("Prefetch successful:", data?.length || 0);
-        
-        // Cache in localStorage
-        try {
-          localStorage.setItem(
-            "productsAllCacheV1",
-            JSON.stringify({ updatedAt: Date.now(), data })
-          );
-          console.log("Products cached successfully");
-        } catch (error) {
-          console.error("Cache write error:", error);
-        }
-      } catch (error) {
-        console.error("Prefetch failed:", error);
-      }
-    };
+          } catch (error) {
+            console.error("Prefetch failed:", error);
+          }
+        };
     
     // Run prefetch without blocking
     prefetchProducts();

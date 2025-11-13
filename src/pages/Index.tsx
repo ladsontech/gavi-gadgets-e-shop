@@ -73,15 +73,18 @@ const Index = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
+        .eq("is_active", true);
       
       if (error) {
         console.error("Error fetching products:", error);
         throw error;
       }
-      console.log("Products fetched successfully:", data?.length || 0);
-      return data;
+      
+      // Shuffle products randomly for varied display
+      const shuffledData = data ? [...data].sort(() => Math.random() - 0.5) : [];
+      
+      console.log("Products fetched and shuffled:", shuffledData.length);
+      return shuffledData;
     },
     staleTime: 10 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
