@@ -8,7 +8,6 @@ import { SearchProvider } from "@/contexts/SearchContext";
 import { AppBar } from "@/components/AppBar";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { SplashScreen } from "@/components/SplashScreen";
 import { MobileMainNav } from "@/components/MobileMainNav";
 import { CategoriesSidebar } from "@/components/CategoriesSidebar";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -55,15 +54,8 @@ const MainLayout = ({ children, categories, selectedCategory, onCategoryChange }
   );
 };
 function App() {
-  const [showSplash, setShowSplash] = useState(() => {
-    return !sessionStorage.getItem('splashShown');
-  });
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-    sessionStorage.setItem('splashShown', 'true');
-  };
   useEffect(() => {
     const fetchCategories = async () => {
       const {
@@ -178,9 +170,7 @@ function App() {
       detail: categoryId
     }));
   };
-  if (showSplash) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
+
   return <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <SearchProvider>
