@@ -98,59 +98,19 @@ export const WeeklyOffers = () => {
         </div>
 
         <div className="relative">
-          {/* Mobile: Single product view */}
-          <div className="block sm:hidden">
-            <div className="relative overflow-hidden rounded-lg">
-              <div 
-                className="flex transition-transform duration-300 ease-in-out"
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-              >
-                {offers.map((offer) => (
-                  <div key={offer.id} className="w-full flex-shrink-0 px-2">
-                    <ProductCard product={offer} />
-                  </div>
-                ))}
-              </div>
-
-              {/* Navigation arrows for mobile */}
-              {offers.length > 1 && (
-                <>
-                  <button
-                    onClick={prevOffer}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-gray-700" />
-                  </button>
-                  <button
-                    onClick={nextOffer}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"
-                  >
-                    <ChevronRight className="w-4 h-4 text-gray-700" />
-                  </button>
-                </>
-              )}
+          {/* Mobile: Horizontal scroll with 2 products visible */}
+          <div className="md:hidden overflow-x-auto px-4">
+            <div className="flex gap-3 pb-2" style={{ width: 'max-content' }}>
+              {offers.map((offer) => (
+                <div key={offer.id} className="w-[160px] flex-shrink-0">
+                  <ProductCard product={offer} />
+                </div>
+              ))}
             </div>
-
-            {/* Dots indicator */}
-            {offers.length > 1 && (
-              <div className="flex justify-center mt-4 gap-1">
-                {offers.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentIndex 
-                        ? 'bg-pink-600' 
-                        : 'bg-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Desktop: Grid view */}
-          <div className="hidden sm:block">
+          <div className="hidden md:block">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
               {offers.map((offer) => (
                 <ProductCard key={offer.id} product={offer} />
