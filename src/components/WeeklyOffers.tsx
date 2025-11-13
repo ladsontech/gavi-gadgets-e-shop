@@ -84,21 +84,26 @@ export const WeeklyOffers = () => {
     }
   };
 
-  // Auto-scroll to the left for offers section (mobile)
+  // Auto-scroll to the left for offers section (mobile) with smooth return
   useEffect(() => {
     if (!scrollContainerRef.current || !offers || offers.length === 0) return;
 
     const scrollContainer = scrollContainerRef.current;
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
+    let direction = -1; // -1 for left, 1 for right
     const scrollSpeed = 1; // pixels per frame
 
     const autoScroll = () => {
+      scrollAmount += scrollSpeed * direction;
+
+      // Change direction when reaching boundaries
       if (scrollAmount <= 0) {
-        scrollAmount = maxScroll; // Reset to right
-      } else {
-        scrollAmount -= scrollSpeed;
+        direction = 1; // Start scrolling right
+      } else if (scrollAmount >= maxScroll) {
+        direction = -1; // Start scrolling left
       }
+
       scrollContainer.scrollLeft = scrollAmount;
     };
 
@@ -107,21 +112,26 @@ export const WeeklyOffers = () => {
     return () => clearInterval(intervalId);
   }, [offers]);
 
-  // Auto-scroll to the left for offers section (desktop)
+  // Auto-scroll to the left for offers section (desktop) with smooth return
   useEffect(() => {
     if (!desktopScrollContainerRef.current || !offers || offers.length === 0) return;
 
     const scrollContainer = desktopScrollContainerRef.current;
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
+    let direction = -1; // -1 for left, 1 for right
     const scrollSpeed = 1; // pixels per frame
 
     const autoScroll = () => {
+      scrollAmount += scrollSpeed * direction;
+
+      // Change direction when reaching boundaries
       if (scrollAmount <= 0) {
-        scrollAmount = maxScroll; // Reset to right
-      } else {
-        scrollAmount -= scrollSpeed;
+        direction = 1; // Start scrolling right
+      } else if (scrollAmount >= maxScroll) {
+        direction = -1; // Start scrolling left
       }
+
       scrollContainer.scrollLeft = scrollAmount;
     };
 

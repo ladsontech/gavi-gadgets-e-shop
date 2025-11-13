@@ -45,21 +45,26 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Auto-scroll to the right for promo section - MUST be before any early returns
+  // Auto-scroll to the right for promo section with smooth return - MUST be before any early returns
   useEffect(() => {
     if (!isCompact || !scrollContainerRef.current || !promoProducts || promoProducts.length === 0) return;
 
     const scrollContainer = scrollContainerRef.current;
     let scrollAmount = 0;
+    let direction = 1; // 1 for right, -1 for left
     const scrollSpeed = 1; // pixels per frame
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
 
     const autoScroll = () => {
+      scrollAmount += scrollSpeed * direction;
+
+      // Change direction when reaching boundaries
       if (scrollAmount >= maxScroll) {
-        scrollAmount = 0; // Reset to start
-      } else {
-        scrollAmount += scrollSpeed;
+        direction = -1; // Start scrolling left
+      } else if (scrollAmount <= 0) {
+        direction = 1; // Start scrolling right
       }
+
       scrollContainer.scrollLeft = scrollAmount;
     };
 
