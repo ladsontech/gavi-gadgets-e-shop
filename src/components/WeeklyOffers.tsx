@@ -92,7 +92,7 @@ export const WeeklyOffers = () => {
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
-    const scrollSpeed = 2; // pixels per frame - increased for faster scrolling
+    const scrollSpeed = 3; // pixels per frame - faster and smoother
     let intervalId: NodeJS.Timeout | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
@@ -127,8 +127,8 @@ export const WeeklyOffers = () => {
       }, 2000);
     };
 
-    // Start auto-scrolling
-    intervalId = setInterval(autoScroll, 30);
+    // Start auto-scrolling - reduced interval for smoother animation
+    intervalId = setInterval(autoScroll, 20);
 
     // Listen for user interactions
     scrollContainer.addEventListener('touchstart', handleUserInteraction);
@@ -154,7 +154,7 @@ export const WeeklyOffers = () => {
     const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
-    const scrollSpeed = 2; // pixels per frame - increased for faster scrolling
+    const scrollSpeed = 3; // pixels per frame - faster and smoother
     let intervalId: NodeJS.Timeout | null = null;
     let isUserScrolling = false;
     let resumeTimeout: NodeJS.Timeout | null = null;
@@ -189,8 +189,8 @@ export const WeeklyOffers = () => {
       }, 2000);
     };
 
-    // Start auto-scrolling
-    intervalId = setInterval(autoScroll, 30);
+    // Start auto-scrolling - reduced interval for smoother animation
+    intervalId = setInterval(autoScroll, 20);
 
     // Listen for user interactions
     scrollContainer.addEventListener('touchstart', handleUserInteraction);
