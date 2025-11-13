@@ -69,14 +69,13 @@ const Index = () => {
     queryKey: ["productsAll"],
     queryFn: async () => {
       console.log("Fetching products...");
-      const { data, error } = await supabase.from("products").select(`
-        *,
-        categories (
-          id,
-          name,
-          slug
-        )
-      `).eq("is_active", true);
+      // Fetch without join for faster loading
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
+      
       if (error) {
         console.error("Error fetching products:", error);
         throw error;
@@ -86,8 +85,10 @@ const Index = () => {
     },
     staleTime: 10 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
-    retry: 3,
-    retryDelay: 1000,
+    retry: 2,
+    retryDelay: 500,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
   const {
     data: categories

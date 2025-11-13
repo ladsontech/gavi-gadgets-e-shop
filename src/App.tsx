@@ -98,32 +98,32 @@ function App() {
       localStorage.removeItem("productsAllCacheV1");
     }
 
-    queryClient
-      .prefetchQuery({
-        queryKey: ["productsAll"],
-        queryFn: async () => {
-          console.log("Prefetching products in App.tsx...");
-          const { data, error } = await supabase
-            .from("products")
-            .select(`
-              *,
-              categories (
-                id,
-                name,
-                slug
-              )
-            `)
-            .eq("is_active", true);
-          if (error) {
-            console.error("Prefetch error:", error);
-            throw error;
-          }
-          console.log("Prefetch successful:", data?.length || 0);
-          return data;
-        },
-        staleTime: 10 * 60 * 1000,
-      })
-      .then((data) => {
+    // Prefetch products in background (non-blocking)
+    const prefetchProducts = async () => {
+      try {
+        console.log("Prefetching products in App.tsx...");
+        const data = await queryClient.fetchQuery({
+          queryKey: ["productsAll"],
+          queryFn: async () => {
+            // Fetch without join for much faster loading
+            const { data, error } = await supabase
+              .from("products")
+              .select("*")
+              .eq("is_active", true)
+              .order("created_at", { ascending: false });
+            
+            if (error) {
+              console.error("Prefetch error:", error);
+              throw error;
+            }
+            return data;
+          },
+          staleTime: 10 * 60 * 1000,
+        });
+        
+        console.log("Prefetch successful:", data?.length || 0);
+        
+        // Cache in localStorage
         try {
           localStorage.setItem(
             "productsAllCacheV1",
@@ -133,10 +133,13 @@ function App() {
         } catch (error) {
           console.error("Cache write error:", error);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Prefetch failed:", error);
-      });
+      }
+    };
+    
+    // Run prefetch without blocking
+    prefetchProducts();
   }, []);
 
   // Prefetch category images for faster loading

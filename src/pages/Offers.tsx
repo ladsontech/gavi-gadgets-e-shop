@@ -15,12 +15,15 @@ const Offers = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
-        .eq("is_active", true);
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
     staleTime: 10 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const filteredProducts = useMemo(() => {

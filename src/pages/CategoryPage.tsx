@@ -64,20 +64,16 @@ export default function CategoryPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select(`
-          *,
-          categories (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq("is_active", true);
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Product[];
     },
     staleTime: 10 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const { data: categories } = useQuery({
