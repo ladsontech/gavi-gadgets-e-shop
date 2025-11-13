@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { LayoutGrid, Grid3x3 } from "lucide-react";
+import { LayoutGrid, Grid3x3, Wrench } from "lucide-react";
 
 interface CategoriesSidebarProps {
   categories: { id: string; name: string; slug: string }[];
@@ -22,6 +22,7 @@ const categoryData: CategoryCard[] = [
   { label: "TVs", slug: "tvs", route: "/category/tvs", imageSrc: "/images/gavi_accessories/TVS.png" },
   { label: "Accessories", slug: "accessories", route: "/category/accessories", imageSrc: "/images/gavi_accessories/accessories.png" },
   { label: "Gaming", slug: "gaming", route: "/category/gaming", imageSrc: "/images/gavi_accessories/gaming.png" },
+  { label: "Repair", slug: "repair", route: "/repair", imageSrc: undefined },
 ];
 
 export const CategoriesSidebar = ({ categories }: CategoriesSidebarProps) => {
@@ -114,6 +115,8 @@ const CategoryTile: React.FC<{
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-14 h-14 flex items-center justify-center">
             {isAll ? (
               <Grid3x3 className="w-7 h-7 text-pink-600" />
+            ) : label === "Repair" ? (
+              <Wrench className="w-7 h-7 text-pink-600" />
             ) : (
               <div className="w-7 h-7 bg-pink-200 rounded-full" />
             )}
