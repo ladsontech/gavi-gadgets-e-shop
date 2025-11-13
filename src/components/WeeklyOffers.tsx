@@ -84,7 +84,7 @@ export const WeeklyOffers = () => {
     }
   };
 
-  // Auto-scroll to the left for offers section (mobile) with smooth return
+  // Auto-scroll to the left for offers section (mobile) with smooth return and manual scroll support
   useEffect(() => {
     if (!scrollContainerRef.current || !offers || offers.length === 0) return;
 
@@ -93,8 +93,13 @@ export const WeeklyOffers = () => {
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
     const scrollSpeed = 1; // pixels per frame
+    let intervalId: NodeJS.Timeout | null = null;
+    let isUserScrolling = false;
+    let resumeTimeout: NodeJS.Timeout | null = null;
 
     const autoScroll = () => {
+      if (isUserScrolling) return;
+
       scrollAmount += scrollSpeed * direction;
 
       // Change direction when reaching boundaries
@@ -107,12 +112,41 @@ export const WeeklyOffers = () => {
       scrollContainer.scrollLeft = scrollAmount;
     };
 
-    const intervalId = setInterval(autoScroll, 30); // Smooth 30ms intervals
+    const handleUserInteraction = () => {
+      isUserScrolling = true;
+      
+      // Clear any pending resume timeout
+      if (resumeTimeout) {
+        clearTimeout(resumeTimeout);
+      }
 
-    return () => clearInterval(intervalId);
+      // Resume auto-scroll after 2 seconds of no interaction
+      resumeTimeout = setTimeout(() => {
+        isUserScrolling = false;
+        scrollAmount = scrollContainer.scrollLeft; // Sync with current position
+      }, 2000);
+    };
+
+    // Start auto-scrolling
+    intervalId = setInterval(autoScroll, 30);
+
+    // Listen for user interactions
+    scrollContainer.addEventListener('touchstart', handleUserInteraction);
+    scrollContainer.addEventListener('mousedown', handleUserInteraction);
+    scrollContainer.addEventListener('wheel', handleUserInteraction);
+    scrollContainer.addEventListener('scroll', handleUserInteraction);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      scrollContainer.removeEventListener('touchstart', handleUserInteraction);
+      scrollContainer.removeEventListener('mousedown', handleUserInteraction);
+      scrollContainer.removeEventListener('wheel', handleUserInteraction);
+      scrollContainer.removeEventListener('scroll', handleUserInteraction);
+    };
   }, [offers]);
 
-  // Auto-scroll to the left for offers section (desktop) with smooth return
+  // Auto-scroll to the left for offers section (desktop) with smooth return and manual scroll support
   useEffect(() => {
     if (!desktopScrollContainerRef.current || !offers || offers.length === 0) return;
 
@@ -121,8 +155,13 @@ export const WeeklyOffers = () => {
     let scrollAmount = maxScroll; // Start from the right
     let direction = -1; // -1 for left, 1 for right
     const scrollSpeed = 1; // pixels per frame
+    let intervalId: NodeJS.Timeout | null = null;
+    let isUserScrolling = false;
+    let resumeTimeout: NodeJS.Timeout | null = null;
 
     const autoScroll = () => {
+      if (isUserScrolling) return;
+
       scrollAmount += scrollSpeed * direction;
 
       // Change direction when reaching boundaries
@@ -135,9 +174,38 @@ export const WeeklyOffers = () => {
       scrollContainer.scrollLeft = scrollAmount;
     };
 
-    const intervalId = setInterval(autoScroll, 30); // Smooth 30ms intervals
+    const handleUserInteraction = () => {
+      isUserScrolling = true;
+      
+      // Clear any pending resume timeout
+      if (resumeTimeout) {
+        clearTimeout(resumeTimeout);
+      }
 
-    return () => clearInterval(intervalId);
+      // Resume auto-scroll after 2 seconds of no interaction
+      resumeTimeout = setTimeout(() => {
+        isUserScrolling = false;
+        scrollAmount = scrollContainer.scrollLeft; // Sync with current position
+      }, 2000);
+    };
+
+    // Start auto-scrolling
+    intervalId = setInterval(autoScroll, 30);
+
+    // Listen for user interactions
+    scrollContainer.addEventListener('touchstart', handleUserInteraction);
+    scrollContainer.addEventListener('mousedown', handleUserInteraction);
+    scrollContainer.addEventListener('wheel', handleUserInteraction);
+    scrollContainer.addEventListener('scroll', handleUserInteraction);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      scrollContainer.removeEventListener('touchstart', handleUserInteraction);
+      scrollContainer.removeEventListener('mousedown', handleUserInteraction);
+      scrollContainer.removeEventListener('wheel', handleUserInteraction);
+      scrollContainer.removeEventListener('scroll', handleUserInteraction);
+    };
   }, [offers]);
 
   if (isLoading || !offers || offers.length === 0) {
