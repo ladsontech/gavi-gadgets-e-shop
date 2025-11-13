@@ -11,6 +11,7 @@ import { OthersManager } from "@/components/admin/OthersManager";
 import { PromoManager } from "@/components/admin/PromoManager";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { OrdersManager } from "@/components/admin/OrdersManager";
+import { NotificationSender } from "@/components/admin/NotificationSender";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { SimpleProductForm } from "@/components/admin/SimpleProductForm";
 import { EditProductForm } from "@/components/admin/EditProductForm";
@@ -203,6 +204,9 @@ const Admin = () => {
               <TabsTrigger value="updates" className="text-xs px-3 py-2 whitespace-nowrap">
                 Updates
               </TabsTrigger>
+              <TabsTrigger value="notifications" className="text-xs px-3 py-2 whitespace-nowrap">
+                Notifications
+              </TabsTrigger>
               <TabsTrigger value="others" className="text-xs px-3 py-2 whitespace-nowrap">
                 Others
               </TabsTrigger>
@@ -211,7 +215,7 @@ const Admin = () => {
 
           {/* Desktop: Grid tabs */}
           <div className="hidden md:block">
-            <TabsList className="grid w-full grid-cols-7 h-auto p-1">
+            <TabsList className="grid w-full grid-cols-8 h-auto p-1">
               <TabsTrigger value="analytics" className="text-sm px-3 py-2">
                 Analytics
               </TabsTrigger>
@@ -229,6 +233,9 @@ const Admin = () => {
               </TabsTrigger>
               <TabsTrigger value="updates" className="text-sm px-3 py-2">
                 Updates
+              </TabsTrigger>
+              <TabsTrigger value="notifications" className="text-sm px-3 py-2">
+                Notifications
               </TabsTrigger>
               <TabsTrigger value="others" className="text-sm px-3 py-2">
                 Others
@@ -349,6 +356,10 @@ const Admin = () => {
 
           <TabsContent value="updates">
             <UpdatesManager />
+          </TabsContent>
+
+          <TabsContent value="notifications" className="space-y-3 sm:space-y-4 md:space-y-6">
+            <NotificationSender />
           </TabsContent>
 
           <TabsContent value="others">

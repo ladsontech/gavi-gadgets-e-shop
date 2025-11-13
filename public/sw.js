@@ -143,54 +143,102 @@ self.addEventListener('sync', function(event) {
   }
 });
 
-// Push notification handling
+// Push notification handling - works even when app is closed
 self.addEventListener('push', function(event) {
-  console.log('Push notification received');
+  console.log('Push notification received:', event);
   
-  const options = {
-    body: event.data ? event.data.text() : 'New update from Gavi Gadgets!',
+  let notificationData = {
+    title: 'Gavi Gadgets',
+    body: 'New update from Gavi Gadgets!',
     icon: '/images/gavi_icon.png',
     badge: '/images/gavi_icon.png',
-    vibrate: [100, 50, 100],
+    image: null,
+    url: '/',
+    tag: 'default',
+    requireInteraction: false
+  };
+
+  // Parse notification data from push payload
+  if (event.data) {
+    try {
+      const data = event.data.json();
+      notificationData = {
+        title: data.title || notificationData.title,
+        body: data.body || data.message || notificationData.body,
+        icon: data.icon || notificationData.icon,
+        badge: data.badge || notificationData.badge,
+        image: data.image || data.productImage || notificationData.image,
+        url: data.url || data.link || notificationData.url,
+        tag: data.tag || notificationData.tag,
+        requireInteraction: data.requireInteraction || false
+      };
+    } catch (e) {
+      // If not JSON, use text
+      notificationData.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: notificationData.body,
+    icon: notificationData.icon,
+    badge: notificationData.badge,
+    image: notificationData.image,
+    vibrate: [200, 100, 200, 100, 200],
+    tag: notificationData.tag,
+    requireInteraction: notificationData.requireInteraction,
     data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
+      url: notificationData.url,
+      dateOfArrival: Date.now()
     },
     actions: [
       {
-        action: 'explore',
-        title: 'View Products',
+        action: 'view',
+        title: 'View Now',
         icon: '/images/gavi_icon.png'
       },
       {
         action: 'close',
-        title: 'Close',
+        title: 'Dismiss',
         icon: '/images/gavi_icon.png'
       }
     ]
   };
 
   event.waitUntil(
-    self.registration.showNotification('Gavi Gadgets', options)
+    self.registration.showNotification(notificationData.title, options)
   );
 });
 
-// Handle notification clicks
+// Handle notification clicks - open app even if closed
 self.addEventListener('notificationclick', function(event) {
-  console.log('Notification clicked');
+  console.log('Notification clicked:', event.action);
   event.notification.close();
 
-  if (event.action === 'explore') {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
-  } else if (event.action === 'close') {
+  // Get the URL from notification data
+  const urlToOpen = event.notification.data?.url || '/';
+
+  if (event.action === 'close') {
+    // Just close the notification
     return;
-  } else {
-    event.waitUntil(
-      clients.openWindow('/')
-    );
   }
+
+  // Open or focus the app window
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(function(clientList) {
+        // Check if there's already a window open
+        for (let i = 0; i < clientList.length; i++) {
+          const client = clientList[i];
+          if (client.url === new URL(urlToOpen, self.location.origin).href && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // If no window is open, open a new one
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
+  );
 });
 
 // Handle app updates - force update when new version is available

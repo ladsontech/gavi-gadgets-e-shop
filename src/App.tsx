@@ -12,6 +12,7 @@ import { SplashScreen } from "@/components/SplashScreen";
 import { MobileMainNav } from "@/components/MobileMainNav";
 import { CategoriesSidebar } from "@/components/CategoriesSidebar";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { NotificationPrompt } from "@/components/NotificationPrompt";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
@@ -25,6 +26,7 @@ import SitemapPage from "./pages/Sitemap";
 import CategoriesPage from "./pages/Categories";
 import CategoryPage from "./pages/CategoryPage";
 import Offers from "./pages/Offers";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +48,7 @@ const MainLayout = ({ children, categories, selectedCategory, onCategoryChange }
       </div>
       <Footer />
       <WhatsAppButton />
+      <NotificationPrompt />
       <MobileMainNav categories={categories} selectedCategory={selectedCategory} onCategoryChange={onCategoryChange} />
     </div>
   );
@@ -224,6 +227,11 @@ function App() {
                 <Route path="/warranty" element={
                   <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
                     <Warranty />
+                  </MainLayout>
+                } />
+                <Route path="/settings" element={
+                  <MainLayout categories={categories} selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange}>
+                    <Settings />
                   </MainLayout>
                 } />
                 <Route path="/sitemap" element={
