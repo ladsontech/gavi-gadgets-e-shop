@@ -45,19 +45,7 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
     staleTime: 5 * 60 * 1000,
   });
 
-  if (isLoading || !promoProducts || promoProducts.length === 0) {
-    return null;
-  }
-
-  const getDiscountAmount = (original: number, discounted: number) => {
-    return original - discounted;
-  };
-
-  const getDiscountPercentage = (original: number, discounted: number) => {
-    return Math.round(((original - discounted) / original) * 100);
-  };
-
-  // Auto-scroll to the right for promo section
+  // Auto-scroll to the right for promo section - MUST be before any early returns
   useEffect(() => {
     if (!isCompact || !scrollContainerRef.current || !promoProducts || promoProducts.length === 0) return;
 
@@ -79,6 +67,18 @@ export const TuzisazePromo = ({ variant = "compact" }: TuzisazePromoProps) => {
 
     return () => clearInterval(intervalId);
   }, [promoProducts, isCompact]);
+
+  if (isLoading || !promoProducts || promoProducts.length === 0) {
+    return null;
+  }
+
+  const getDiscountAmount = (original: number, discounted: number) => {
+    return original - discounted;
+  };
+
+  const getDiscountPercentage = (original: number, discounted: number) => {
+    return Math.round(((original - discounted) / original) * 100);
+  };
 
   return (
     <section
